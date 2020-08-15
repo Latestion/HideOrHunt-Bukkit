@@ -209,6 +209,9 @@ public class CommandManager implements CommandExecutor
     }
     
     public void stop(Player player) {
+    	
+    	plugin.worldGame.getWorldBorder().setSize(100000000);
+    	
     	for (Location loc : plugin.blockLocation.keySet()) {
     		plugin.worldGame.getBlockAt(loc).setType(Material.AIR);
     	}

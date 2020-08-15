@@ -29,5 +29,10 @@ public class PlayerJoin implements Listener
         if (plugin.version && plugin.getConfig().getBoolean("Custom-Tab-List"))
         	plugin.voids.prepareTab();
         event.getPlayer().sendTitle(ChatColor.translateAlternateColorCodes('&', this.plugin.getConfig().getString("Join-Title")), "", 10, 50, 10);
+        
+        if (!plugin.gameOn) {
+        	event.getPlayer().teleport(plugin.lolloc);
+        }
+        
     }
 }

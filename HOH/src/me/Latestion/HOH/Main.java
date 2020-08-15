@@ -79,7 +79,7 @@ public class Main extends JavaPlugin
     
     @Override
     public void onEnable() {
-    	if (Bukkit.getVersion().contains("1.16.1")) {
+    	if (Bukkit.getVersion().contains("1.16.2")) {
     		this.version = true;
         	this.tab = new TabManager16(this);
     	}
@@ -141,10 +141,9 @@ public class Main extends JavaPlugin
     
     private void hoh() {
     	ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-    	console.sendMessage("        " + ChatColor.RED + " _______ ");
+    	console.sendMessage("        " +                  ChatColor.RED + " _______ ");
     	console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |");
-    	console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |" + ChatColor.WHITE + "    Version: " 
-    	+ this.getDescription().getVersion()); 
+    	console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |" + ChatColor.WHITE + "    Version: " + this.getDescription().getVersion()); 
     	console.sendMessage(ChatColor.AQUA + "|------|" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|------|" + ChatColor.WHITE + "    By: Latestion"); 
     	console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |"); 
     	console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|_______|" + ChatColor.AQUA + "|      |");
@@ -167,7 +166,7 @@ public class Main extends JavaPlugin
                 return false;
             }
         } catch (Exception e) {
-            getLogger().info("Hide Or Hunt Could not check for updates!");
+            getLogger().info("Hide Or Hunt Could not check for updates.");
             return false;
         } 
 	}
