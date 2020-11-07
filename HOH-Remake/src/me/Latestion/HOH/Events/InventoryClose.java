@@ -1,8 +1,4 @@
-// 
-// Decompiled by Procyon v0.5.36
-// 
-
-package me.Latestion.HOH.MyEvents;
+package me.Latestion.HOH.Events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -12,8 +8,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 
 import me.Latestion.HOH.Main;
 
-public class InventoryClose implements Listener
-{
+public class InventoryClose implements Listener{
     private Main plugin;
     
     public InventoryClose(final Main plugin) {
@@ -21,15 +16,15 @@ public class InventoryClose implements Listener
     }
     
     @EventHandler
-    public void close(final InventoryCloseEvent event) {
-        if (this.plugin.cache2.contains(event.getPlayer())) {
+    public void close(InventoryCloseEvent event) {
+        if (plugin.game.cache.contains(event.getPlayer())) {
             Player player = (Player) event.getPlayer();
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, (Runnable)new Runnable() {
                 @Override
                 public void run() {
-                    player.openInventory(InventoryClose.this.plugin.inv);
+                    player.openInventory(plugin.inv);
                 }
-            }, 10L);
+            }, 1L);
         }
     }
 }

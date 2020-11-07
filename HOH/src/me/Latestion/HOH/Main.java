@@ -24,6 +24,7 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import me.Latestion.HOH.Commands.CommandManager;
 import me.Latestion.HOH.Commands.TabC;
 import me.Latestion.HOH.Files.DataManager;
+import me.Latestion.HOH.Files.ReplyManager;
 import me.Latestion.HOH.MyEvents.AsyncChat;
 import me.Latestion.HOH.MyEvents.BlockBreak;
 import me.Latestion.HOH.MyEvents.BlockPlace;
@@ -76,6 +77,9 @@ public class Main extends JavaPlugin
     public boolean latest = false;
     public CommandManager cmdManager;
     public Location lolloc;
+    public ReplyManager custom;
+    public Bar bar;
+    public boolean enableCraft = false;
     
     @Override
     public void onEnable() {
@@ -89,6 +93,7 @@ public class Main extends JavaPlugin
         this.voids = new CreateVoids(this);
         this.cmdManager = new CommandManager(this);
         this.scoreBoardRegister();
+        this.custom = new ReplyManager(this);
         this.getServer().getPluginManager().registerEvents(new InventoryClick(this), this);
         this.getServer().getPluginManager().registerEvents(new AsyncChat(this), this);
         this.getServer().getPluginManager().registerEvents(new InventoryClose(this), this);
@@ -106,10 +111,15 @@ public class Main extends JavaPlugin
         this.getCommand("hoh").setExecutor(new CommandManager(this));
         this.getCommand("hoh").setTabCompleter(new TabC());
         new Metrics(this, 8350);
+        bar = new Bar(this);
     }
     
     @Override
     public void onDisable() {
+    	try {
+			bar.getBar().removeAll();
+		} catch (Exception e) {
+		}
     }
     
     private void man() {
@@ -168,7 +178,7 @@ public class Main extends JavaPlugin
         } catch (Exception e) {
             getLogger().info("Hide Or Hunt Could not check for updates.");
             return false;
-        } 
+        }
+        
 	}
-    
 }

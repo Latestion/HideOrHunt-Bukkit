@@ -24,9 +24,11 @@ public class CraftItem implements Listener
     public void cie(final CraftItemEvent event) {
         if (this.plugin.gameOn) {
             if (event.getRecipe().getResult().getType() == Material.CRAFTING_TABLE) {
+            	if (plugin.enableCraft) return;
                 event.setCancelled(true);
                 final Player player = (Player)event.getWhoClicked();
                 player.sendMessage(new StringBuilder().append(ChatColor.RED).append(ChatColor.BOLD).append("You cannot craft that!").toString());
+                return;
             }
             if (event.getRecipe().getResult().getType() != Material.BEACON) {
                 return;
@@ -34,6 +36,7 @@ public class CraftItem implements Listener
             event.setCancelled(true);
             final Player player = (Player)event.getWhoClicked();
             player.sendMessage(new StringBuilder().append(ChatColor.RED).append(ChatColor.BOLD).append("You cannot craft that!").toString());
+            return;
         }
     }
 }

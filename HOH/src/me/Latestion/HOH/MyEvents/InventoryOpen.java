@@ -5,7 +5,6 @@
 package me.Latestion.HOH.MyEvents;
 
 import org.bukkit.event.EventHandler;
-import org.bukkit.Location;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -23,9 +22,9 @@ public class InventoryOpen implements Listener
     @EventHandler
     public void ioe(final InventoryOpenEvent event) {
         final Player player = (Player)event.getPlayer();
-        if (this.plugin.gameOn && event.getInventory().getType().equals((Object)InventoryType.BEACON)) {
+        if (this.plugin.gameOn && event.getInventory().getType().equals(InventoryType.BEACON)) {
             event.setCancelled(true);
-            player.openWorkbench((Location)null, true);
+            player.openWorkbench(null, true);
         }
     }
 }

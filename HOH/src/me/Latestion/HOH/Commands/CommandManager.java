@@ -90,7 +90,7 @@ public class CommandManager implements CommandExecutor
                     }
                     if (args[0].equalsIgnoreCase("freeze") && this.plugin.gameOn && player.hasPermission("hoh.freeze")) {
                         if (this.plugin.freeze) {
-                            Bukkit.broadcastMessage(ChatColor.RED + "UnFreezed the game!");
+                            Bukkit.broadcastMessage(ChatColor.RED + "Unfreezed the game!");
                             this.plugin.freeze = false;
                         }
                         else {
@@ -201,6 +201,18 @@ public class CommandManager implements CommandExecutor
                     			i[0]++;
                     		});
                        	}
+                    }
+                    if (args[0].equals("crafting")) {
+                    	if (player.hasPermission("hoh.craft")) {
+                        	if (plugin.enableCraft) {
+                        		Bukkit.broadcastMessage(ChatColor.RED + "Crafting is disabled!");
+                                this.plugin.enableCraft = false;
+                        	}
+                        	else {
+                        		Bukkit.broadcastMessage(ChatColor.RED + "Crafting in enabled!");
+                                this.plugin.enableCraft = true;
+                        	}
+                    	}
                     }
                 }
             }	

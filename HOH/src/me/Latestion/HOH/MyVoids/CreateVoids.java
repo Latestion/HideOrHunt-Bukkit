@@ -1,12 +1,9 @@
-// 
 // Decompiled by Procyon v0.5.36
-// 
+ 
 
 package me.Latestion.HOH.MyVoids;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -20,8 +17,6 @@ import org.bukkit.World;
 import org.bukkit.block.Chest;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
@@ -234,6 +229,7 @@ public class CreateVoids
             }
             ++i;
         }
+        plugin.bar.createBar();
         for (final Player sbp : Bukkit.getServer().getOnlinePlayers()) {
             sbp.setScoreboard(this.plugin.board);
         }
@@ -356,11 +352,14 @@ public class CreateVoids
         workWorld.getBlockAt(loc.clone().add(-1.0, 4.0, 1.0)).setType(Material.WHITE_WOOL);
         workWorld.getBlockAt(loc.clone().add(-1.0, 4.0, -1.0)).setType(Material.WHITE_WOOL);
         Bukkit.broadcastMessage(new StringBuilder().append(ChatColor.BOLD).append(ChatColor.GOLD).append("Supply drop at X:").append(loc.getBlockX()).append(" Z:").append(loc.getBlockZ()).toString());
-        final Chest chest = (Chest)workWorld.getBlockAt(loc.clone().add(0.0, 1.0, 0.0)).getState();
-        final List<String> getRandomAll = new ArrayList<String>();
+        Chest chest = (Chest)workWorld.getBlockAt(loc.clone().add(0.0, 1.0, 0.0)).getState();
+        List<String> getRandomAll = new ArrayList<String>();
         this.plugin.getConfig().getConfigurationSection("Supply-Drop-Items").getKeys(false).forEach(key -> getRandomAll.add(key));
-        final Random rand = new Random();
-        final int lol = rand.nextInt(getRandomAll.size()) + 1;
+        Random rand = new Random();
+        int lol = rand.nextInt(getRandomAll.size());
+        if (lol == 0) {
+        	lol++;
+        }
         for (final String addMaterialToChest : this.plugin.getConfig().getStringList("Supply-Drop-Items." + lol)) {
             final String[] ahh = addMaterialToChest.split(", ");
             if (ahh[0].equalsIgnoreCase("air")) {
@@ -383,4 +382,16 @@ public class CreateVoids
     		i[0]++;
     	});
     }
+    public List<String> getAliveTeam() {
+        List<String> aliveTeams = new ArrayList<String>();
+        for (Player p : Bukkit.getOnlinePlayers()) {
+        	if (!plugin.deadTalk.contains(p)) {
+        		if (!aliveTeams.contains(this.getPlayerTeam(p))) {
+            		aliveTeams.add(this.getPlayerTeam(p));
+        		} // else dont add
+        	}
+        }
+        return aliveTeams;
+    }
 }
+//9867430198
