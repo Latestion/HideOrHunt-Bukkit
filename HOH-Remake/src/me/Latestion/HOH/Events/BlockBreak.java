@@ -9,7 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 import me.Latestion.HOH.Game.GameState;
 import me.Latestion.HOH.Game.HOHPlayer;
 import me.Latestion.HOH.Game.HOHTeam;
@@ -17,9 +17,9 @@ import me.Latestion.HOH.Utils.Util;
 
 public class BlockBreak implements Listener {
 
-	private Main plugin;
+	private HideOrHunt plugin;
 	
-	public BlockBreak(Main plugin) {
+	public BlockBreak(HideOrHunt plugin) {
 		this.plugin = plugin;
 	}
 

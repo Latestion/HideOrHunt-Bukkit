@@ -11,14 +11,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 import me.Latestion.HOH.Game.HOHTeam;
 
 public class Util {
 
-	private Main plugin;
+	private HideOrHunt plugin;
 	
-	public Util(Main plugin) {
+	public Util(HideOrHunt plugin) {
 		this.plugin = plugin;
 	}
 

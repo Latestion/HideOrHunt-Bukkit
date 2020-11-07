@@ -6,12 +6,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 
 public class InventoryClose implements Listener{
-    private Main plugin;
+    private HideOrHunt plugin;
     
-    public InventoryClose(final Main plugin) {
+    public InventoryClose(final HideOrHunt plugin) {
         this.plugin = plugin;
     }
     

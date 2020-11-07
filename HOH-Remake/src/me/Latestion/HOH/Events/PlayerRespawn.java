@@ -7,14 +7,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 import me.Latestion.HOH.Game.GameState;
 
 public class PlayerRespawn implements Listener {
 
-	private Main plugin;
+	private HideOrHunt plugin;
 	
-	public PlayerRespawn(Main plugin) {
+	public PlayerRespawn(HideOrHunt plugin) {
 		this.plugin = plugin;
 	}
 

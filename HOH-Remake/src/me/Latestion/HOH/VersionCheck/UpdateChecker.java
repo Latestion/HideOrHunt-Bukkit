@@ -8,7 +8,7 @@ import java.net.URLConnection;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 
 public class UpdateChecker {
 	
@@ -17,7 +17,7 @@ public class UpdateChecker {
 	private String newVersion = "";
 	private JavaPlugin plugin;
 
-    public UpdateChecker(Main plugin, int projectID) {
+    public UpdateChecker(HideOrHunt plugin, int projectID) {
         this.plugin = plugin;
         this.newVersion = plugin.getDescription().getVersion();
         this.project = projectID;

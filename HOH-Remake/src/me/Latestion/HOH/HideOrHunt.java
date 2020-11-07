@@ -37,7 +37,7 @@ import me.Latestion.HOH.Stats.Metrics;
 import me.Latestion.HOH.Utils.ScoreBoardUtil;
 import me.Latestion.HOH.VersionCheck.UpdateChecker;
 
-public class Main extends JavaPlugin {
+public class HideOrHunt extends JavaPlugin {
 
 	public HOHGame game;
 	public ScoreBoardUtil sbUtil;

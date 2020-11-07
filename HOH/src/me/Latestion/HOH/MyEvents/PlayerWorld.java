@@ -1,7 +1,3 @@
-// 
-// Decompiled by Procyon v0.5.36
-// 
-
 package me.Latestion.HOH.MyEvents;
 
 import org.bukkit.event.EventHandler;
@@ -18,7 +14,7 @@ public class PlayerWorld implements Listener
     }
     
     @EventHandler
-    public void chage(final PlayerPortalEvent event) {
+    public void change(PlayerPortalEvent event) {
         if (this.plugin.gameOn && this.plugin.getConfig().getBoolean("Disable-Other-Worlds")) {
             event.setCancelled(true);
         }

@@ -9,15 +9,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 import me.Latestion.HOH.Game.GameState;
 import me.Latestion.HOH.Game.HOHPlayer;
 
 public class BlockPlace implements Listener {
 
-	private Main plugin;
+	private HideOrHunt plugin;
 	
-	public BlockPlace(Main plugin) {
+	public BlockPlace(HideOrHunt plugin) {
 		this.plugin = plugin;
 	}
 
@@ -34,6 +34,7 @@ public class BlockPlace implements Listener {
 			Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', player.getTeam().getName()) + ChatColor.AQUA + " has placed their beacon!");
 			setSign(loc, player);
 			plugin.sbUtil.beaconPlaceTeam(player.getTeam().getName());
+			player.getTeam().hasBeacon = true;
 		}
 	}
 	

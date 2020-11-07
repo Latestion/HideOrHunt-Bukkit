@@ -12,16 +12,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 import me.Latestion.HOH.Game.GameState;
 
 public class EntityDamage implements Listener {
 	
 	public List<UUID> antilog = new ArrayList<UUID>();
 
-    private Main plugin;
+    private HideOrHunt plugin;
     
-    public EntityDamage(Main plugin) {
+    public EntityDamage(HideOrHunt plugin) {
         this.plugin = plugin;
     }
     

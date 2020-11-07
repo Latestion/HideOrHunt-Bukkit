@@ -13,13 +13,13 @@ import org.bukkit.block.Chest;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 
 public class SupplyDrop extends BukkitRunnable {
 
-	private Main plugin;
+	private HideOrHunt plugin;
 	
-	public SupplyDrop(Main plugin) {
+	public SupplyDrop(HideOrHunt plugin) {
 		this.plugin = plugin;
 		runTaskTimer(plugin, plugin.getConfig().getInt("Supply-Drop-Delay") * 60 * 20L
 				, this.plugin.getConfig().getInt("Supply-Drop-Delay") * 60 * 20L);

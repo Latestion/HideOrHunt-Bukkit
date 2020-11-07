@@ -4,19 +4,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPortalEvent;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 import me.Latestion.HOH.Game.GameState;
 
 public class PlayerWorld implements Listener {
 	
-    private Main plugin;
+    private HideOrHunt plugin;
     
-    public PlayerWorld(Main plugin) {
+    public PlayerWorld(HideOrHunt plugin) {
         this.plugin = plugin;
     }
     
     @EventHandler
-    public void chage(PlayerPortalEvent event) {
+    public void change(PlayerPortalEvent event) {
     	if (GameState.getCurrentGamestate() != GameState.ON) return;
         if (this.plugin.getConfig().getBoolean("Disable-Other-Worlds")) {
             event.setCancelled(true);

@@ -8,14 +8,14 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 
 public class Bar extends BukkitRunnable {
 	
-	private Main plugin;
+	private HideOrHunt plugin;
 	public BossBar bar;
 	
-	public Bar(Main plugin) {
+	public Bar(HideOrHunt plugin) {
 		this.plugin = plugin;
 		createBar();
 		runTaskTimer(plugin, 0L, 50L);

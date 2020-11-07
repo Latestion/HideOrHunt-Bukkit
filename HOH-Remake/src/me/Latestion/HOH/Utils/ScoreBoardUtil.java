@@ -13,7 +13,7 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 
 public class ScoreBoardUtil {
 
@@ -21,15 +21,21 @@ public class ScoreBoardUtil {
 	private Scoreboard board;
     private Objective obj;
 	
-    private Main plugin;
+    private HideOrHunt plugin;
     
     private int i = 1;
     
     public Map<String, Integer> scoreboardHolder = new HashMap<>();
     
-	public ScoreBoardUtil(Main plugin) {
+	public ScoreBoardUtil(HideOrHunt plugin) {
 		this.plugin = plugin;
 		scoreBoardRegister();
+	}
+	
+	public void addAllPlayers() {
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			player.setScoreboard(board);
+		}
 	}
 	
 	public void addTeam(String name) {
@@ -38,12 +44,6 @@ public class ScoreBoardUtil {
         team.setScore(i);
         scoreboardHolder.put(name, i);
 		i++;
-	}
-	
-	public void addAllPlayers() {
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			player.setScoreboard(board);
-		}
 	}
 	
 	public void beaconPlaceTeam(String name) {

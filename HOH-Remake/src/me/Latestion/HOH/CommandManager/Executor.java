@@ -10,7 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 import me.Latestion.HOH.Game.GameState;
 import me.Latestion.HOH.Game.HOHGame;
 import me.Latestion.HOH.Game.HOHPlayer;
@@ -18,9 +18,9 @@ import me.Latestion.HOH.Utils.Util;
 
 public class Executor implements CommandExecutor {
 
-	private Main plugin;
+	private HideOrHunt plugin;
 	
-	public Executor(Main plugin) {
+	public Executor(HideOrHunt plugin) {
 		this.plugin = plugin;
 	}
 

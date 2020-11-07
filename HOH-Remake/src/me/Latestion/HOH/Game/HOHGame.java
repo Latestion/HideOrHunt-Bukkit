@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 import me.Latestion.HOH.MyRunnables.Episodes;
 import me.Latestion.HOH.MyRunnables.SupplyDrop;
 import me.Latestion.HOH.Stats.Metrics;
@@ -21,7 +21,7 @@ import me.Latestion.HOH.Utils.Util;
 
 public class HOHGame {
 
-	private Main plugin;
+	private HideOrHunt plugin;
 	public int size;
 	private Util util;
 	public Location loc;
@@ -37,7 +37,7 @@ public class HOHGame {
 	
 	public int ep = 1;
 	
-	public HOHGame(Main plugin, Location loc, int size) {
+	public HOHGame(HideOrHunt plugin, Location loc, int size) {
 		this.plugin = plugin;
 		this.loc = loc;
 		this.util = new Util(plugin);
@@ -59,7 +59,7 @@ public class HOHGame {
         int totalTeams = (int) neededTeams;
         util.createInv(totalTeams);
         for (HOHPlayer player : players) {
-        	player.prePareteam(plugin.inv);
+        	player.prepareTeam(plugin.inv);
         	cache.add(player.getPlayer());
         }
 	}
@@ -189,5 +189,14 @@ public class HOHGame {
 		grace = false;
 		Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.RED + "Grace period has ended.");
 		Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.RED + "PVP is enabled and you will take damage now!");
+	}
+	
+	public HOHTeam getWinnerTeam() {
+		for (HOHTeam team : teams) {
+			if (!team.eliminated) {
+				return team;
+			}
+		}
+		return null;
 	}
 }

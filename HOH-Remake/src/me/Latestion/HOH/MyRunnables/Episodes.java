@@ -4,13 +4,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 
 public class Episodes extends BukkitRunnable {
 
-	private Main plugin;
+	private HideOrHunt plugin;
 	
-	public Episodes(Main plugin) {
+	public Episodes(HideOrHunt plugin) {
 		this.plugin = plugin;
 		runTaskTimer(plugin, (plugin.getConfig().getInt("Episode-Time") * 60 * 20),
 				(plugin.getConfig().getInt("Episode-Time") * 60 * 20L));

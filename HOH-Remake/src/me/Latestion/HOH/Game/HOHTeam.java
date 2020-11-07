@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bukkit.block.Block;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 
 public class HOHTeam {
 
@@ -15,11 +15,11 @@ public class HOHTeam {
 	public List<HOHPlayer> alivePlayers = new ArrayList<>();
 	
 	public boolean eliminated = false;
-	public boolean hasBeacon = true;
+	public boolean hasBeacon = false;
 	
 	private Block beacon;
 	
-	public HOHTeam(Main plugin, String name) {
+	public HOHTeam(HideOrHunt plugin, String name) {
 		this.name = name;
 	}
 	

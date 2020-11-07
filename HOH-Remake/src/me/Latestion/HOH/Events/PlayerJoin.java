@@ -4,14 +4,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 import me.Latestion.HOH.Game.GameState;
 
 public class PlayerJoin implements Listener {
 	
-    private Main plugin;
+    private HideOrHunt plugin;
     
-    public PlayerJoin(Main plugin) {
+    public PlayerJoin(HideOrHunt plugin) {
         this.plugin = plugin;
     }
     

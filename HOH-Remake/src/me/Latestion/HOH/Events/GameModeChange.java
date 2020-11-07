@@ -7,14 +7,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 import me.Latestion.HOH.Game.GameState;
 
 public class GameModeChange implements Listener {
 	
-    private Main plugin;
+    private HideOrHunt plugin;
     
-    public GameModeChange(final Main plugin) {
+    public GameModeChange(final HideOrHunt plugin) {
         this.plugin = plugin;
     }
     

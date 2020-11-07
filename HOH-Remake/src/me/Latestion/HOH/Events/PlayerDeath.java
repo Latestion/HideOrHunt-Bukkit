@@ -10,7 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 import me.Latestion.HOH.Game.GameState;
 import me.Latestion.HOH.Game.HOHPlayer;
 import me.Latestion.HOH.Game.HOHTeam;
@@ -18,10 +18,10 @@ import me.Latestion.HOH.Utils.Util;
 
 public class PlayerDeath implements Listener {
 	
-    private Main plugin;
+    private HideOrHunt plugin;
     private Util util;
     
-    public PlayerDeath(Main plugin) {
+    public PlayerDeath(HideOrHunt plugin) {
         this.plugin = plugin;
         this.util = new Util(plugin);
     }
@@ -38,17 +38,19 @@ public class PlayerDeath implements Listener {
                 	event.getDrops().remove(util.beacon(player.getTeam().getName()));
                 }
              
+            	player.banned = true;
+            	player.dead = true;
+            	player.getTeam().diedPlayer(player);     
+            	
+            	if (player.getTeam().eliminated) {
+            		Bukkit.broadcastMessage(ChatColor.GREEN + player.getTeam().getName() + " was eliminated!");
+            		plugin.sbUtil.eliminateTeam(player.getTeam().getName());
+            	}
+     
                 if (this.plugin.getConfig().getBoolean("Ban-Player-On-Death")) {
                     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                         @Override
-                        public void run() {
-                        	player.banned = true;
-                        	player.dead = true;
-                        	player.getTeam().diedPlayer(player);
-                        	if (player.getTeam().eliminated) {
-                        		Bukkit.broadcastMessage(ChatColor.GREEN + player.getTeam().getName() + " was eliminated!");
-                        		plugin.sbUtil.eliminateTeam(player.getTeam().getName());
-                        	}
+                        public void run() {	
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban " + player.getPlayer().getName() + " Eliminated");
                         }
                     }, 0L);
@@ -58,7 +60,7 @@ public class PlayerDeath implements Listener {
                 }
                 
                 if (plugin.game.end()) {
-                    HOHTeam winnerTeam = plugin.hohPlayer.get(player.getPlayer().getKiller().getUniqueId()).getTeam();
+                    HOHTeam winnerTeam = plugin.game.getWinnerTeam();;
                     Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', winnerTeam.getName()) + ChatColor.AQUA + " has won the game!");
                     GameState.setGamestate(GameState.OFF);
                     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {

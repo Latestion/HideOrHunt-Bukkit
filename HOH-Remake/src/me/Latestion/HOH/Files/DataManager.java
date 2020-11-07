@@ -13,15 +13,15 @@ import java.io.InputStreamReader;
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import org.bukkit.configuration.file.FileConfiguration;
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 
 public class DataManager
 {
-    private Main plugin;
+    private HideOrHunt plugin;
     private FileConfiguration dataConfig;
     private File configFile;
     
-    public DataManager(final Main plugin) {
+    public DataManager(final HideOrHunt plugin) {
         this.dataConfig = null;
         this.configFile = null;
         this.plugin = plugin;

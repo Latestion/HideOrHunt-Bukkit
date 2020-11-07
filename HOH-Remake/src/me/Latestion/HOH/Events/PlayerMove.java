@@ -5,14 +5,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 import me.Latestion.HOH.Game.GameState;
 
 public class PlayerMove implements Listener {
 	
-    private Main plugin;
+    private HideOrHunt plugin;
     
-    public PlayerMove(Main plugin) {
+    public PlayerMove(HideOrHunt plugin) {
         this.plugin = plugin;
     }
     

@@ -9,16 +9,16 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 import me.Latestion.HOH.Game.GameState;
 import me.Latestion.HOH.Game.HOHPlayer;
 import me.Latestion.HOH.Game.HOHTeam;
 import me.Latestion.HOH.Utils.Util;
 
 public class AsyncChat implements Listener {
-    private Main plugin;
+    private HideOrHunt plugin;
     
-    public AsyncChat(final Main plugin) {
+    public AsyncChat(final HideOrHunt plugin) {
         this.plugin = plugin;
     }
     

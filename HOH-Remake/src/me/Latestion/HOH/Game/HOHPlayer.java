@@ -6,12 +6,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 
 public class HOHPlayer {
 	
 	@SuppressWarnings("unused")
-	private Main plugin;
+	private HideOrHunt plugin;
 	private UUID player;
 	private HOHTeam team;
 	
@@ -20,7 +20,7 @@ public class HOHPlayer {
 	
 	public boolean teamChat = false;
 	
-	public HOHPlayer(Main plugin, UUID player) {
+	public HOHPlayer(HideOrHunt plugin, UUID player) {
 		this.plugin = plugin;
 		this.player = player;
 	}
@@ -38,7 +38,7 @@ public class HOHPlayer {
 		this.team = t;
 	}
 
-	public void prePareteam(Inventory inv) {
+	public void prepareTeam(Inventory inv) {
 		if (GameState.getCurrentGamestate() == GameState.PREPARE) {
 			getPlayer().openInventory(inv);	
 		}

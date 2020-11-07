@@ -12,15 +12,15 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 import me.Latestion.HOH.Game.GameState;
 import me.Latestion.HOH.Game.HOHTeam;
 import me.Latestion.HOH.Utils.Util;
 
 public class InventoryClick implements Listener {
-    private Main plugin;
+    private HideOrHunt plugin;
     
-    public InventoryClick(final Main plugin) {
+    public InventoryClick(final HideOrHunt plugin) {
         this.plugin = plugin;
     }
     

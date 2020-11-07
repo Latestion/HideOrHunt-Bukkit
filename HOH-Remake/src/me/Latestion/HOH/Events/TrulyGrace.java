@@ -5,14 +5,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 
-import me.Latestion.HOH.Main;
+import me.Latestion.HOH.HideOrHunt;
 import me.Latestion.HOH.Game.GameState;
 
 public class TrulyGrace implements Listener {
 
-	private Main plugin;
+	private HideOrHunt plugin;
 	
-	public TrulyGrace(Main plugin) {
+	public TrulyGrace(HideOrHunt plugin) {
 		this.plugin = plugin;
 	}
 
