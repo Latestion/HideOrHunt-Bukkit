@@ -10,7 +10,6 @@ import me.Latestion.HOH.HideOrHunt;
 
 public class HOHPlayer {
 	
-	@SuppressWarnings("unused")
 	private HideOrHunt plugin;
 	private UUID player;
 	private HOHTeam team;
@@ -34,8 +33,14 @@ public class HOHPlayer {
 	}
 	
 	public void setTeam(HOHTeam t) {
-		if (GameState.getCurrentGamestate() == GameState.PREPARE)
+		if (GameState.getCurrentGamestate() != GameState.PREPARE) return;
 		this.team = t;
+        plugin.hohTeam.put(t.getName(), team);
+        team.addPlayer(plugin.hohPlayer.get(player));
+        plugin.game.addTeam(team);
+        plugin.cache.remove(plugin.chat.indexOf(getPlayer()));
+        plugin.chat.remove(getPlayer());
+		
 	}
 
 	public void prepareTeam(Inventory inv) {

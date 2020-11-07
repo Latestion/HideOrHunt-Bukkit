@@ -60,7 +60,8 @@ public class PlayerDeath implements Listener {
                 }
                 
                 if (plugin.game.end()) {
-                    HOHTeam winnerTeam = plugin.game.getWinnerTeam();;
+                    HOHTeam winnerTeam = plugin.game.getWinnerTeam();
+                    if (winnerTeam == null) return;
                     Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', winnerTeam.getName()) + ChatColor.AQUA + " has won the game!");
                     GameState.setGamestate(GameState.OFF);
                     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {

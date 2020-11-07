@@ -38,33 +38,27 @@ public class AsyncChat implements Listener {
             Util util = new Util(plugin);
             if (util.isTeamTaken(name)) {
                 player.sendMessage(ChatColor.RED + "Teamname already exists!");
+                return;
             }
-            else {
-                player.sendMessage("Teamname set to: " + name);
-                ItemStack item = plugin.inv.getItem(plugin.cache.get(plugin.chat.indexOf(player)));
-                ItemMeta meta = item.getItemMeta();
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
-                item.setItemMeta(meta);
-                plugin.inv.setItem(plugin.cache.get(plugin.chat.indexOf(player)), item);
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    p.updateInventory();
-                }
-                
-                HOHTeam team = new HOHTeam(plugin, name);
-                plugin.hohPlayer.get(player.getUniqueId()).setTeam(team);
-                plugin.hohTeam.put(name, team);
-                team.addPlayer(plugin.hohPlayer.get(player.getUniqueId()));
-                plugin.game.addTeam(team);
-                plugin.cache.remove(plugin.chat.indexOf(player));
-                plugin.chat.remove(player);
-                
-                if (plugin.game.cache.isEmpty() && this.plugin.cache.isEmpty()) {
-        			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-        	            public void run() {
-        	            	plugin.game.startGame();
-        	            }
-        	        }, 1L);
-                }
+            player.sendMessage("Teamname set to: " + name);
+            ItemStack item = plugin.inv.getItem(plugin.cache.get(plugin.chat.indexOf(player)));
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+            item.setItemMeta(meta);
+            plugin.inv.setItem(plugin.cache.get(plugin.chat.indexOf(player)), item);
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                p.updateInventory();
+            }
+            
+            HOHTeam team = new HOHTeam(plugin, name);
+            plugin.hohPlayer.get(player.getUniqueId()).setTeam(team);
+            
+            if (plugin.game.cache.isEmpty() && this.plugin.cache.isEmpty()) {
+    			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+    	            public void run() {
+    	            	plugin.game.startGame();
+    	            }
+    	        }, 1L);
             }
         }
         else {
@@ -77,27 +71,28 @@ public class AsyncChat implements Listener {
         			event.setCancelled(true);
         			return;
         		}
+        		event.setCancelled(true);
         		if (!player.teamChat) {
         			String message = event.getMessage();
                     String format = plugin.getConfig().getString("Main-Chat-Format");
                     String f = format.replace("%message%", message);
                     String g = f.replace("%playername%", event.getPlayer().getName());
                     String h = g.replace("%playerteam%", player.getTeam().getName());
-                    event.setCancelled(true);
-                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', h));	
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', h));
+                    return;
         		}
-        		else {
-        			String message = event.getMessage();
-                    String format = plugin.getConfig().getString("Team-Chat-Format");
-                    String f = format.replace("%message%", message);
-                    String g = f.replace("%playername%", event.getPlayer().getName());
-                    String h = g.replace("%playerteam%", player.getTeam().getName());
-        			for (HOHPlayer p : player.getTeam().players) {
-        				if (p.getPlayer().isOnline()) {
-                            p.getPlayer().getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', h));
-        				}
-        			}
-        		}
+        		
+    			String message = event.getMessage();
+                String format = plugin.getConfig().getString("Team-Chat-Format");
+                String f = format.replace("%message%", message);
+                String g = f.replace("%playername%", event.getPlayer().getName());
+                String h = g.replace("%playerteam%", player.getTeam().getName());
+    			for (HOHPlayer p : player.getTeam().players) {
+    				if (p.getPlayer().isOnline()) {
+                        p.getPlayer().getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', h));
+    				}
+    			}
+        		
         	}
         }
     }
