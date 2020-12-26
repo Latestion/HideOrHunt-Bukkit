@@ -1,5 +1,5 @@
 name: HideOrHunt
-main: me.latestion.hoh.Main
+main: me.latestion.hoh.HideOrHunt
 author: Latestion
 version: ${project.version}
 api-version: 1.13
