@@ -1,0 +1,10 @@
+name: HideOrHunt
+main: me.latestion.hoh.Main
+author: Latestion
+version: ${project.version}
+api-version: 1.13
+authors: [Latestion, barpec12]
+website: https://latestion.github.io/
+description: ${project.description}
+commands:
+  HOH:
