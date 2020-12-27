@@ -1,0 +1,6 @@
+!.gitignore
+/target/
+/.idea/
+bin/
+/dependency-reduced-pom.xml
+.settings/
