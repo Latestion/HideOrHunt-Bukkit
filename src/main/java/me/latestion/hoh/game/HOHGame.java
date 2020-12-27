@@ -127,7 +127,7 @@ public class HOHGame {
 	}
 	
 	public void stop() {
-    	loc.getWorld().getWorldBorder().setSize(100000000);
+    	loc.getWorld().getWorldBorder().reset();
     	for (HOHTeam team : teams) {
     		if (team.getBeacon() != null) team.getBeacon().setType(Material.AIR);
     		for (HOHPlayer player : team.players) {
