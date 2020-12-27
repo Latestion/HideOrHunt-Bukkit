@@ -33,7 +33,7 @@ public class HOHPlayer {
 	}
 	
 	public void setTeam(HOHTeam t) {
-		if (GameState.getCurrentGamestate() != GameState.PREPARE) return;
+		if (GameState.getCurrentGameState() != GameState.PREPARE) return;
 		this.team = t;
         plugin.hohTeam.put(t.getName(), team);
         team.addPlayer(plugin.hohPlayer.get(player));
@@ -44,7 +44,7 @@ public class HOHPlayer {
 	}
 
 	public void prepareTeam(Inventory inv) {
-		if (GameState.getCurrentGamestate() == GameState.PREPARE) {
+		if (GameState.getCurrentGameState() == GameState.PREPARE) {
 			getPlayer().openInventory(inv);	
 		}
 	}

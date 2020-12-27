@@ -50,7 +50,7 @@ public class Executor implements CommandExecutor {
 						if (size == 0) {
 							return false;
 						}
-						if (GameState.getCurrentGamestate() != GameState.OFF) {
+						if (GameState.getCurrentGameState() != GameState.OFF) {
 							return false;
 						}
 						HOHGame game = new HOHGame(plugin, player.getLocation(), size);
@@ -58,7 +58,7 @@ public class Executor implements CommandExecutor {
 					}	
 				}
 			}
-			if (args[0].equalsIgnoreCase("freeze") && GameState.getCurrentGamestate() == GameState.ON && player.hasPermission("hoh.freeze")) {
+			if (args[0].equalsIgnoreCase("freeze") && GameState.getCurrentGameState() == GameState.ON && player.hasPermission("hoh.freeze")) {
                 if (plugin.game.freeze) {
                     Bukkit.broadcastMessage(ChatColor.AQUA + "Unfreezed the game!");
                     plugin.game.freeze = false;
@@ -79,13 +79,13 @@ public class Executor implements CommandExecutor {
                 }
             }
             if (args[0].equalsIgnoreCase("stop") && player.hasPermission("hoh.stop")) {
-            	if (GameState.getCurrentGamestate() == GameState.ON)
+            	if (GameState.getCurrentGameState() == GameState.ON)
             		plugin.game.stop();
             	else
             		player.sendMessage("There is no ongoing game!");
             }
             if (args[0].equalsIgnoreCase("beacon") && player.hasPermission("hoh.beacon") 
-            		&& GameState.getCurrentGamestate() == GameState.ON) {
+            		&& GameState.getCurrentGameState() == GameState.ON) {
                 if (plugin.hohPlayer.containsKey(player.getUniqueId())) {
                     player.sendMessage("You cannot do this!" + ChatColor.DARK_RED + "Error: Possible Cheat Attempt!");
                 }
@@ -104,7 +104,7 @@ public class Executor implements CommandExecutor {
                 }
             }
             if (args[0].equalsIgnoreCase("chat")) {
-                if (GameState.getCurrentGamestate() == GameState.ON) {
+                if (GameState.getCurrentGameState() == GameState.ON) {
                     if (plugin.hohPlayer.containsKey(player.getUniqueId())) {
                     	HOHPlayer p = plugin.hohPlayer.get(player.getUniqueId());
                         if (p.teamChat) {

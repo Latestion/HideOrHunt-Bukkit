@@ -42,7 +42,7 @@ public class HOHGame {
 		this.loc = loc;
 		this.util = new Util(plugin);
 		this.size = size;
-		GameState.setGamestate(GameState.PREPARE);
+		GameState.setGameState(GameState.PREPARE);
 		prepareGame();
 	}
 
@@ -66,7 +66,7 @@ public class HOHGame {
 	
 	public void startGame() {
 		
-		if (GameState.getCurrentGamestate() != GameState.PREPARE) return;		
+		if (GameState.getCurrentGameState() != GameState.PREPARE) return;
 		Bukkit.getServer().broadcastMessage(ChatColor.RED + "Starting Your" + ChatColor.WHITE + " HOH Game!");
 		setBorder();
 		for (HOHTeam team : teams) {
@@ -79,7 +79,7 @@ public class HOHGame {
 		}
 		plugin.sbUtil.addAllPlayers();
 		this.bar = new Bar(plugin);
-		GameState.setGamestate(GameState.ON);
+		GameState.setGameState(GameState.ON);
 		sendTitle();
 		plugin.sbUtil.setAsthetic();
 		if (plugin.getConfig().getBoolean("Grace-Period")) grace = true;
@@ -137,7 +137,7 @@ public class HOHGame {
     			player.getPlayer().teleport(loc);
     		}
     	}
-    	GameState.setGamestate(GameState.OFF);
+    	GameState.setGameState(GameState.OFF);
     	plugin.cache.clear();
     	plugin.chat.clear();
     	plugin.hohPlayer.clear();

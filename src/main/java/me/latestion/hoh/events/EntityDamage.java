@@ -27,7 +27,7 @@ public class EntityDamage implements Listener {
     
     @EventHandler
     public void damage(EntityDamageByEntityEvent event) {
-    	if (GameState.getCurrentGamestate() != GameState.ON) return;
+    	if (GameState.getCurrentGameState() != GameState.ON) return;
         if (plugin.game.grace && event.getDamager() instanceof Player && event.getEntity() instanceof Player && this.plugin.getConfig().getBoolean("Grace-Period")) {
             event.setCancelled(true);
             event.getDamager().sendMessage(ChatColor.RED + "Grace Period!");
@@ -71,7 +71,7 @@ public class EntityDamage implements Listener {
 	@EventHandler
 	public void onAntiLogQuit(PlayerQuitEvent event) {
 	    Player p = event.getPlayer();
-	    if (GameState.getCurrentGamestate() == GameState.ON) {
+	    if (GameState.getCurrentGameState() == GameState.ON) {
 		    if (this.antilog.contains(p.getUniqueId())) {
 		    	Bukkit.getServer().broadcastMessage(event.getPlayer().getName() + " has combat logged!");
 			    p.damage(20.0);

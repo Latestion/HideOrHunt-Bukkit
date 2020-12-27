@@ -17,7 +17,7 @@ public class CraftItem implements Listener {
     
     @EventHandler
     public void cie(CraftItemEvent event) {
-        if (GameState.getCurrentGamestate() == GameState.ON) {
+        if (GameState.getCurrentGameState() == GameState.ON) {
             if (event.getRecipe().getResult().getType() == Material.CRAFTING_TABLE || 
             		event.getRecipe().getResult().getType() == Material.BEACON) {
                 event.setCancelled(true);

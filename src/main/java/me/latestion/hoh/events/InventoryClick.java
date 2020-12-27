@@ -39,7 +39,7 @@ public class InventoryClick implements Listener {
             return;
         }
         if (event.getView().getTitle().contains("Teams")) {
-        	if (GameState.getCurrentGamestate() != GameState.PREPARE) {
+        	if (GameState.getCurrentGameState() != GameState.PREPARE) {
         		return;
         	}
         	event.setCancelled(true);

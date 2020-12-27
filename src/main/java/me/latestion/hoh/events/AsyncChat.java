@@ -32,7 +32,7 @@ public class AsyncChat implements Listener {
                 player.sendMessage(ChatColor.RED + "Too many characters!");
                 return;
             }
-        	if (GameState.getCurrentGamestate() != GameState.PREPARE) {
+        	if (GameState.getCurrentGameState() != GameState.PREPARE) {
         		return;
         	}
             Util util = new Util(plugin);
@@ -62,7 +62,7 @@ public class AsyncChat implements Listener {
             }
         }
         else {
-        	if (GameState.getCurrentGamestate() != GameState.ON) {
+        	if (GameState.getCurrentGameState() != GameState.ON) {
         		return;
         	}
         	if (plugin.hohPlayer.containsKey(event.getPlayer().getUniqueId())) {

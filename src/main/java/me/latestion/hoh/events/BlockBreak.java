@@ -25,7 +25,7 @@ public class BlockBreak implements Listener {
 
 	@EventHandler
 	public void onBreak(BlockBreakEvent event) {
-		if (GameState.getCurrentGamestate() != GameState.ON) return;
+		if (GameState.getCurrentGameState() != GameState.ON) return;
 		if (event.getBlock().getType() != Material.BEACON) return;
 		Player player = event.getPlayer();
 		Util util = new Util(plugin);

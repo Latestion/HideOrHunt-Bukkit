@@ -28,7 +28,7 @@ public class PlayerDeath implements Listener {
     
     @EventHandler
     public void death(PlayerDeathEvent event) {
-        if (GameState.getCurrentGamestate() == GameState.ON) {
+        if (GameState.getCurrentGameState() == GameState.ON) {
             HOHPlayer player = plugin.hohPlayer.get(event.getEntity().getUniqueId());
             
             if (!player.getTeam().hasBeacon) {
@@ -63,7 +63,7 @@ public class PlayerDeath implements Listener {
                     HOHTeam winnerTeam = plugin.game.getWinnerTeam();
                     if (winnerTeam == null) return;
                     Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', winnerTeam.getName()) + ChatColor.AQUA + " has won the game!");
-                    GameState.setGamestate(GameState.OFF);
+                    GameState.setGameState(GameState.OFF);
                     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                         @Override
                         public void run() {

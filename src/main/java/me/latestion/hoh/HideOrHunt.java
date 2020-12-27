@@ -53,7 +53,7 @@ public class HideOrHunt extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		this.saveDefaultConfig();
-		GameState.setGamestate(GameState.OFF);
+		GameState.setGameState(GameState.OFF);
 		sbUtil = new ScoreBoardUtil(this);
 		new Metrics(this, 8350);
 		hoh();
@@ -62,7 +62,7 @@ public class HideOrHunt extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		if (GameState.getCurrentGamestate() == GameState.ON) game.stop();
+		if (GameState.getCurrentGameState() == GameState.ON) game.stop();
 	}
 
     private void hoh() {
