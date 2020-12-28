@@ -48,7 +48,7 @@ public class HOHPlayer {
 	public void setTeam(HOHTeam t) {
 		if (GameState.getCurrentGameState() != GameState.PREPARE) return;
 		this.team = t;
-		team.addPlayer(plugin.hohPlayers.get(player));
+		team.addPlayer(this);
 	}
 
 	public void prepareTeam(Inventory inv) {

@@ -1,5 +1,6 @@
 package me.latestion.hoh.events;
 
+import me.latestion.hoh.game.HOHGame;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -30,7 +31,7 @@ public class PlayerRespawn implements Listener {
 					}
 				}
 			}, 1);
-			event.setRespawnLocation(plugin.hohPlayers.get(event.getPlayer().getUniqueId()).getTeam().getBeacon().getLocation().clone().add(0, 1, 0));
+			event.setRespawnLocation(plugin.game.hohPlayers.get(event.getPlayer().getUniqueId()).getTeam().getBeacon().getLocation().clone().add(0, 1, 0));
 		}
 	}
 }

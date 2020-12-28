@@ -1,5 +1,6 @@
 package me.latestion.hoh.events;
 
+import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -70,8 +71,8 @@ public class AsyncChat implements Listener {
 			if (GameState.getCurrentGameState() != GameState.ON) {
 				return;
 			}
-			if (plugin.hohPlayers.containsKey(event.getPlayer().getUniqueId())) {
-				HOHPlayer player = plugin.hohPlayers.get(event.getPlayer().getUniqueId());
+			if (plugin.game.hohPlayers.containsKey(event.getPlayer().getUniqueId())) {
+				HOHPlayer player = plugin.game.hohPlayers.get(event.getPlayer().getUniqueId());
 				event.setCancelled(true);
 				if (player.dead) {
 					return;

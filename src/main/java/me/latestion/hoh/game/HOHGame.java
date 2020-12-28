@@ -20,12 +20,13 @@ import me.latestion.hoh.utils.Util;
 
 public class HOHGame {
 
+
 	private HideOrHunt plugin;
 	public int size;
 	private Util util;
 	public Location loc;
 
-	private List<HOHPlayer> playersDuringGame = new ArrayList<>();
+	public Map<UUID, HOHPlayer> hohPlayers = new HashMap<>();
 	private Map<Integer, HOHTeam> teams = new HashMap<>();
 
 	public Bar bar;
@@ -50,19 +51,17 @@ public class HOHGame {
 				continue;
 			}
 			HOHPlayer p = new HOHPlayer(plugin, player.getUniqueId());
-			plugin.hohPlayers.put(player.getUniqueId(), p);
-			playersDuringGame.add(p);
+			hohPlayers.put(player.getUniqueId(), p);
 		}
-		double neededTeams = Math.ceil(playersDuringGame.size() / (double) size);
+		double neededTeams = Math.ceil(hohPlayers.size() / (double) size);
 		int totalTeams = (int) neededTeams;
 		util.createInv(totalTeams);
-		for (HOHPlayer player : playersDuringGame) {
+		for (HOHPlayer player : hohPlayers.values()) {
 			player.prepareTeam(plugin.inv);
 		}
 	}
 
 	public void startGame() {
-
 		if (GameState.getCurrentGameState() != GameState.PREPARE) return;
 		Bukkit.getServer().broadcastMessage(plugin.getMessageManager().getMessage("starting-game"));
 		setBorder();
@@ -117,7 +116,7 @@ public class HOHGame {
 
 	public boolean end() {
 		List<HOHTeam> aliveTeams = new ArrayList<>();
-		for (HOHPlayer player : playersDuringGame) {
+		for (HOHPlayer player : hohPlayers.values()) {
 			if (!player.dead) {
 				if (!aliveTeams.contains(player.getTeam())) {
 					aliveTeams.add(player.getTeam());
@@ -139,8 +138,7 @@ public class HOHGame {
 			}
 		}
 		GameState.setGameState(GameState.OFF);
-		plugin.hohPlayers.clear();
-		playersDuringGame.clear();
+		hohPlayers.clear();
 		teams.clear();
 		bar.stop();
 		Bukkit.getScheduler().cancelTasks(plugin);
@@ -163,7 +161,7 @@ public class HOHGame {
 	private void addStartPotEffects() {
 		for (String s : plugin.getConfig().getStringList("Effect-On-Start")) {
 			String[] split = s.split(", ");
-			for (HOHPlayer player : playersDuringGame) {
+			for (HOHPlayer player : hohPlayers.values()) {
 				if (player.getPlayer().isOnline()) player.getPlayer()
 						.addPotionEffect(new PotionEffect(PotionEffectType.getByName(split[0]),
 								(Integer.parseInt(split[1]) * 20),
@@ -178,7 +176,7 @@ public class HOHGame {
 			PotionEffect effect = new PotionEffect(PotionEffectType.getByName(split[0].toString()), (Integer.parseInt(split[1]) * 20), (Integer.parseInt(split[2]) - 1), false, false);
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				public void run() {
-					for (HOHPlayer player : playersDuringGame) {
+					for (HOHPlayer player : hohPlayers.values()) {
 						player.getPlayer().addPotionEffect(effect);
 					}
 				}

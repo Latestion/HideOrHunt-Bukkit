@@ -3,6 +3,7 @@ package me.latestion.hoh.events;
 import java.util.Random;
 import java.util.UUID;
 
+import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -29,7 +30,7 @@ public class PlayerDeath implements Listener {
 	@EventHandler
 	public void death(PlayerDeathEvent event) {
 		if (GameState.getCurrentGameState() == GameState.ON) {
-			HOHPlayer player = plugin.hohPlayers.get(event.getEntity().getUniqueId());
+			HOHPlayer player = plugin.game.hohPlayers.get(event.getEntity().getUniqueId());
 			MessageManager messageManager = plugin.getMessageManager();
 
 			if (!player.getTeam().hasBeacon) {
@@ -70,7 +71,7 @@ public class PlayerDeath implements Listener {
 					Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 						@Override
 						public void run() {
-							for (UUID p : plugin.hohPlayers.keySet()) {
+							for (UUID p : plugin.game.hohPlayers.keySet()) {
 								Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pardon " + Bukkit.getPlayer(p).getName());
 							}
 						}

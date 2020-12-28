@@ -1,5 +1,6 @@
 package me.latestion.hoh.events;
 
+import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -49,7 +50,7 @@ public class BlockBreak implements Listener {
 		MessageManager messageManager = plugin.getMessageManager();
 		player.getWorld().playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.0f, 1.0f);
 		String eliminatedMsg = messageManager.getMessage("eliminated-broadcast").replace("%eliminated-team%", team.getName());
-		eliminatedMsg = eliminatedMsg.replace("%eliminating-team%", plugin.hohPlayers.get(player.getUniqueId()).getTeam().getName());
+		eliminatedMsg = eliminatedMsg.replace("%eliminating-team%", plugin.game.hohPlayers.get(player.getUniqueId()).getTeam().getName());
 		Bukkit.broadcastMessage(eliminatedMsg);
 		for (HOHPlayer p : team.players) {
 			p.getPlayer().sendTitle(messageManager.getMessage("beacon-destroyed-title"), "", 10, 40, 10);

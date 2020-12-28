@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -42,7 +43,7 @@ public class EntityDamage implements Listener {
 			Player target = (Player) event.getDamager();
 
 			if (!plugin.getConfig().getBoolean("Team-Damage")) {
-				if (plugin.hohPlayers.get(target.getUniqueId()).getTeam().players.contains(plugin.hohPlayers.get(player.getUniqueId()))) {
+				if (plugin.game.hohPlayers.get(target.getUniqueId()).getTeam().players.contains(plugin.game.hohPlayers.get(player.getUniqueId()))) {
 					event.setCancelled(true);
 					target.sendMessage(messageManager.getMessage("team-member-attack"));
 					return;

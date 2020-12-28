@@ -1,6 +1,5 @@
 package me.latestion.hoh;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -39,8 +38,6 @@ public class HideOrHunt extends JavaPlugin {
 	public HOHGame game;
 	public ScoreBoardUtil sbUtil;
 	private MessageManager msgManager;
-
-	public Map<UUID, HOHPlayer> hohPlayers = new HashMap<>();
 
 	public Inventory inv;
 
@@ -125,10 +122,10 @@ public class HideOrHunt extends JavaPlugin {
 	}
 
 	public HOHPlayer getHohPlayer(UUID uuid) {
-		return hohPlayers.get(uuid);
+		return game.hohPlayers.get(uuid);
 	}
 
 	public Map<UUID, HOHPlayer> getHohPlayers() {
-		return this.hohPlayers;
+		return game.hohPlayers;
 	}
 }

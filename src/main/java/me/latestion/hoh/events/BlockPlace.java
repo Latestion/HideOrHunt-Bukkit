@@ -1,5 +1,6 @@
 package me.latestion.hoh.events;
 
+import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,7 +28,7 @@ public class BlockPlace implements Listener {
 		if (GameState.getCurrentGameState() != GameState.ON) return;
 		
 		if (event.getBlockPlaced().getType() == Material.BEACON) {
-			HOHPlayer player = plugin.hohPlayers.get(event.getPlayer().getUniqueId());
+			HOHPlayer player = plugin.game.hohPlayers.get(event.getPlayer().getUniqueId());
 			Location loc = event.getBlockPlaced().getLocation();
 			player.getTeam().hasBeacon = true;
 			player.getTeam().setBeacon(event.getBlockPlaced());

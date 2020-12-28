@@ -1,5 +1,6 @@
 package me.latestion.hoh.events;
 
+import me.latestion.hoh.game.HOHGame;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -21,7 +22,7 @@ public class GameModeChange implements Listener {
 	@EventHandler
 	public void c(PlayerGameModeChangeEvent event) {
 		if (GameState.getCurrentGameState() != GameState.ON) return;
-		if (!plugin.hohPlayers.containsKey(event.getPlayer().getUniqueId())) return;
+		if (!plugin.game.hohPlayers.containsKey(event.getPlayer().getUniqueId())) return;
 		if (!this.plugin.getConfig().getBoolean("Allow-Op")) return;
 		if (!event.getNewGameMode().equals(GameMode.SPECTATOR)) {
 			Bukkit.broadcastMessage(event.getPlayer().getName() + ChatColor.BOLD + "" + ChatColor.RED + " Just went in " + event.getNewGameMode().toString().toUpperCase());
