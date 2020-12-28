@@ -11,20 +11,24 @@ public class HOHTeam {
 
 	public List<HOHPlayer> players = new ArrayList<>();
 	private String name;
-	
+	private Integer id;
+
 	public List<HOHPlayer> alivePlayers = new ArrayList<>();
-	
+
 	public boolean eliminated = false;
-	public boolean hasBeacon = false;
-	
+
 	private Block beacon;
-	
-	public HOHTeam(HideOrHunt plugin, String name) {
-		this.name = name;
+
+	public HOHTeam(HideOrHunt plugin, Integer id) {
+		this.id = id;
 	}
-	
+
 	public String getName() {
 		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public void addPlayer(HOHPlayer hohPlayer) {
@@ -39,11 +43,15 @@ public class HOHTeam {
 	public void setBeacon(Block blockPlaced) {
 		this.beacon = blockPlaced;
 	}
-	
+
 	public Block getBeacon() {
 		return beacon;
 	}
-	
+
+	public boolean hasBeacon(){
+		return beacon != null;
+	}
+
 	public void diedPlayer(HOHPlayer player) {
 		alivePlayers.remove(player);
 		if (alivePlayers.size() == 0) {
@@ -51,5 +59,12 @@ public class HOHTeam {
 		}
 		player.dead = true;
 	}
-	
+
+	public int getID() {
+		return this.id;
+	}
+
+	public void setID(int id) {
+		this.id = id;
+	}
 }

@@ -1,11 +1,9 @@
 package me.latestion.hoh.game;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,22 +20,22 @@ import me.latestion.hoh.utils.Util;
 
 public class HOHGame {
 
+
 	private HideOrHunt plugin;
 	public int size;
 	private Util util;
 	public Location loc;
-	
-	private List<HOHPlayer> players = new ArrayList<>();
-	private List<HOHTeam> teams = new ArrayList<>();
-	public List<Player> cache = new ArrayList<>();
-	
+
+	public Map<UUID, HOHPlayer> hohPlayers = new HashMap<>();
+	private Map<Integer, HOHTeam> teams = new HashMap<>();
+
 	public Bar bar;
-	
+
 	public boolean freeze = false;
 	public boolean grace = false;
-	
+
 	public int ep = 1;
-	
+
 	public HOHGame(HideOrHunt plugin, Location loc, int size) {
 		this.plugin = plugin;
 		this.loc = loc;
@@ -53,24 +51,21 @@ public class HOHGame {
 				continue;
 			}
 			HOHPlayer p = new HOHPlayer(plugin, player.getUniqueId());
-			plugin.hohPlayer.put(player.getUniqueId(), p);
-			players.add(p);
+			hohPlayers.put(player.getUniqueId(), p);
 		}
-		double neededTeams = Math.ceil(players.size() / (double) size);
-        int totalTeams = (int) neededTeams;
-        util.createInv(totalTeams);
-        for (HOHPlayer player : players) {
-        	player.prepareTeam(plugin.inv);
-        	cache.add(player.getPlayer());
-        }
+		double neededTeams = Math.ceil(hohPlayers.size() / (double) size);
+		int totalTeams = (int) neededTeams;
+		util.createInv(totalTeams);
+		for (HOHPlayer player : hohPlayers.values()) {
+			player.prepareTeam(plugin.inv);
+		}
 	}
-	
+
 	public void startGame() {
-		
 		if (GameState.getCurrentGameState() != GameState.PREPARE) return;
 		Bukkit.getServer().broadcastMessage(plugin.getMessageManager().getMessage("starting-game"));
 		setBorder();
-		for (HOHTeam team : teams) {
+		for (HOHTeam team : teams.values()) {
 			String name = team.getName();
 			plugin.sbUtil.addTeam(name);
 			for (HOHPlayer player : team.players) {
@@ -91,33 +86,37 @@ public class HOHGame {
 	}
 
 	public void addTeam(HOHTeam team) {
-		teams.add(team);
+		teams.put(team.getID(), team);
 	}
 
-	public List<HOHTeam> getTeams() {
-		return teams;
+	public Collection<HOHTeam> getTeams() {
+		return teams.values();
 	}
-	
+
+	public HOHTeam getTeam(Integer id) {
+		return teams.get(id);
+	}
+
 	public List<HOHTeam> getAliveTeams() {
 		List<HOHTeam> send = new ArrayList<>();
-		for (HOHTeam team : teams) {
+		for (HOHTeam team : teams.values()) {
 			if (!team.eliminated) {
 				send.add(team);
 			}
 		}
 		return send;
 	}
-	
+
 	private void setBorder() {
 		int wb = util.getWorldBorder();
 		loc.getWorld().getWorldBorder().setCenter(loc);
 		loc.getWorld().getWorldBorder().setSize(wb);
 		loc.getWorld().setSpawnLocation(loc);
 	}
-	
+
 	public boolean end() {
 		List<HOHTeam> aliveTeams = new ArrayList<>();
-		for (HOHPlayer player : players) {
+		for (HOHPlayer player : hohPlayers.values()) {
 			if (!player.dead) {
 				if (!aliveTeams.contains(player.getTeam())) {
 					aliveTeams.add(player.getTeam());
@@ -126,30 +125,28 @@ public class HOHGame {
 		}
 		return aliveTeams.size() == 1 ? true : false;
 	}
-	
+
 	public void stop() {
-    	loc.getWorld().getWorldBorder().reset();
-    	for (HOHTeam team : teams) {
-    		if (team.getBeacon() != null) team.getBeacon().setType(Material.AIR);
-    		for (HOHPlayer player : team.players) {
-    			player.getPlayer().getInventory().clear();
-    			loc.getWorld().getSpawnLocation();
-    			player.getPlayer().setScoreboard(plugin.sbUtil.manager.getNewScoreboard());
-    			player.getPlayer().teleport(loc);
-    		}
-    	}
-    	GameState.setGameState(GameState.OFF);
-    	plugin.cache.clear();
-    	plugin.chat.clear();
-    	plugin.hohPlayer.clear();
-    	plugin.hohTeam.clear();
-    	bar.stop();
-    	Bukkit.getScheduler().cancelTasks(plugin);
-    	new Metrics(plugin, 79307);
-    	plugin.sbUtil = new ScoreBoardUtil(plugin);
-    	Bukkit.broadcastMessage(plugin.getMessageManager().getMessage("stopping-game"));
-	}	
-	
+		loc.getWorld().getWorldBorder().reset();
+		for (HOHTeam team : teams.values()) {
+			if (team.getBeacon() != null) team.getBeacon().setType(Material.AIR);
+			for (HOHPlayer player : team.players) {
+				player.getPlayer().getInventory().clear();
+				loc.getWorld().getSpawnLocation();
+				player.getPlayer().setScoreboard(plugin.sbUtil.manager.getNewScoreboard());
+				player.getPlayer().teleport(loc);
+			}
+		}
+		GameState.setGameState(GameState.OFF);
+		hohPlayers.clear();
+		teams.clear();
+		bar.stop();
+		Bukkit.getScheduler().cancelTasks(plugin);
+		new Metrics(plugin, 79307);
+		plugin.sbUtil = new ScoreBoardUtil(plugin);
+		Bukkit.broadcastMessage(plugin.getMessageManager().getMessage("stopping-game"));
+	}
+
 	private void sendStartTitle() {
 		MessageManager messageManager = plugin.getMessageManager();
 		for (Player p : Bukkit.getOnlinePlayers()) {
@@ -160,30 +157,30 @@ public class HOHGame {
 					, 10);
 		}
 	}
-	
+
 	private void addStartPotEffects() {
 		for (String s : plugin.getConfig().getStringList("Effect-On-Start")) {
 			String[] split = s.split(", ");
-			for (HOHPlayer player : players) {
+			for (HOHPlayer player : hohPlayers.values()) {
 				if (player.getPlayer().isOnline()) player.getPlayer()
-				.addPotionEffect(new PotionEffect(PotionEffectType.getByName(split[0]),
-						(Integer.parseInt(split[1]) * 20),
-						(Integer.parseInt(split[2]) - 1), false, false));
+						.addPotionEffect(new PotionEffect(PotionEffectType.getByName(split[0]),
+								(Integer.parseInt(split[1]) * 20),
+								(Integer.parseInt(split[2]) - 1), false, false));
 			}
 		}
 	}
-	
+
 	private void addAfterPotEffects() {
 		for (String s : plugin.getConfig().getStringList("Effect-After-Start")) {
 			String[] split = s.split(", ");
 			PotionEffect effect = new PotionEffect(PotionEffectType.getByName(split[0].toString()), (Integer.parseInt(split[1]) * 20), (Integer.parseInt(split[2]) - 1), false, false);
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-	            public void run() {
-	            	for (HOHPlayer player : players) {
-	    				player.getPlayer().addPotionEffect(effect);
-	    			}
-	            }
-	        }, Integer.parseInt(split[3]) * 20L);
+				public void run() {
+					for (HOHPlayer player : hohPlayers.values()) {
+						player.getPlayer().addPotionEffect(effect);
+					}
+				}
+			}, Integer.parseInt(split[3]) * 20L);
 		}
 	}
 
@@ -193,13 +190,16 @@ public class HOHGame {
 		Bukkit.broadcastMessage(messageManager.getMessage("grace-period-ended-1"));
 		Bukkit.broadcastMessage(messageManager.getMessage("grace-period-ended-2"));
 	}
-	
+
 	public HOHTeam getWinnerTeam() {
-		for (HOHTeam team : teams) {
-			if (!team.eliminated) {
-				return team;
-			}
-		}
-		return null;
+		return teams.values().stream().filter(t -> !t.eliminated).findAny().orElseGet(null);
+	}
+
+	public boolean areAllTeamsNamed() {
+		return !plugin.getHohPlayers().values().stream().anyMatch(p -> p.isNamingTeam());
+	}
+
+	public boolean allPlayersSelectedTeam() {
+		return plugin.getHohPlayers().values().stream().allMatch(p -> p.hasTeam());
 	}
 }

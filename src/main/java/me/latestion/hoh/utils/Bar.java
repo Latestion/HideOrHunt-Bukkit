@@ -11,38 +11,38 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.latestion.hoh.HideOrHunt;
 
 public class Bar extends BukkitRunnable {
-	
+
 	private HideOrHunt plugin;
 	public BossBar bar;
-	
+
 	public Bar(HideOrHunt plugin) {
 		this.plugin = plugin;
 		createBar();
 		runTaskTimer(plugin, 0L, 50L);
 	}
-	
+
 	public void addAllPlayer() {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			bar.addPlayer(player);
 		}
 	}
-	
+
 	public void addPlayer(Player player) {
 		bar.addPlayer(player);
 	}
-	
+
 	public BossBar getBar() {
 		return bar;
 	}
-	
+
 	public void createBar() {
 		String title = plugin.getMessageManager().getMessage("alive-teams-bar").replace("%number%", Integer.toString(plugin.game.getAliveTeams().size()));
 		bar = Bukkit.createBossBar(title, BarColor.GREEN, BarStyle.SOLID);
 		bar.setVisible(true);
 		addAllPlayer();
-		
+
 	}
-	
+
 	@Override
 	public void run() {
 		String title = plugin.getMessageManager().getMessage("alive-teams-bar").replace("%number%", Integer.toString(plugin.game.getAliveTeams().size()));
@@ -54,10 +54,10 @@ public class Bar extends BukkitRunnable {
 	private String format(String s) {
 		return ChatColor.translateAlternateColorCodes('&', s);
 	}
-	
+
 	public void stop() {
 		this.cancel();
 		bar.removeAll();
 	}
-	
+
 }

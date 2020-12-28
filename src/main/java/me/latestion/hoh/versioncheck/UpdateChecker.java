@@ -11,43 +11,43 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.latestion.hoh.HideOrHunt;
 
 public class UpdateChecker {
-	
+
 	private int project = 79307;
 	private URL checkURL;
 	private String newVersion = "";
 	private JavaPlugin plugin;
 
-    public UpdateChecker(HideOrHunt plugin, int projectID) {
-        this.plugin = plugin;
-        this.newVersion = plugin.getDescription().getVersion();
-        this.project = projectID;
-        try {
-            this.checkURL = new URL(
-                    "https://api.spigotmc.org/legacy/update.php?resource=" + projectID);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-    }
+	public UpdateChecker(HideOrHunt plugin, int projectID) {
+		this.plugin = plugin;
+		this.newVersion = plugin.getDescription().getVersion();
+		this.project = projectID;
+		try {
+			this.checkURL = new URL(
+					"https://api.spigotmc.org/legacy/update.php?resource=" + projectID);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+	}
 
-    public int getProjectID() {
-        return project;
-    }
+	public int getProjectID() {
+		return project;
+	}
 
-    public JavaPlugin getPlugin() {
-        return plugin;
-    }
+	public JavaPlugin getPlugin() {
+		return plugin;
+	}
 
-    public String getLatestVersion() {
-        return newVersion;
-    }
+	public String getLatestVersion() {
+		return newVersion;
+	}
 
-    public String getResourceURL() {
-        return "https://www.spigotmc.org/resources/" + project;
-    }
+	public String getResourceURL() {
+		return "https://www.spigotmc.org/resources/" + project;
+	}
 
-    public boolean checkForUpdates() throws Exception {
-        URLConnection con = checkURL.openConnection();
-        this.newVersion = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
-        return !plugin.getDescription().getVersion().equals(newVersion);
-    }
+	public boolean checkForUpdates() throws Exception {
+		URLConnection con = checkURL.openConnection();
+		this.newVersion = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
+		return !plugin.getDescription().getVersion().equals(newVersion);
+	}
 }
