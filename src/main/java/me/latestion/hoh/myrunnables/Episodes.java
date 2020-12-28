@@ -1,5 +1,6 @@
 package me.latestion.hoh.myrunnables;
 
+import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -19,19 +20,20 @@ public class Episodes extends BukkitRunnable {
 
 	@Override
 	public void run() {
-		Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "Episode " + plugin.game.ep + " has ended!");
+		MessageManager messageManager = plugin.getMessageManager();
+		Bukkit.broadcastMessage(messageManager.getMessage("episode-end").replace("%episode%", Integer.toString(plugin.game.ep)));
         if (plugin.game.ep == 1) {
         	if (plugin.game.grace)
         	plugin.game.graceOff();
         }
         if (plugin.getConfig().getInt("Episode-End-Break-Time") != 0) {
         	plugin.game.freeze = true;
-            Bukkit.broadcastMessage(ChatColor.RED + "Game has been freezed!");
+            Bukkit.broadcastMessage(messageManager.getMessage("game-freezed"));
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                 @Override
                 public void run() {
                     plugin.game.freeze = false;
-                    Bukkit.broadcastMessage(ChatColor.RED + "Game has been unfreezed!");
+					Bukkit.broadcastMessage(messageManager.getMessage("game-unfreezed"));
                     sendReminders();
                 }
             }, (plugin.getConfig().getInt("Episode-End-Break-Time") * 20));

@@ -1,5 +1,6 @@
 package me.latestion.hoh.events;
 
+import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -31,7 +32,8 @@ public class BlockPlace implements Listener {
 			Location loc = event.getBlockPlaced().getLocation();
 			player.getTeam().hasBeacon = true;
 			player.getTeam().setBeacon(event.getBlockPlaced());
-			Bukkit.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', player.getTeam().getName()) + ChatColor.AQUA + " has placed their beacon!");
+			MessageManager messageManager = plugin.getMessageManager();
+			Bukkit.broadcastMessage(messageManager.getMessage("beacon-placed-broadcast").replace("%team%", player.getTeam().getName()));
 			setSign(loc, player);
 			plugin.sbUtil.beaconPlaceTeam(player.getTeam().getName());
 			player.getTeam().hasBeacon = true;

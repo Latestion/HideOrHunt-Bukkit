@@ -1,5 +1,6 @@
 package me.latestion.hoh.events;
 
+import me.latestion.hoh.HideOrHunt;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,9 +11,11 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import me.latestion.hoh.game.GameState;
 
 public class CraftItem implements Listener {
-	
-    public CraftItem() {
-    	
+
+    private HideOrHunt plugin;
+
+    public CraftItem(HideOrHunt plugin) {
+    	this.plugin = plugin;
     }
     
     @EventHandler
@@ -22,8 +25,7 @@ public class CraftItem implements Listener {
             		event.getRecipe().getResult().getType() == Material.BEACON) {
                 event.setCancelled(true);
                 Player player = (Player) event.getWhoClicked();
-                player.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "You cannot craft that!");
-                return;
+                player.sendMessage(plugin.getMessageManager().getMessage("cannot-craft"));
             }
         }
     }

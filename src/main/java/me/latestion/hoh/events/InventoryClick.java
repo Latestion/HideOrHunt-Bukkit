@@ -2,6 +2,7 @@ package me.latestion.hoh.events;
 
 import java.util.List;
 
+import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -38,7 +39,8 @@ public class InventoryClick implements Listener {
         if (event.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
             return;
         }
-        if (event.getView().getTitle().contains("Teams")) {
+        MessageManager messageManager = plugin.getMessageManager();
+        if (event.getView().getTitle().equals(messageManager.getMessage("team-inventory-title"))) {
         	if (GameState.getCurrentGameState() != GameState.PREPARE) {
         		return;
         	}
@@ -58,7 +60,7 @@ public class InventoryClick implements Listener {
                     }
                     this.plugin.chat.add(player);
                     plugin.cache.add(event.getSlot());
-                    player.sendMessage(ChatColor.GOLD + "Enter the name for your team!");
+                    player.sendMessage(messageManager.getMessage("enter-team-name"));
                     plugin.game.cache.remove(player);
                     player.closeInventory();
                     return;
@@ -67,7 +69,7 @@ public class InventoryClick implements Listener {
                 	
                 	Util util = new Util(plugin);
                 	if (util.isPlayerNaming(Bukkit.getPlayerExact(ChatColor.stripColor(lore.get(1))))) {
-                		player.sendMessage(ChatColor.RED + "Player is still naming the team!");
+                		player.sendMessage(messageManager.getMessage("still-naming-team"));
                 		return;
                 	}
                     lore.add(player.getName());
@@ -89,7 +91,7 @@ public class InventoryClick implements Listener {
                     return;
                 }
                 else {
-                    player.sendMessage(ChatColor.RED + "The Team is full!");
+                    player.sendMessage(messageManager.getMessage("team-is-full"));
                     return;
                 }
             }

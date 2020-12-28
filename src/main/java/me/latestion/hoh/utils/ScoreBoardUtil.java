@@ -78,7 +78,7 @@ public class ScoreBoardUtil {
 	public void setAsthetic() {
 	    Score top = obj.getScore("\ufe4b\ufe4b\ufe4b\ufe4b\ufe4b\ufe4b\ufe4b\ufe4b\ufe4b\ufe4b");
 	    Score bot = obj.getScore("\ufe4f\ufe4f\ufe4f\ufe4f\ufe4f\ufe4f\ufe4f\ufe4f\ufe4f\ufe4f");
-	    Score strTeam = obj.getScore(ChatColor.BOLD + "" + ChatColor.RED + "Teams:");
+	    Score strTeam = obj.getScore(plugin.getMessageManager().getMessage("scoreboard-teams"));
         top.setScore(plugin.game.getTeams().size() + 2);
         bot.setScore(0);
         strTeam.setScore(plugin.game.getTeams().size() + 1);
@@ -88,7 +88,7 @@ public class ScoreBoardUtil {
         this.manager = Bukkit.getScoreboardManager();
         this.board = this.manager.getNewScoreboard();
         this.obj = this.board.registerNewObjective("HideOrHunt", "dummy", ChatColor.translateAlternateColorCodes('&'
-        		, plugin.getConfig().getString("SB-Title")));
+        		, plugin.getMessageManager().getMessage("scoreboard-title")));
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
     }
 

@@ -1,5 +1,6 @@
 package me.latestion.hoh.events;
 
+import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,6 +26,7 @@ public class BlockBreak implements Listener {
 
 	@EventHandler
 	public void onBreak(BlockBreakEvent event) {
+		MessageManager messageManager = plugin.getMessageManager();
 		if (GameState.getCurrentGameState() != GameState.ON) return;
 		if (event.getBlock().getType() != Material.BEACON) return;
 		Player player = event.getPlayer();
@@ -32,7 +34,7 @@ public class BlockBreak implements Listener {
 		HOHTeam team = util.getTeamFromBlock(event.getBlock());
 		if (team.players.contains(plugin.hohPlayer.get(player.getUniqueId()))) {
 			event.setCancelled(true);
-			player.sendMessage(ChatColor.RED + "You cannot break your own beacon!");
+			player.sendMessage(messageManager.getMessage("cannot-break-own-beacon"));
 			return;
 		}
 		event.setDropItems(false);
@@ -42,11 +44,13 @@ public class BlockBreak implements Listener {
 	}
 	
 	private void doAsthetic(HOHTeam team, Player player) {
+		MessageManager messageManager = plugin.getMessageManager();
 		player.getWorld().playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.0f, 1.0f);
-		Bukkit.broadcastMessage(ChatColor.GREEN + team.getName() + ChatColor.BOLD + "" + ChatColor.RED + " was eliminated by " + 
-	        	ChatColor.GREEN	+ plugin.hohPlayer.get(player.getUniqueId()).getTeam().getName() + ".");
+		String eliminatedMsg = messageManager.getMessage("eliminated-broadcast").replace("%eliminated-team%", team.getName());
+		eliminatedMsg = eliminatedMsg.replace("%eliminating-team%", plugin.hohPlayer.get(player.getUniqueId()).getTeam().getName());
+		Bukkit.broadcastMessage(eliminatedMsg);
         for (HOHPlayer p : team.players) {
-        	p.getPlayer().sendTitle(ChatColor.BOLD + "" + ChatColor.RED + "Beacon Destroyed", "", 10, 40, 10);
+        	p.getPlayer().sendTitle(messageManager.getMessage("beacon-destroyed-title"), "", 10, 40, 10);
         	p.getPlayer().playSound(p.getPlayer().getLocation(), Sound.BLOCK_ANVIL_USE, 1.0f, 1.0f);
         }
 	}

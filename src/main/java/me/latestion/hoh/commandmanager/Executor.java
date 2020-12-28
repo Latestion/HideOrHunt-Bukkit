@@ -3,6 +3,7 @@ package me.latestion.hoh.commandmanager;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -32,7 +33,8 @@ public class Executor implements CommandExecutor {
 		}
 		
 		Player player = (Player) sender;
-		
+        MessageManager messageManager = plugin.getMessageManager();
+
 		if (label.equalsIgnoreCase("hoh")) {
 			
 			if (args.length == 0) {
@@ -60,17 +62,17 @@ public class Executor implements CommandExecutor {
 			}
 			if (args[0].equalsIgnoreCase("freeze") && GameState.getCurrentGameState() == GameState.ON && player.hasPermission("hoh.freeze")) {
                 if (plugin.game.freeze) {
-                    Bukkit.broadcastMessage(ChatColor.AQUA + "Unfreezed the game!");
+                    Bukkit.broadcastMessage(messageManager.getMessage("unfreezed-game"));
                     plugin.game.freeze = false;
                 }
                 else {
-                    Bukkit.broadcastMessage(ChatColor.DARK_AQUA + "Freezed the game!");
+                    Bukkit.broadcastMessage(messageManager.getMessage("freezed-game"));
                     plugin.game.freeze = true;
                 }
 			}
             if (args[0].equalsIgnoreCase("reload") && player.hasPermission("hoh.reload")) {
                 this.plugin.reloadConfig();
-                player.sendMessage(ChatColor.RED + "Config Has Been Reloaded!");
+                player.sendMessage(messageManager.getMessage("reloaded-config"));
             }
             if (args[0].equalsIgnoreCase("rules")) {
                 List<String> rules = plugin.getConfig().getStringList("Rules-Messages");
@@ -82,12 +84,12 @@ public class Executor implements CommandExecutor {
             	if (GameState.getCurrentGameState() == GameState.ON)
             		plugin.game.stop();
             	else
-            		player.sendMessage("There is no ongoing game!");
+            		player.sendMessage(messageManager.getMessage("game-not-started"));
             }
             if (args[0].equalsIgnoreCase("beacon") && player.hasPermission("hoh.beacon") 
             		&& GameState.getCurrentGameState() == GameState.ON) {
                 if (plugin.hohPlayer.containsKey(player.getUniqueId())) {
-                    player.sendMessage("You cannot do this!" + ChatColor.DARK_RED + "Error: Possible Cheat Attempt!");
+                    player.sendMessage(messageManager.getMessage("possible-cheat-attempt"));
                 }
                 else if (args[1] != null) {
                     List<String> playerNames = new ArrayList<String>();
@@ -99,7 +101,7 @@ public class Executor implements CommandExecutor {
                         player.teleport(plugin.hohPlayer.get(teleport.getUniqueId()).getTeam().getBeacon().getLocation());
                     }
                     else {
-                        player.sendMessage(ChatColor.RED + "Invalid Player!");
+                        player.sendMessage(messageManager.getMessage("invalid-player"));
                     }
                 }
             }
@@ -109,16 +111,16 @@ public class Executor implements CommandExecutor {
                     	HOHPlayer p = plugin.hohPlayer.get(player.getUniqueId());
                         if (p.teamChat) {
                             p.teamChat = false;
-                            player.sendMessage(ChatColor.AQUA + "Team chat disabled");
+                            player.sendMessage(messageManager.getMessage("team-chat-off"));
                         }
                         else {
                             p.teamChat = true;
-                            player.sendMessage(ChatColor.AQUA + "Team chat enabled");
+                            player.sendMessage(messageManager.getMessage("team-chat-on"));
                         }
                     }
                 }
                 else {
-                    player.sendMessage(ChatColor.RED + "Game is not on!");
+                    player.sendMessage(messageManager.getMessage("game-not-started"));
                 }
             }
 			

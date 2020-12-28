@@ -1,11 +1,11 @@
 # If you have any doubts regarding this please join my discord server for more questions
 
+language: en
+
 # IF set to false, It wont allow any OPed player to Play the game!
 Allow-Op: true
 
 WorldBorder: 200 # sets the worldborder from the location of the player who starts the game! DIAMETER !
-
-SB-Title: "&6HideOrHunt"
 
 # Normal kits
 # Do not add beacon into it!

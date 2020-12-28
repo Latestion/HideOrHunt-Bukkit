@@ -3,6 +3,7 @@ package me.latestion.hoh.game;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -26,7 +27,7 @@ public class HOHGame {
 	private Util util;
 	public Location loc;
 	
-	private List<HOHPlayer> players = new ArrayList<HOHPlayer>();
+	private List<HOHPlayer> players = new ArrayList<>();
 	private List<HOHTeam> teams = new ArrayList<>();
 	public List<Player> cache = new ArrayList<>();
 	
@@ -67,7 +68,7 @@ public class HOHGame {
 	public void startGame() {
 		
 		if (GameState.getCurrentGameState() != GameState.PREPARE) return;
-		Bukkit.getServer().broadcastMessage(ChatColor.RED + "Starting Your" + ChatColor.WHITE + " HOH Game!");
+		Bukkit.getServer().broadcastMessage(plugin.getMessageManager().getMessage("starting-game"));
 		setBorder();
 		for (HOHTeam team : teams) {
 			String name = team.getName();
@@ -80,7 +81,7 @@ public class HOHGame {
 		plugin.sbUtil.addAllPlayers();
 		this.bar = new Bar(plugin);
 		GameState.setGameState(GameState.ON);
-		sendTitle();
+		sendStartTitle();
 		plugin.sbUtil.setAsthetic();
 		if (plugin.getConfig().getBoolean("Grace-Period")) grace = true;
 		if (plugin.getConfig().getBoolean("Enable-Effect-On-Start")) addStartPotEffects();
@@ -146,13 +147,14 @@ public class HOHGame {
     	Bukkit.getScheduler().cancelTasks(plugin);
     	new Metrics(plugin, 79307);
     	plugin.sbUtil = new ScoreBoardUtil(plugin);
-    	Bukkit.broadcastMessage(ChatColor.RED + "Game is stopped!");
+    	Bukkit.broadcastMessage(plugin.getMessageManager().getMessage("stopping-game"));
 	}	
 	
-	private void sendTitle() {
+	private void sendStartTitle() {
+		MessageManager messageManager = plugin.getMessageManager();
 		for (Player p : Bukkit.getOnlinePlayers()) {
-			p.sendTitle(ChatColor.BOLD + "" + ChatColor.GREEN + "Game Started"
-					, ChatColor.BOLD + "" + ChatColor.WHITE + "Leaders have received the team beacons."
+			p.sendTitle(messageManager.getMessage("start-title-first-line")
+					, messageManager.getMessage("start-title-second-line")
 					, 10
 					, 50
 					, 10);
@@ -186,9 +188,10 @@ public class HOHGame {
 	}
 
 	public void graceOff() {
+		MessageManager messageManager = plugin.getMessageManager();
 		grace = false;
-		Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.RED + "Grace period has ended.");
-		Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.RED + "PVP is enabled and you will take damage now!");
+		Bukkit.broadcastMessage(messageManager.getMessage("grace-period-ended-1"));
+		Bukkit.broadcastMessage(messageManager.getMessage("grace-period-ended-2"));
 	}
 	
 	public HOHTeam getWinnerTeam() {
