@@ -1,5 +1,6 @@
 package me.latestion.hoh.events;
 
+import me.latestion.hoh.game.GameState;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,6 +18,8 @@ public class InventoryClose implements Listener{
     
     @EventHandler
     public void close(InventoryCloseEvent event) {
+        if(GameState.getCurrentGameState() == GameState.OFF)
+            return;
         if (plugin.game.cache.contains(event.getPlayer())) {
             Player player = (Player) event.getPlayer();
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, (Runnable)new Runnable() {

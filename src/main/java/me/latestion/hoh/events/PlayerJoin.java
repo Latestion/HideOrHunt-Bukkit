@@ -17,7 +17,7 @@ public class PlayerJoin implements Listener {
     
     @EventHandler
     public void pje(final PlayerJoinEvent event) {
-        if (GameState.getCurrentGamestate() == GameState.ON) {
+        if (GameState.getCurrentGameState() == GameState.ON) {
             plugin.sbUtil.addPlayer(event.getPlayer());
             if (!plugin.game.bar.getBar().getPlayers().contains(event.getPlayer())) plugin.game.bar.addPlayer(event.getPlayer());
             return;

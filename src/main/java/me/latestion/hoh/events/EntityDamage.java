@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -27,10 +28,13 @@ public class EntityDamage implements Listener {
     
     @EventHandler
     public void damage(EntityDamageByEntityEvent event) {
-    	if (GameState.getCurrentGamestate() != GameState.ON) return;
+    	if (GameState.getCurrentGameState() != GameState.ON) return;
+
+		MessageManager messageManager = plugin.getMessageManager();
+
         if (plugin.game.grace && event.getDamager() instanceof Player && event.getEntity() instanceof Player && this.plugin.getConfig().getBoolean("Grace-Period")) {
             event.setCancelled(true);
-            event.getDamager().sendMessage(ChatColor.RED + "Grace Period!");
+            event.getDamager().sendMessage(messageManager.getMessage("grace-period-attack"));
             return;
         }
         if (event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
@@ -41,7 +45,7 @@ public class EntityDamage implements Listener {
         	if (!plugin.getConfig().getBoolean("Team-Damage")) {
             	if (plugin.hohPlayer.get(target.getUniqueId()).getTeam().players.contains(plugin.hohPlayer.get(player.getUniqueId()))) {
             		event.setCancelled(true);
-            		target.sendMessage(ChatColor.RED + "You cannot hurt your own teammate!");
+            		target.sendMessage(messageManager.getMessage("team-member-attack"));
             		return;
             	}
         	}
@@ -49,8 +53,9 @@ public class EntityDamage implements Listener {
         	int secs = plugin.getConfig().getInt("Pvp-Log");
         	if (secs == 0) return;
         	if (!antilog.contains(player.getUniqueId()) && !antilog.contains(target.getUniqueId())) {
-    	        player.sendMessage(ChatColor.GOLD + "You're now in Combat for " + secs + " second !");
-    	        target.sendMessage(ChatColor.GOLD + "You're now in Combat for " + secs + " second !");
+        		String msg = messageManager.getMessage("combat-start").replace("%time%", Integer.toString(secs));
+    	        player.sendMessage(msg);
+    	        target.sendMessage(msg);
     	        antilog.add(player.getUniqueId());
     	        antilog.add(target.getUniqueId());
     	        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -59,8 +64,9 @@ public class EntityDamage implements Listener {
     		            if ((antilog.contains(player.getUniqueId())) && (antilog.contains(target.getUniqueId()))) {
 				            antilog.remove(player.getUniqueId());
 				            antilog.remove(target.getUniqueId());
-				            target.sendMessage(ChatColor.GREEN + "You can now log out safely.");
-				            player.sendMessage(ChatColor.GREEN + "You can now log out safely.");
+				            String msg = messageManager.getMessage("combat-end");
+				            target.sendMessage(msg);
+				            player.sendMessage(msg);
     		            }
     		        }
     		    } , secs * 20L);
@@ -71,9 +77,10 @@ public class EntityDamage implements Listener {
 	@EventHandler
 	public void onAntiLogQuit(PlayerQuitEvent event) {
 	    Player p = event.getPlayer();
-	    if (GameState.getCurrentGamestate() == GameState.ON) {
+	    if (GameState.getCurrentGameState() == GameState.ON) {
 		    if (this.antilog.contains(p.getUniqueId())) {
-		    	Bukkit.getServer().broadcastMessage(event.getPlayer().getName() + " has combat logged!");
+		    	String msg = plugin.getMessageManager().getMessage("combat-logout").replace("%player%", p.getDisplayName());
+		    	Bukkit.getServer().broadcastMessage(msg);
 			    p.damage(20.0);
 		    }
 	    }

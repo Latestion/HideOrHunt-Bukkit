@@ -3,6 +3,7 @@ package me.latestion.hoh.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -53,13 +54,14 @@ public class Util {
     }
     
     public void createInv(int i) {
-        plugin.inv = Bukkit.createInventory(null, 54, ChatColor.GOLD + "Teams");
+        MessageManager messageManager = plugin.getMessageManager();
+        plugin.inv = Bukkit.createInventory(null, 54, messageManager.getMessage("team-inventory-title"));
         for (int i2 = 0; i2 < i; ++i2) {
             final ItemStack item = new ItemStack(Material.BEACON);
             final ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(ChatColor.BLUE + "Team: " + i2);
+            meta.setDisplayName(messageManager.getMessage("team-inventory-beacon-name").replace("%team%", Integer.toString(i2)));
             final List<String> lore = new ArrayList<String>();
-            lore.add(ChatColor.RED + "Players:");
+            lore.add(messageManager.getMessage("team-inventory-beacon-lore"));
             meta.setLore(lore);
             item.setItemMeta(meta);
             plugin.inv.setItem(i2, item);
@@ -69,7 +71,8 @@ public class Util {
     public ItemStack beacon(String name) {
         final ItemStack item = new ItemStack(Material.BEACON);
         final ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(String.valueOf(ChatColor.translateAlternateColorCodes('&', name)) + ChatColor.BLUE + "'s beacon");
+        name = ChatColor.translateAlternateColorCodes('&', name);
+        meta.setDisplayName(plugin.getMessageManager().getMessage("beacon-name").replace("%name%", name));
         /*
          * Make Better With Lore!
          */

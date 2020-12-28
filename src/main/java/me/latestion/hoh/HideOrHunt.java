@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -41,7 +42,8 @@ public class HideOrHunt extends JavaPlugin {
 
 	public HOHGame game;
 	public ScoreBoardUtil sbUtil;
-	
+	private MessageManager msgManager;
+
 	public Map<UUID, HOHPlayer> hohPlayer = new HashMap<>();
 	public Map<String, HOHTeam> hohTeam = new HashMap<>();
 	
@@ -53,7 +55,11 @@ public class HideOrHunt extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		this.saveDefaultConfig();
-		GameState.setGamestate(GameState.OFF);
+		this.saveLanguagesFiles();
+		String lang = getConfig().getString("language");
+		this.msgManager = new MessageManager(this.getDataFolder(), lang);
+
+		GameState.setGameState(GameState.OFF);
 		sbUtil = new ScoreBoardUtil(this);
 		new Metrics(this, 8350);
 		hoh();
@@ -62,7 +68,7 @@ public class HideOrHunt extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		if (GameState.getCurrentGamestate() == GameState.ON) game.stop();
+		if (GameState.getCurrentGameState() == GameState.ON) game.stop();
 	}
 
     private void hoh() {
@@ -102,7 +108,7 @@ public class HideOrHunt extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new AsyncChat(this), this);
 		this.getServer().getPluginManager().registerEvents(new BlockBreak(this), this);	
 		this.getServer().getPluginManager().registerEvents(new BlockPlace(this), this);
-		this.getServer().getPluginManager().registerEvents(new CraftItem(), this);
+		this.getServer().getPluginManager().registerEvents(new CraftItem(this), this);
 		this.getServer().getPluginManager().registerEvents(new EntityDamage(this), this);
 		this.getServer().getPluginManager().registerEvents(new GameModeChange(this), this);	
         this.getServer().getPluginManager().registerEvents(new InventoryClick(this), this);
@@ -115,5 +121,14 @@ public class HideOrHunt extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new PlayerWorld(this), this);
         this.getServer().getPluginManager().registerEvents(new TrulyGrace(this), this);
         this.getCommand("hoh").setExecutor(new Executor(this));
+	}
+
+	public MessageManager getMessageManager(){
+		return this.msgManager;
+	}
+
+	public void saveLanguagesFiles(){
+		this.saveResource("locales/en.yml", false);
+		this.saveResource("locales/pl.yml", false);
 	}
 }

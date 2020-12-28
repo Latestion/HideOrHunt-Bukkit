@@ -36,7 +36,8 @@ public class Bar extends BukkitRunnable {
 	}
 	
 	public void createBar() {
-		bar = Bukkit.createBossBar(format(ChatColor.GREEN + "Alive Teams: " + plugin.game.getAliveTeams().size()), BarColor.GREEN, BarStyle.SOLID);
+		String title = plugin.getMessageManager().getMessage("alive-teams-bar").replace("%number%", Integer.toString(plugin.game.getAliveTeams().size()));
+		bar = Bukkit.createBossBar(title, BarColor.GREEN, BarStyle.SOLID);
 		bar.setVisible(true);
 		addAllPlayer();
 		
@@ -44,7 +45,8 @@ public class Bar extends BukkitRunnable {
 	
 	@Override
 	public void run() {
-		bar.setTitle(format(ChatColor.GREEN + "Alive Teams: " + plugin.game.getAliveTeams().size()));
+		String title = plugin.getMessageManager().getMessage("alive-teams-bar").replace("%number%", Integer.toString(plugin.game.getAliveTeams().size()));
+		bar.setTitle(format(title));
 		double progress = (plugin.game.getAliveTeams().size() / plugin.game.getTeams().size());
 		bar.setProgress(progress);
 	}

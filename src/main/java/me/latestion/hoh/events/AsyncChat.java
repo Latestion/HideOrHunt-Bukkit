@@ -1,5 +1,6 @@
 package me.latestion.hoh.events;
 
+import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -28,19 +29,21 @@ public class AsyncChat implements Listener {
             event.setCancelled(true);
             Player player = event.getPlayer();
             String name = event.getMessage();
+            MessageManager messageManager = plugin.getMessageManager();
+
             if (name.length() > 15) {
-                player.sendMessage(ChatColor.RED + "Too many characters!");
+                player.sendMessage(messageManager.getMessage("too-many-characters"));
                 return;
             }
-        	if (GameState.getCurrentGamestate() != GameState.PREPARE) {
+        	if (GameState.getCurrentGameState() != GameState.PREPARE) {
         		return;
         	}
             Util util = new Util(plugin);
             if (util.isTeamTaken(name)) {
-                player.sendMessage(ChatColor.RED + "Teamname already exists!");
+                player.sendMessage(messageManager.getMessage("team-name-taken"));
                 return;
             }
-            player.sendMessage("Teamname set to: " + name);
+            player.sendMessage(messageManager.getMessage("team-name-set").replace("%name%", name));
             ItemStack item = plugin.inv.getItem(plugin.cache.get(plugin.chat.indexOf(player)));
             ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
@@ -62,18 +65,19 @@ public class AsyncChat implements Listener {
             }
         }
         else {
-        	if (GameState.getCurrentGamestate() != GameState.ON) {
+        	if (GameState.getCurrentGameState() != GameState.ON) {
         		return;
         	}
         	if (plugin.hohPlayer.containsKey(event.getPlayer().getUniqueId())) {
         		HOHPlayer player = plugin.hohPlayer.get(event.getPlayer().getUniqueId());
-        		if (player.dead) {        		
-        			event.setCancelled(true);
+                event.setCancelled(true);
+                if (player.dead) {
         			return;
         		}
-        		event.setCancelled(true);
-        		if (!player.teamChat) {
-        			String message = event.getMessage();
+
+                String message = event.getMessage();
+
+                if (!player.teamChat) {
                     String format = plugin.getConfig().getString("Main-Chat-Format");
                     String f = format.replace("%message%", message);
                     String g = f.replace("%playername%", event.getPlayer().getName());
@@ -82,7 +86,6 @@ public class AsyncChat implements Listener {
                     return;
         		}
         		
-    			String message = event.getMessage();
                 String format = plugin.getConfig().getString("Team-Chat-Format");
                 String f = format.replace("%message%", message);
                 String g = f.replace("%playername%", event.getPlayer().getName());
