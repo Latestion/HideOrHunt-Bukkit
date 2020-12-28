@@ -30,13 +30,11 @@ public class BlockPlace implements Listener {
 		if (event.getBlockPlaced().getType() == Material.BEACON) {
 			HOHPlayer player = plugin.game.hohPlayers.get(event.getPlayer().getUniqueId());
 			Location loc = event.getBlockPlaced().getLocation();
-			player.getTeam().hasBeacon = true;
 			player.getTeam().setBeacon(event.getBlockPlaced());
 			MessageManager messageManager = plugin.getMessageManager();
 			Bukkit.broadcastMessage(messageManager.getMessage("beacon-placed-broadcast").replace("%team%", player.getTeam().getName()));
 			setSign(loc, player);
 			plugin.sbUtil.beaconPlaceTeam(player.getTeam().getName());
-			player.getTeam().hasBeacon = true;
 		}
 	}
 	

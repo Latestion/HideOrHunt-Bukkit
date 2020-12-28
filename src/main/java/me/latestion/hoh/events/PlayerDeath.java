@@ -33,7 +33,7 @@ public class PlayerDeath implements Listener {
 			HOHPlayer player = plugin.game.hohPlayers.get(event.getEntity().getUniqueId());
 			MessageManager messageManager = plugin.getMessageManager();
 
-			if (!player.getTeam().hasBeacon) {
+			if (!player.getTeam().hasBeacon()) {
 				String msg;
 				msg = messageManager.getMessage("player-eliminated").replace("%player%", player.getPlayer().getDisplayName());
 				Bukkit.broadcastMessage(msg);

@@ -41,7 +41,7 @@ public class BlockBreak implements Listener {
 			return;
 		}
 		event.setDropItems(false);
-		team.hasBeacon = false;
+		team.setBeacon(null);
 		plugin.sbUtil.beaconBreakTeam(team.getName());
 		doAsthetic(team, event.getPlayer());
 	}

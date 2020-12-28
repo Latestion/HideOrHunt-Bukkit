@@ -16,7 +16,6 @@ public class HOHTeam {
 	public List<HOHPlayer> alivePlayers = new ArrayList<>();
 
 	public boolean eliminated = false;
-	public boolean hasBeacon = false;
 
 	private Block beacon;
 
@@ -47,6 +46,10 @@ public class HOHTeam {
 
 	public Block getBeacon() {
 		return beacon;
+	}
+
+	public boolean hasBeacon(){
+		return beacon != null;
 	}
 
 	public void diedPlayer(HOHPlayer player) {

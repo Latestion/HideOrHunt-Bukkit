@@ -94,9 +94,7 @@ public class Util {
 	}
 
 	public HOHTeam getTeamFromBlock(Block block) {
-		for (HOHTeam team : plugin.game.getTeams()) {
-			if (team.getBeacon().equals(block)) return team;
-		}
-		return null;
+		return plugin.game.getTeams().stream().filter(t -> t.hasBeacon()
+				&& t.getBeacon().equals(block)).findAny().orElseGet(null);
 	}
 }
