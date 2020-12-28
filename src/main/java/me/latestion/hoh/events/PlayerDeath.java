@@ -46,7 +46,7 @@ public class PlayerDeath implements Listener {
 				player.getTeam().diedPlayer(player);
 
 				if (player.getTeam().eliminated) {
-					msg = messageManager.getMessage("team-eliminated".replace("%team%", player.getTeam().getName()));
+					msg = messageManager.getMessage("team-eliminated").replace("%team%", player.getTeam().getName());
 					Bukkit.broadcastMessage(msg);
 					plugin.sbUtil.eliminateTeam(player.getTeam().getName());
 				}
