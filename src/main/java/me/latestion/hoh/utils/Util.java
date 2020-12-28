@@ -40,17 +40,10 @@ public class Util {
 	public int getWorldBorder() {
 		return plugin.getConfig().getInt("WorldBorder");
 	}
-	
-    public boolean isPlayerNaming(Player player) {
-    	return plugin.chat.contains(player);
-    }
   
-    public boolean isTeamTaken(final String teamName) {
-        final List<String> allTeams = new ArrayList<String>();
-        for (HOHTeam team : plugin.game.getTeams()) {
-        	allTeams.add(team.getName().toLowerCase());
-        }
-        return allTeams.contains(teamName.toLowerCase());
+    public boolean isTeamNameTaken(final String teamName) {
+        return plugin.game.getTeams().stream().anyMatch(t -> (t.getName() != null
+                && t.getName().toLowerCase().equals(teamName.toLowerCase())));
     }
     
     public void createInv(int i) {
@@ -60,7 +53,7 @@ public class Util {
             final ItemStack item = new ItemStack(Material.BEACON);
             final ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(messageManager.getMessage("team-inventory-beacon-name").replace("%team%", Integer.toString(i2)));
-            final List<String> lore = new ArrayList<String>();
+            final List<String> lore = new ArrayList<>();
             lore.add(messageManager.getMessage("team-inventory-beacon-lore"));
             meta.setLore(lore);
             item.setItemMeta(meta);

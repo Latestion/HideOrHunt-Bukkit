@@ -30,7 +30,7 @@ public class PlayerRespawn implements Listener {
 	            	}
 	            } 
 	        }, 1);
-			event.setRespawnLocation(plugin.hohPlayer.get(event.getPlayer().getUniqueId()).getTeam().getBeacon().getLocation().clone().add(0, 1, 0));
+			event.setRespawnLocation(plugin.hohPlayers.get(event.getPlayer().getUniqueId()).getTeam().getBeacon().getLocation().clone().add(0, 1, 0));
 		}
 	}
 }

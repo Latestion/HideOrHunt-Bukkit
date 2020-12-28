@@ -2,6 +2,7 @@ package me.latestion.hoh.events;
 
 import java.util.List;
 
+import me.latestion.hoh.game.HOHPlayer;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -46,6 +47,7 @@ public class InventoryClick implements Listener {
         	}
         	event.setCancelled(true);
             Player player = (Player) event.getWhoClicked();
+            HOHPlayer hohPlayer = plugin.getHohPlayer(player.getUniqueId());
             if (event.getInventory().equals(plugin.inv) && event.getCurrentItem().getItemMeta().hasLore()) {
                 List<String> lore = event.getCurrentItem().getItemMeta().getLore();
                 if (lore.size() == 1) {
@@ -58,17 +60,20 @@ public class InventoryClick implements Listener {
                     for (Player p : Bukkit.getOnlinePlayers()) {
                         p.updateInventory();
                     }
-                    this.plugin.chat.add(player);
-                    plugin.cache.add(event.getSlot());
+                    hohPlayer.setNamingTeam(true);
+                    HOHTeam team = new HOHTeam(plugin, event.getSlot());
+                    plugin.game.addTeam(team);
+                    hohPlayer.setTeam(team);
                     player.sendMessage(messageManager.getMessage("enter-team-name"));
-                    plugin.game.cache.remove(player);
                     player.closeInventory();
                     return;
                 }
                 else if (lore.size() - 1 < plugin.game.size) {
                 	
                 	Util util = new Util(plugin);
-                	if (util.isPlayerNaming(Bukkit.getPlayerExact(ChatColor.stripColor(lore.get(1))))) {
+                	Player namingPlayer = Bukkit.getPlayerExact(ChatColor.stripColor(lore.get(1)));
+                	HOHPlayer namingHohPlayer = plugin.getHohPlayer(namingPlayer.getUniqueId());
+                	if (namingHohPlayer.isNamingTeam()) {
                 		player.sendMessage(messageManager.getMessage("still-naming-team"));
                 		return;
                 	}
@@ -78,14 +83,12 @@ public class InventoryClick implements Listener {
                         p2.updateInventory();
                     }
                     
-                    String name = event.getCurrentItem().getItemMeta().getDisplayName();
-                    HOHTeam team = plugin.hohTeam.get(name);
-                    team.addPlayer(plugin.hohPlayer.get(player.getUniqueId()));
-                    plugin.hohPlayer.get(player.getUniqueId()).setTeam(team);
+                    Integer id = event.getSlot();
+                    HOHTeam team = plugin.game.getTeam(id);
+                    plugin.getHohPlayer(player.getUniqueId()).setTeam(team);
                     
-                    plugin.game.cache.remove(plugin.game.cache.indexOf(player));
                     player.closeInventory();
-                    if (plugin.game.cache.isEmpty() && plugin.chat.isEmpty() && plugin.cache.isEmpty()) {
+                    if (plugin.game.allPlayersSelectedTeam() && plugin.game.areAllTeamsNamed()) {
                         plugin.game.startGame();
                     }
                     return;

@@ -1,8 +1,6 @@
 package me.latestion.hoh;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -10,7 +8,6 @@ import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -33,7 +30,6 @@ import me.latestion.hoh.events.TrulyGrace;
 import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.game.HOHPlayer;
-import me.latestion.hoh.game.HOHTeam;
 import me.latestion.hoh.stats.Metrics;
 import me.latestion.hoh.utils.ScoreBoardUtil;
 import me.latestion.hoh.versioncheck.UpdateChecker;
@@ -44,12 +40,8 @@ public class HideOrHunt extends JavaPlugin {
 	public ScoreBoardUtil sbUtil;
 	private MessageManager msgManager;
 
-	public Map<UUID, HOHPlayer> hohPlayer = new HashMap<>();
-	public Map<String, HOHTeam> hohTeam = new HashMap<>();
-	
-	public List<Integer> cache = new ArrayList<>();
-	public List<Player> chat = new ArrayList<>();
-	
+	public Map<UUID, HOHPlayer> hohPlayers = new HashMap<>();
+
 	public Inventory inv;
 	
 	@Override
@@ -76,7 +68,7 @@ public class HideOrHunt extends JavaPlugin {
     	console.sendMessage("        " +                  ChatColor.RED + " _______ ");
     	console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |");
     	console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |" + ChatColor.WHITE + "    Version: " + this.getDescription().getVersion()); 
-    	console.sendMessage(ChatColor.AQUA + "|------|" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|------|" + ChatColor.WHITE + "    By: Latestion"); 
+    	console.sendMessage(ChatColor.AQUA + "|------|" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|------|" + ChatColor.WHITE + "    By: Latestion and barpec12");
     	console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |"); 
     	console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|_______|" + ChatColor.AQUA + "|      |");
     	hasUpdate();
@@ -130,5 +122,13 @@ public class HideOrHunt extends JavaPlugin {
 	public void saveLanguagesFiles(){
 		this.saveResource("locales/en.yml", false);
 		this.saveResource("locales/pl.yml", false);
+	}
+
+	public HOHPlayer getHohPlayer(UUID uuid){
+		return hohPlayers.get(uuid);
+	}
+
+	public Map<UUID, HOHPlayer> getHohPlayers(){
+		return this.hohPlayers;
 	}
 }

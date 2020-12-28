@@ -88,7 +88,7 @@ public class Executor implements CommandExecutor {
             }
             if (args[0].equalsIgnoreCase("beacon") && player.hasPermission("hoh.beacon") 
             		&& GameState.getCurrentGameState() == GameState.ON) {
-                if (plugin.hohPlayer.containsKey(player.getUniqueId())) {
+                if (plugin.hohPlayers.containsKey(player.getUniqueId())) {
                     player.sendMessage(messageManager.getMessage("possible-cheat-attempt"));
                 }
                 else if (args[1] != null) {
@@ -98,7 +98,7 @@ public class Executor implements CommandExecutor {
                     }
                     if (playerNames.contains(args[1].toLowerCase())) {
                         Player teleport = Bukkit.getPlayerExact(args[1]);
-                        player.teleport(plugin.hohPlayer.get(teleport.getUniqueId()).getTeam().getBeacon().getLocation());
+                        player.teleport(plugin.hohPlayers.get(teleport.getUniqueId()).getTeam().getBeacon().getLocation());
                     }
                     else {
                         player.sendMessage(messageManager.getMessage("invalid-player"));
@@ -107,8 +107,8 @@ public class Executor implements CommandExecutor {
             }
             if (args[0].equalsIgnoreCase("chat")) {
                 if (GameState.getCurrentGameState() == GameState.ON) {
-                    if (plugin.hohPlayer.containsKey(player.getUniqueId())) {
-                    	HOHPlayer p = plugin.hohPlayer.get(player.getUniqueId());
+                    if (plugin.hohPlayers.containsKey(player.getUniqueId())) {
+                    	HOHPlayer p = plugin.hohPlayers.get(player.getUniqueId());
                         if (p.teamChat) {
                             p.teamChat = false;
                             player.sendMessage(messageManager.getMessage("team-chat-off"));

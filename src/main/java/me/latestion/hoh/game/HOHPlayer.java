@@ -12,13 +12,14 @@ public class HOHPlayer {
 	
 	private HideOrHunt plugin;
 	private UUID player;
-	private HOHTeam team;
+	private HOHTeam team = null;
 	
 	public boolean banned = false;
 	public boolean dead = false;
 	
 	public boolean teamChat = false;
-	
+	private boolean namingTeam = false;
+
 	public HOHPlayer(HideOrHunt plugin, UUID player) {
 		this.plugin = plugin;
 		this.player = player;
@@ -31,16 +32,23 @@ public class HOHPlayer {
 	public HOHTeam getTeam() {
 		return team;
 	}
-	
+
+	public boolean hasTeam(){
+		return this.team != null;
+	}
+
+	public void setNamingTeam(boolean namingTeam){
+		this.namingTeam = namingTeam;
+	}
+
+	public boolean isNamingTeam(){
+		return this.namingTeam;
+	}
+
 	public void setTeam(HOHTeam t) {
 		if (GameState.getCurrentGameState() != GameState.PREPARE) return;
 		this.team = t;
-        plugin.hohTeam.put(t.getName(), team);
-        team.addPlayer(plugin.hohPlayer.get(player));
-        plugin.game.addTeam(team);
-        plugin.cache.remove(plugin.chat.indexOf(getPlayer()));
-        plugin.chat.remove(getPlayer());
-		
+        team.addPlayer(plugin.hohPlayers.get(player));
 	}
 
 	public void prepareTeam(Inventory inv) {

@@ -2,7 +2,6 @@ package me.latestion.hoh.events;
 
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -30,9 +29,12 @@ public class BlockBreak implements Listener {
 		if (GameState.getCurrentGameState() != GameState.ON) return;
 		if (event.getBlock().getType() != Material.BEACON) return;
 		Player player = event.getPlayer();
+		HOHPlayer hohPlayer = plugin.getHohPlayer(player.getUniqueId());
 		Util util = new Util(plugin);
 		HOHTeam team = util.getTeamFromBlock(event.getBlock());
-		if (team.players.contains(plugin.hohPlayer.get(player.getUniqueId()))) {
+		if(team == null)
+			return;
+		if (team.equals(hohPlayer.getTeam())) {
 			event.setCancelled(true);
 			player.sendMessage(messageManager.getMessage("cannot-break-own-beacon"));
 			return;
@@ -47,7 +49,7 @@ public class BlockBreak implements Listener {
 		MessageManager messageManager = plugin.getMessageManager();
 		player.getWorld().playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.0f, 1.0f);
 		String eliminatedMsg = messageManager.getMessage("eliminated-broadcast").replace("%eliminated-team%", team.getName());
-		eliminatedMsg = eliminatedMsg.replace("%eliminating-team%", plugin.hohPlayer.get(player.getUniqueId()).getTeam().getName());
+		eliminatedMsg = eliminatedMsg.replace("%eliminating-team%", plugin.hohPlayers.get(player.getUniqueId()).getTeam().getName());
 		Bukkit.broadcastMessage(eliminatedMsg);
         for (HOHPlayer p : team.players) {
         	p.getPlayer().sendTitle(messageManager.getMessage("beacon-destroyed-title"), "", 10, 40, 10);
