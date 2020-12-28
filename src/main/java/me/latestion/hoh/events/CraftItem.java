@@ -12,21 +12,21 @@ import me.latestion.hoh.game.GameState;
 
 public class CraftItem implements Listener {
 
-    private HideOrHunt plugin;
+	private HideOrHunt plugin;
 
-    public CraftItem(HideOrHunt plugin) {
-    	this.plugin = plugin;
-    }
-    
-    @EventHandler
-    public void cie(CraftItemEvent event) {
-        if (GameState.getCurrentGameState() == GameState.ON) {
-            if (event.getRecipe().getResult().getType() == Material.CRAFTING_TABLE || 
-            		event.getRecipe().getResult().getType() == Material.BEACON) {
-                event.setCancelled(true);
-                Player player = (Player) event.getWhoClicked();
-                player.sendMessage(plugin.getMessageManager().getMessage("cannot-craft"));
-            }
-        }
-    }
+	public CraftItem(HideOrHunt plugin) {
+		this.plugin = plugin;
+	}
+
+	@EventHandler
+	public void cie(CraftItemEvent event) {
+		if (GameState.getCurrentGameState() == GameState.ON) {
+			if (event.getRecipe().getResult().getType() == Material.CRAFTING_TABLE ||
+					event.getRecipe().getResult().getType() == Material.BEACON) {
+				event.setCancelled(true);
+				Player player = (Player) event.getWhoClicked();
+				player.sendMessage(plugin.getMessageManager().getMessage("cannot-craft"));
+			}
+		}
+	}
 }

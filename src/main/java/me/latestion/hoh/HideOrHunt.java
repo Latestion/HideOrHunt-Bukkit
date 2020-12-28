@@ -43,7 +43,7 @@ public class HideOrHunt extends JavaPlugin {
 	public Map<UUID, HOHPlayer> hohPlayers = new HashMap<>();
 
 	public Inventory inv;
-	
+
 	@Override
 	public void onEnable() {
 		this.saveDefaultConfig();
@@ -57,78 +57,78 @@ public class HideOrHunt extends JavaPlugin {
 		hoh();
 		registerAll();
 	}
-	
+
 	@Override
 	public void onDisable() {
 		if (GameState.getCurrentGameState() == GameState.ON) game.stop();
 	}
 
-    private void hoh() {
-    	ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-    	console.sendMessage("        " +                  ChatColor.RED + " _______ ");
-    	console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |");
-    	console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |" + ChatColor.WHITE + "    Version: " + this.getDescription().getVersion()); 
-    	console.sendMessage(ChatColor.AQUA + "|------|" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|------|" + ChatColor.WHITE + "    By: Latestion and barpec12");
-    	console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |"); 
-    	console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|_______|" + ChatColor.AQUA + "|      |");
-    	hasUpdate();
-    }
-    
+	private void hoh() {
+		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+		console.sendMessage("        " + ChatColor.RED + " _______ ");
+		console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |");
+		console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |" + ChatColor.WHITE + "    Version: " + this.getDescription().getVersion());
+		console.sendMessage(ChatColor.AQUA + "|------|" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|------|" + ChatColor.WHITE + "    By: Latestion and barpec12");
+		console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |");
+		console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|_______|" + ChatColor.AQUA + "|      |");
+		hasUpdate();
+	}
+
 	private boolean hasUpdate() {
 		UpdateChecker updater = new UpdateChecker(this, 79307);
-        try {
-            if (updater.checkForUpdates()) {
-                getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-                getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "You are using an older version of Hide Or Hunt!");
-                getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "Download the newest version here:");
-                getServer().getConsoleSender().sendMessage(ChatColor.DARK_AQUA + "https://www.spigotmc.org/resources/hide-or-hunt-plugin.79307/");
-                getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-                return true;
-            } else {
-                getServer().getConsoleSender().sendMessage("[Hide Or Hunt] Plugin is up to date! - "
-                				+ getDescription().getVersion());
-                return false;
-            }
-        } catch (Exception e) {
-            getLogger().info("Hide Or Hunt Could not check for updates.");
-            return false;
-        }
-        
+		try {
+			if (updater.checkForUpdates()) {
+				getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+				getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "You are using an older version of Hide Or Hunt!");
+				getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "Download the newest version here:");
+				getServer().getConsoleSender().sendMessage(ChatColor.DARK_AQUA + "https://www.spigotmc.org/resources/hide-or-hunt-plugin.79307/");
+				getServer().getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+				return true;
+			} else {
+				getServer().getConsoleSender().sendMessage("[Hide Or Hunt] Plugin is up to date! - "
+						+ getDescription().getVersion());
+				return false;
+			}
+		} catch (Exception e) {
+			getLogger().info("Hide Or Hunt Could not check for updates.");
+			return false;
+		}
+
 	}
-	
+
 	private void registerAll() {
 		this.getServer().getPluginManager().registerEvents(new AsyncChat(this), this);
-		this.getServer().getPluginManager().registerEvents(new BlockBreak(this), this);	
+		this.getServer().getPluginManager().registerEvents(new BlockBreak(this), this);
 		this.getServer().getPluginManager().registerEvents(new BlockPlace(this), this);
 		this.getServer().getPluginManager().registerEvents(new CraftItem(this), this);
 		this.getServer().getPluginManager().registerEvents(new EntityDamage(this), this);
-		this.getServer().getPluginManager().registerEvents(new GameModeChange(this), this);	
-        this.getServer().getPluginManager().registerEvents(new InventoryClick(this), this);
-        this.getServer().getPluginManager().registerEvents(new InventoryClose(this), this);
-        this.getServer().getPluginManager().registerEvents(new InventoryOpen(), this);
-        this.getServer().getPluginManager().registerEvents(new PlayerDeath(this), this);
-        this.getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
-        this.getServer().getPluginManager().registerEvents(new PlayerMove(this), this);
-        this.getServer().getPluginManager().registerEvents(new PlayerRespawn(this), this);
-        this.getServer().getPluginManager().registerEvents(new PlayerWorld(this), this);
-        this.getServer().getPluginManager().registerEvents(new TrulyGrace(this), this);
-        this.getCommand("hoh").setExecutor(new Executor(this));
+		this.getServer().getPluginManager().registerEvents(new GameModeChange(this), this);
+		this.getServer().getPluginManager().registerEvents(new InventoryClick(this), this);
+		this.getServer().getPluginManager().registerEvents(new InventoryClose(this), this);
+		this.getServer().getPluginManager().registerEvents(new InventoryOpen(), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerDeath(this), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerMove(this), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerRespawn(this), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerWorld(this), this);
+		this.getServer().getPluginManager().registerEvents(new TrulyGrace(this), this);
+		this.getCommand("hoh").setExecutor(new Executor(this));
 	}
 
-	public MessageManager getMessageManager(){
+	public MessageManager getMessageManager() {
 		return this.msgManager;
 	}
 
-	public void saveLanguagesFiles(){
+	public void saveLanguagesFiles() {
 		this.saveResource("locales/en.yml", false);
 		this.saveResource("locales/pl.yml", false);
 	}
 
-	public HOHPlayer getHohPlayer(UUID uuid){
+	public HOHPlayer getHohPlayer(UUID uuid) {
 		return hohPlayers.get(uuid);
 	}
 
-	public Map<UUID, HOHPlayer> getHohPlayers(){
+	public Map<UUID, HOHPlayer> getHohPlayers() {
 		return this.hohPlayers;
 	}
 }

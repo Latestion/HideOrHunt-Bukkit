@@ -13,7 +13,7 @@ import me.latestion.hoh.game.GameState;
 public class PlayerRespawn implements Listener {
 
 	private HideOrHunt plugin;
-	
+
 	public PlayerRespawn(HideOrHunt plugin) {
 		this.plugin = plugin;
 	}
@@ -22,14 +22,14 @@ public class PlayerRespawn implements Listener {
 	public void repawn(PlayerRespawnEvent event) {
 		if (GameState.getCurrentGameState() == GameState.ON) {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-	            public void run() {
-	            	for (String s : plugin.getConfig().getStringList("Item-On-Respawn")) {
-	            		String[] split = s.split(", ");
-	            		ItemStack item = new ItemStack(Material.matchMaterial(split[0].toUpperCase()), Integer.parseInt(split[1]));
-	            		event.getPlayer().getInventory().addItem(item);
-	            	}
-	            } 
-	        }, 1);
+				public void run() {
+					for (String s : plugin.getConfig().getStringList("Item-On-Respawn")) {
+						String[] split = s.split(", ");
+						ItemStack item = new ItemStack(Material.matchMaterial(split[0].toUpperCase()), Integer.parseInt(split[1]));
+						event.getPlayer().getInventory().addItem(item);
+					}
+				}
+			}, 1);
 			event.setRespawnLocation(plugin.hohPlayers.get(event.getPlayer().getUniqueId()).getTeam().getBeacon().getLocation().clone().add(0, 1, 0));
 		}
 	}

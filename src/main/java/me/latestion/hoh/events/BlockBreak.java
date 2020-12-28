@@ -18,7 +18,7 @@ import me.latestion.hoh.utils.Util;
 public class BlockBreak implements Listener {
 
 	private HideOrHunt plugin;
-	
+
 	public BlockBreak(HideOrHunt plugin) {
 		this.plugin = plugin;
 	}
@@ -32,7 +32,7 @@ public class BlockBreak implements Listener {
 		HOHPlayer hohPlayer = plugin.getHohPlayer(player.getUniqueId());
 		Util util = new Util(plugin);
 		HOHTeam team = util.getTeamFromBlock(event.getBlock());
-		if(team == null)
+		if (team == null)
 			return;
 		if (team.equals(hohPlayer.getTeam())) {
 			event.setCancelled(true);
@@ -44,17 +44,17 @@ public class BlockBreak implements Listener {
 		plugin.sbUtil.beaconBreakTeam(team.getName());
 		doAsthetic(team, event.getPlayer());
 	}
-	
+
 	private void doAsthetic(HOHTeam team, Player player) {
 		MessageManager messageManager = plugin.getMessageManager();
 		player.getWorld().playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.0f, 1.0f);
 		String eliminatedMsg = messageManager.getMessage("eliminated-broadcast").replace("%eliminated-team%", team.getName());
 		eliminatedMsg = eliminatedMsg.replace("%eliminating-team%", plugin.hohPlayers.get(player.getUniqueId()).getTeam().getName());
 		Bukkit.broadcastMessage(eliminatedMsg);
-        for (HOHPlayer p : team.players) {
-        	p.getPlayer().sendTitle(messageManager.getMessage("beacon-destroyed-title"), "", 10, 40, 10);
-        	p.getPlayer().playSound(p.getPlayer().getLocation(), Sound.BLOCK_ANVIL_USE, 1.0f, 1.0f);
-        }
+		for (HOHPlayer p : team.players) {
+			p.getPlayer().sendTitle(messageManager.getMessage("beacon-destroyed-title"), "", 10, 40, 10);
+			p.getPlayer().playSound(p.getPlayer().getLocation(), Sound.BLOCK_ANVIL_USE, 1.0f, 1.0f);
+		}
 	}
-	
+
 }
