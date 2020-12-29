@@ -18,7 +18,7 @@ public class TrulyGrace implements Listener {
 
 	@EventHandler
 	public void onDamage(EntityDamageEvent event) {
-		if (GameState.getCurrentGameState() == GameState.ON) {
+		if (plugin.game.gameState == GameState.ON) {
 			if (plugin.game.grace) {
 				if (plugin.getConfig().getBoolean("Grace-Period-Peaceful")) {
 					event.setCancelled(true);
@@ -29,7 +29,7 @@ public class TrulyGrace implements Listener {
 
 	@EventHandler
 	public void target(EntityTargetEvent event) {
-		if (GameState.getCurrentGameState() == GameState.ON) {
+		if (plugin.game.gameState == GameState.ON) {
 			if (plugin.game.grace) {
 				if (plugin.getConfig().getBoolean("Grace-Period-Peaceful")) {
 					event.setCancelled(true);

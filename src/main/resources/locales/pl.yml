@@ -19,7 +19,7 @@ messages:
   beacon-placed-broadcast: "Zespół %team% &bpostawił swój beacon!"
   cannot-craft: "&l&cNie możesz tego stworzyć!"
   starting-game: "&cRozpoczynanie &fHOH!"
-  stoping-game: "&cGra została zatrzymana!"
+  ending-game: "&cGra została zakończona!"
   start-title-first-line: "&l&aGra wystartowała"
   start-title-second-line: "&l&fKapitanowie otrzymali beacony."
   grace-period-ended-1: "&l&cPokój dobiegł końca."

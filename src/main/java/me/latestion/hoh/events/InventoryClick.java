@@ -42,13 +42,13 @@ public class InventoryClick implements Listener {
 		}
 		MessageManager messageManager = plugin.getMessageManager();
 		if (event.getView().getTitle().equals(messageManager.getMessage("team-inventory-title"))) {
-			if (GameState.getCurrentGameState() != GameState.PREPARE) {
+			if (plugin.game.gameState != GameState.PREPARE) {
 				return;
 			}
 			event.setCancelled(true);
 			Player player = (Player) event.getWhoClicked();
-			HOHPlayer hohPlayer = plugin.getHohPlayer(player.getUniqueId());
-			if (event.getInventory().equals(plugin.inv) && event.getCurrentItem().getItemMeta().hasLore()) {
+			HOHPlayer hohPlayer = plugin.game.getHohPlayer(player.getUniqueId());
+			if (event.getInventory().equals(plugin.game.inv) && event.getCurrentItem().getItemMeta().hasLore()) {
 				List<String> lore = event.getCurrentItem().getItemMeta().getLore();
 				if (lore.size() == 1) {
 					lore.add(player.getName());
@@ -61,17 +61,18 @@ public class InventoryClick implements Listener {
 						p.updateInventory();
 					}
 					hohPlayer.setNamingTeam(true);
-					HOHTeam team = new HOHTeam(plugin, event.getSlot());
+					HOHTeam team = new HOHTeam(event.getSlot());
 					plugin.game.addTeam(team);
 					hohPlayer.setTeam(team);
+					team.addPlayer(hohPlayer);
 					player.sendMessage(messageManager.getMessage("enter-team-name"));
 					player.closeInventory();
 					return;
-				} else if (lore.size() - 1 < plugin.game.size) {
+				} else if (lore.size() - 1 < plugin.game.teamSize) {
 
 					Util util = new Util(plugin);
 					Player namingPlayer = Bukkit.getPlayerExact(ChatColor.stripColor(lore.get(1)));
-					HOHPlayer namingHohPlayer = plugin.getHohPlayer(namingPlayer.getUniqueId());
+					HOHPlayer namingHohPlayer = plugin.game.getHohPlayer(namingPlayer.getUniqueId());
 					if (namingHohPlayer.isNamingTeam()) {
 						player.sendMessage(messageManager.getMessage("still-naming-team"));
 						return;
@@ -84,7 +85,8 @@ public class InventoryClick implements Listener {
 
 					Integer id = event.getSlot();
 					HOHTeam team = plugin.game.getTeam(id);
-					plugin.getHohPlayer(player.getUniqueId()).setTeam(team);
+					hohPlayer.setTeam(team);
+					team.addPlayer(hohPlayer);
 
 					player.closeInventory();
 					if (plugin.game.allPlayersSelectedTeam() && plugin.game.areAllTeamsNamed()) {

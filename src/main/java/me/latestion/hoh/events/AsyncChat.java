@@ -1,6 +1,5 @@
 package me.latestion.hoh.events;
 
-import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,7 +25,7 @@ public class AsyncChat implements Listener {
 
 	@EventHandler
 	public void ce(AsyncPlayerChatEvent event) {
-		HOHPlayer hohPlayer = plugin.getHohPlayer(event.getPlayer().getUniqueId());
+		HOHPlayer hohPlayer = plugin.game.getHohPlayer(event.getPlayer().getUniqueId());
 		if (hohPlayer.isNamingTeam()) {
 			event.setCancelled(true);
 			Player player = event.getPlayer();
@@ -37,7 +36,7 @@ public class AsyncChat implements Listener {
 				player.sendMessage(messageManager.getMessage("too-many-characters"));
 				return;
 			}
-			if (GameState.getCurrentGameState() != GameState.PREPARE) {
+			if (plugin.game.gameState != GameState.PREPARE) {
 				return;
 			}
 			Util util = new Util(plugin);
@@ -47,12 +46,12 @@ public class AsyncChat implements Listener {
 			}
 			player.sendMessage(messageManager.getMessage("team-name-set").replace("%name%", name));
 			Integer id = hohPlayer.getTeam().getID();
-			ItemStack item = plugin.inv.getItem(id);
+			ItemStack item = plugin.game.inv.getItem(id);
 			ItemMeta meta = item.getItemMeta();
 			meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
 			item.setItemMeta(meta);
-			plugin.inv.setItem(id, item);
-			for (HumanEntity h : plugin.inv.getViewers()) {
+			plugin.game.inv.setItem(id, item);
+			for (HumanEntity h : plugin.game.inv.getViewers()) {
 				if (h instanceof Player)
 					((Player) h).updateInventory();
 			}
@@ -68,7 +67,7 @@ public class AsyncChat implements Listener {
 				}, 1L);
 			}
 		} else {
-			if (GameState.getCurrentGameState() != GameState.ON) {
+			if (plugin.game.gameState != GameState.ON) {
 				return;
 			}
 			if (plugin.game.hohPlayers.containsKey(event.getPlayer().getUniqueId())) {

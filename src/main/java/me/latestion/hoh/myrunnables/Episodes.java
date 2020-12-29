@@ -1,11 +1,14 @@
 package me.latestion.hoh.myrunnables;
 
+import me.latestion.hoh.files.FlatHOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.latestion.hoh.HideOrHunt;
+
+import java.io.File;
 
 public class Episodes extends BukkitRunnable {
 
@@ -40,6 +43,7 @@ public class Episodes extends BukkitRunnable {
 		} else {
 			sendReminders();
 		}
+		FlatHOHGame.save(plugin.game, plugin, new File(plugin.getDataFolder(), "hohGame.yml"));
 		plugin.game.ep++;
 	}
 
