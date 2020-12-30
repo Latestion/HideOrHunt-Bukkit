@@ -1,5 +1,6 @@
 package me.latestion.hoh.events;
 
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -19,7 +20,7 @@ public class TrulyGrace implements Listener {
 	@EventHandler
 	public void onDamage(EntityDamageEvent event) {
 		if (plugin.game.gameState == GameState.ON) {
-			if (plugin.game.grace) {
+			if (plugin.game.grace && event.getEntityType().equals(EntityType.PLAYER)) {
 				if (plugin.getConfig().getBoolean("Grace-Period-Peaceful")) {
 					event.setCancelled(true);
 				}
