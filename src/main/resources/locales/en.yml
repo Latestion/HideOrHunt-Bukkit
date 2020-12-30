@@ -44,3 +44,4 @@ messages:
   lost-inventory: "&l&cYou Lost Your Stuff!"
   scoreboard-title: "&6HideOrHunt"
   scoreboard-teams: "&l&cTeams:"
+  no-spectate-permissions: "&cYou are not allowed to spectate this game!"

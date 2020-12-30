@@ -1,6 +1,7 @@
 package me.latestion.hoh;
 
 import me.latestion.hoh.data.flat.FlatHOHGame;
+import me.latestion.hoh.events.*;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -8,21 +9,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.latestion.hoh.commandmanager.Executor;
-import me.latestion.hoh.events.AsyncChat;
-import me.latestion.hoh.events.BlockBreak;
-import me.latestion.hoh.events.BlockPlace;
-import me.latestion.hoh.events.CraftItem;
-import me.latestion.hoh.events.EntityDamage;
-import me.latestion.hoh.events.GameModeChange;
-import me.latestion.hoh.events.InventoryClick;
-import me.latestion.hoh.events.InventoryClose;
-import me.latestion.hoh.events.InventoryOpen;
-import me.latestion.hoh.events.PlayerDeath;
-import me.latestion.hoh.events.PlayerJoin;
-import me.latestion.hoh.events.PlayerMove;
-import me.latestion.hoh.events.PlayerRespawn;
-import me.latestion.hoh.events.PlayerWorld;
-import me.latestion.hoh.events.TrulyGrace;
 import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.stats.Metrics;
@@ -110,6 +96,7 @@ public class HideOrHunt extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new PlayerRespawn(this), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerWorld(this), this);
 		this.getServer().getPluginManager().registerEvents(new TrulyGrace(this), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerLogin(this), this);
 		this.getCommand("hoh").setExecutor(new Executor(this));
 	}
 

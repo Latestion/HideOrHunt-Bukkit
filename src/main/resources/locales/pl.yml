@@ -44,3 +44,4 @@ messages:
   lost-inventory: "&l&cStraciłeś swoje przedmioty!"
   scoreboard-title: "&6HideOrHunt"
   scoreboard-teams: "&l&cZespoły:"
+  no-spectate-permissions: "&cNie możesz obserwować tej gry!"
