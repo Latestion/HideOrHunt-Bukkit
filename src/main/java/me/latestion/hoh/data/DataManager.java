@@ -2,7 +2,7 @@
 // Decompiled by Procyon v0.5.36
 // 
 
-package me.latestion.hoh.files;
+package me.latestion.hoh.data;
 
 import java.io.IOException;
 import java.util.logging.Level;

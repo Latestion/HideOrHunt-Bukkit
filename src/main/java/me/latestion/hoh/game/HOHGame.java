@@ -3,7 +3,7 @@ package me.latestion.hoh.game;
 import java.io.File;
 import java.util.*;
 
-import me.latestion.hoh.files.FlatHOHGame;
+import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

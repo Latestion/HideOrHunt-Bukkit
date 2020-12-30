@@ -1,6 +1,6 @@
 package me.latestion.hoh.myrunnables;
 
-import me.latestion.hoh.files.FlatHOHGame;
+import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

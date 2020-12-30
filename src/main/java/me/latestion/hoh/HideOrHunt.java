@@ -1,11 +1,10 @@
 package me.latestion.hoh;
 
-import me.latestion.hoh.files.FlatHOHGame;
+import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.latestion.hoh.commandmanager.Executor;

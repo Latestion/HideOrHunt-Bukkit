@@ -1,6 +1,5 @@
-package me.latestion.hoh.files;
+package me.latestion.hoh.data.flat;
 
-import me.latestion.hoh.HideOrHunt;
 import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.game.HOHPlayer;
 import org.bukkit.configuration.ConfigurationSection;
