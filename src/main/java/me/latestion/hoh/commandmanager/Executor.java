@@ -52,15 +52,17 @@ public class Executor implements CommandExecutor {
 						if (size == 0) {
 							return false;
 						}
-						if (GameState.getCurrentGameState() != GameState.OFF) {
+						HOHGame game = plugin.game;
+						if (game.gameState != GameState.OFF) {
 							return false;
 						}
-						HOHGame game = new HOHGame(plugin, player.getLocation(), size);
-						plugin.game = game;
+						game.setSpawnLocation(player.getLocation());
+						game.teamSize = size;
+						game.prepareGame();
 					}
 				}
 			}
-			if (args[0].equalsIgnoreCase("freeze") && GameState.getCurrentGameState() == GameState.ON && player.hasPermission("hoh.freeze")) {
+			if (args[0].equalsIgnoreCase("freeze") && plugin.game.gameState == GameState.ON && player.hasPermission("hoh.freeze")) {
 				if (plugin.game.freeze) {
 					Bukkit.broadcastMessage(messageManager.getMessage("unfreezed-game"));
 					plugin.game.freeze = false;
@@ -80,13 +82,13 @@ public class Executor implements CommandExecutor {
 				}
 			}
 			if (args[0].equalsIgnoreCase("stop") && player.hasPermission("hoh.stop")) {
-				if (GameState.getCurrentGameState() == GameState.ON)
-					plugin.game.stop();
+				if (plugin.game.gameState == GameState.ON)
+					plugin.game.endGame();
 				else
 					player.sendMessage(messageManager.getMessage("game-not-started"));
 			}
 			if (args[0].equalsIgnoreCase("beacon") && player.hasPermission("hoh.beacon")
-					&& GameState.getCurrentGameState() == GameState.ON) {
+					&& plugin.game.gameState == GameState.ON) {
 				if (plugin.game.hohPlayers.containsKey(player.getUniqueId())) {
 					player.sendMessage(messageManager.getMessage("possible-cheat-attempt"));
 				} else if (args[1] != null) {
@@ -103,7 +105,7 @@ public class Executor implements CommandExecutor {
 				}
 			}
 			if (args[0].equalsIgnoreCase("chat")) {
-				if (GameState.getCurrentGameState() == GameState.ON) {
+				if (plugin.game.gameState == GameState.ON) {
 					if (plugin.game.hohPlayers.containsKey(player.getUniqueId())) {
 						HOHPlayer p = plugin.game.hohPlayers.get(player.getUniqueId());
 						if (p.teamChat) {

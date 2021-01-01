@@ -21,7 +21,7 @@ public class PlayerRespawn implements Listener {
 
 	@EventHandler
 	public void repawn(PlayerRespawnEvent event) {
-		if (GameState.getCurrentGameState() == GameState.ON) {
+		if (plugin.game.gameState == GameState.ON) {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				public void run() {
 					for (String s : plugin.getConfig().getStringList("Item-On-Respawn")) {

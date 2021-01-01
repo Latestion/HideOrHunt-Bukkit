@@ -1,45 +1,27 @@
 package me.latestion.hoh;
 
-import java.util.Map;
-import java.util.UUID;
-
+import me.latestion.hoh.data.flat.FlatHOHGame;
+import me.latestion.hoh.events.*;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.latestion.hoh.commandmanager.Executor;
-import me.latestion.hoh.events.AsyncChat;
-import me.latestion.hoh.events.BlockBreak;
-import me.latestion.hoh.events.BlockPlace;
-import me.latestion.hoh.events.CraftItem;
-import me.latestion.hoh.events.EntityDamage;
-import me.latestion.hoh.events.GameModeChange;
-import me.latestion.hoh.events.InventoryClick;
-import me.latestion.hoh.events.InventoryClose;
-import me.latestion.hoh.events.InventoryOpen;
-import me.latestion.hoh.events.PlayerDeath;
-import me.latestion.hoh.events.PlayerJoin;
-import me.latestion.hoh.events.PlayerMove;
-import me.latestion.hoh.events.PlayerRespawn;
-import me.latestion.hoh.events.PlayerWorld;
-import me.latestion.hoh.events.TrulyGrace;
 import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHGame;
-import me.latestion.hoh.game.HOHPlayer;
 import me.latestion.hoh.stats.Metrics;
 import me.latestion.hoh.utils.ScoreBoardUtil;
 import me.latestion.hoh.versioncheck.UpdateChecker;
+
+import java.io.File;
 
 public class HideOrHunt extends JavaPlugin {
 
 	public HOHGame game;
 	public ScoreBoardUtil sbUtil;
 	private MessageManager msgManager;
-
-	public Inventory inv;
 
 	@Override
 	public void onEnable() {
@@ -48,16 +30,21 @@ public class HideOrHunt extends JavaPlugin {
 		String lang = getConfig().getString("language");
 		this.msgManager = new MessageManager(this.getDataFolder(), lang);
 
-		GameState.setGameState(GameState.OFF);
 		sbUtil = new ScoreBoardUtil(this);
 		new Metrics(this, 8350);
 		hoh();
 		registerAll();
+		game = FlatHOHGame.deserialize(new File(this.getDataFolder(), "hohGame.yml"), this);
+		if(game != null){
+			game.loadGame();
+		}else{
+			this.game = new HOHGame(this);
+		}
 	}
 
 	@Override
 	public void onDisable() {
-		if (GameState.getCurrentGameState() == GameState.ON) game.stop();
+		if (game.gameState == GameState.ON) game.serverStop();
 	}
 
 	private void hoh() {
@@ -102,13 +89,14 @@ public class HideOrHunt extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new GameModeChange(this), this);
 		this.getServer().getPluginManager().registerEvents(new InventoryClick(this), this);
 		this.getServer().getPluginManager().registerEvents(new InventoryClose(this), this);
-		this.getServer().getPluginManager().registerEvents(new InventoryOpen(), this);
+		this.getServer().getPluginManager().registerEvents(new InventoryOpen(this), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerDeath(this), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerMove(this), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerRespawn(this), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerWorld(this), this);
 		this.getServer().getPluginManager().registerEvents(new TrulyGrace(this), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerLogin(this), this);
 		this.getCommand("hoh").setExecutor(new Executor(this));
 	}
 
@@ -119,13 +107,5 @@ public class HideOrHunt extends JavaPlugin {
 	public void saveLanguagesFiles() {
 		this.saveResource("locales/en.yml", false);
 		this.saveResource("locales/pl.yml", false);
-	}
-
-	public HOHPlayer getHohPlayer(UUID uuid) {
-		return game.hohPlayers.get(uuid);
-	}
-
-	public Map<UUID, HOHPlayer> getHohPlayers() {
-		return game.hohPlayers;
 	}
 }

@@ -19,7 +19,7 @@ messages:
   beacon-placed-broadcast: "%team% &bhas placed their beacon!"
   cannot-craft: "&l&cYou cannot craft that!"
   starting-game: "&cStarting Your &fHOH Game!"
-  stoping-game: "&cGame has been stopped!"
+  ending-game: "&cGame has ended!"
   start-title-first-line: "&l&aGame Started"
   start-title-second-line: "&l&fLeaders have received the team beacons."
   grace-period-ended-1: "&l&cGrace period has ended."
@@ -44,3 +44,4 @@ messages:
   lost-inventory: "&l&cYou Lost Your Stuff!"
   scoreboard-title: "&6HideOrHunt"
   scoreboard-teams: "&l&cTeams:"
+  no-spectate-permissions: "&cYou are not allowed to spectate this game!"

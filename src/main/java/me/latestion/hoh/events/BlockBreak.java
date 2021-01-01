@@ -1,6 +1,5 @@
 package me.latestion.hoh.events;
 
-import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -27,10 +26,10 @@ public class BlockBreak implements Listener {
 	@EventHandler
 	public void onBreak(BlockBreakEvent event) {
 		MessageManager messageManager = plugin.getMessageManager();
-		if (GameState.getCurrentGameState() != GameState.ON) return;
+		if (plugin.game.gameState != GameState.ON) return;
 		if (event.getBlock().getType() != Material.BEACON) return;
 		Player player = event.getPlayer();
-		HOHPlayer hohPlayer = plugin.getHohPlayer(player.getUniqueId());
+		HOHPlayer hohPlayer = plugin.game.getHohPlayer(player.getUniqueId());
 		Util util = new Util(plugin);
 		HOHTeam team = util.getTeamFromBlock(event.getBlock());
 		if (team == null)

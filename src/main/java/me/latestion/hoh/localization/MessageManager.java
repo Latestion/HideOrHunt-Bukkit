@@ -31,7 +31,7 @@ public class MessageManager {
 			return;
 		}
 		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-		messages = yaml.getConfigurationSection("messages").getValues(true).entrySet().stream()
+		messages = yaml.getConfigurationSection("messages").getValues(false).entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, e -> (String) e.getValue()));
 
 	}

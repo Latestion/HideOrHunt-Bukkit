@@ -1,12 +1,15 @@
 package me.latestion.hoh.game;
 
+import java.io.File;
 import java.util.*;
 
+import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -22,9 +25,9 @@ public class HOHGame {
 
 
 	private HideOrHunt plugin;
-	public int size;
-	private Util util;
 	public Location loc;
+	public int teamSize;
+	private Util util;
 
 	public Map<UUID, HOHPlayer> hohPlayers = new HashMap<>();
 	private Map<Integer, HOHTeam> teams = new HashMap<>();
@@ -34,35 +37,52 @@ public class HOHGame {
 	public boolean freeze = false;
 	public boolean grace = false;
 
+	public GameState gameState = GameState.OFF;
+
 	public int ep = 1;
 
-	public HOHGame(HideOrHunt plugin, Location loc, int size) {
+	public Inventory inv;
+
+	public HOHGame(HideOrHunt plugin){
+		this.plugin = plugin;
+		this.util = new Util(plugin);
+	}
+
+	public HOHGame(HideOrHunt plugin, Location loc, int teamSize) {
 		this.plugin = plugin;
 		this.loc = loc;
 		this.util = new Util(plugin);
-		this.size = size;
-		GameState.setGameState(GameState.PREPARE);
-		prepareGame();
+		this.teamSize = teamSize;
 	}
 
-	private void prepareGame() {
+	public void loadGame(){
+		double neededTeams = Math.ceil(hohPlayers.size() / (double) teamSize);
+		int totalTeams = (int) neededTeams;
+		this.inv = util.createInv(totalTeams);
+		teams.values().stream().forEach(t -> plugin.sbUtil.addTeam(t.getName()));
+		this.bar = new Bar(plugin);
+		if (plugin.getConfig().getBoolean("Auto-Episodes")) new Episodes(plugin);
+		if (plugin.getConfig().getBoolean("Auto-Supply-Drops")) new SupplyDrop(plugin);
+	}
+	public void prepareGame() {
+		this.gameState = GameState.PREPARE;
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			if (player.isOp() && !util.getAllowOp()) {
 				continue;
 			}
-			HOHPlayer p = new HOHPlayer(plugin, player.getUniqueId());
+			HOHPlayer p = new HOHPlayer(this, player.getUniqueId());
 			hohPlayers.put(player.getUniqueId(), p);
 		}
-		double neededTeams = Math.ceil(hohPlayers.size() / (double) size);
+		double neededTeams = Math.ceil(hohPlayers.size() / (double) teamSize);
 		int totalTeams = (int) neededTeams;
-		util.createInv(totalTeams);
+		this.inv = util.createInv(totalTeams);
 		for (HOHPlayer player : hohPlayers.values()) {
-			player.prepareTeam(plugin.inv);
+			player.prepareTeam(inv);
 		}
 	}
 
 	public void startGame() {
-		if (GameState.getCurrentGameState() != GameState.PREPARE) return;
+		if (gameState != GameState.PREPARE) return;
 		Bukkit.getServer().broadcastMessage(plugin.getMessageManager().getMessage("starting-game"));
 		setBorder();
 		for (HOHTeam team : teams.values()) {
@@ -75,7 +95,7 @@ public class HOHGame {
 		}
 		plugin.sbUtil.addAllPlayers();
 		this.bar = new Bar(plugin);
-		GameState.setGameState(GameState.ON);
+		gameState = GameState.ON;
 		sendStartTitle();
 		plugin.sbUtil.setAsthetic();
 		if (plugin.getConfig().getBoolean("Grace-Period")) grace = true;
@@ -89,8 +109,8 @@ public class HOHGame {
 		teams.put(team.getID(), team);
 	}
 
-	public Collection<HOHTeam> getTeams() {
-		return teams.values();
+	public Map<Integer, HOHTeam> getTeams() {
+		return teams;
 	}
 
 	public HOHTeam getTeam(Integer id) {
@@ -114,7 +134,19 @@ public class HOHGame {
 		loc.getWorld().setSpawnLocation(loc);
 	}
 
-	public boolean end() {
+	public void setSpawnLocation(Location loc){
+		this.loc = loc;
+	}
+
+	public void setHohPlayers(Map<UUID, HOHPlayer> hohPlayers) {
+		this.hohPlayers = hohPlayers;
+	}
+
+	public void setTeams(Map<Integer, HOHTeam> teams) {
+		this.teams = teams;
+	}
+
+	public boolean checkEndConditions() {
 		List<HOHTeam> aliveTeams = new ArrayList<>();
 		for (HOHPlayer player : hohPlayers.values()) {
 			if (!player.dead) {
@@ -126,7 +158,7 @@ public class HOHGame {
 		return aliveTeams.size() == 1 ? true : false;
 	}
 
-	public void stop() {
+	public void endGame(){
 		loc.getWorld().getWorldBorder().reset();
 		for (HOHTeam team : teams.values()) {
 			if (team.getBeacon() != null) team.getBeacon().setType(Material.AIR);
@@ -137,14 +169,28 @@ public class HOHGame {
 				player.getPlayer().teleport(loc);
 			}
 		}
-		GameState.setGameState(GameState.OFF);
+		gameState = GameState.OFF;
 		hohPlayers.clear();
 		teams.clear();
 		bar.stop();
-		Bukkit.getScheduler().cancelTasks(plugin);
-		new Metrics(plugin, 79307);
 		plugin.sbUtil = new ScoreBoardUtil(plugin);
-		Bukkit.broadcastMessage(plugin.getMessageManager().getMessage("stopping-game"));
+		Bukkit.getScheduler().cancelTasks(plugin);
+
+		File gameFile = new File(plugin.getDataFolder(), "hohGame.yml");
+		gameFile.delete();
+		File teamFile = new File(plugin.getDataFolder(), "teams.yml");
+		teamFile.delete();
+		File playersFile = new File(plugin.getDataFolder(), "players.yml");
+		playersFile.delete();
+
+		Bukkit.broadcastMessage(plugin.getMessageManager().getMessage("ending-game"));
+	}
+
+	public void serverStop() {
+		FlatHOHGame.save(this, plugin, new File(plugin.getDataFolder(), "hohGame.yml"));
+		Bukkit.getScheduler().cancelTasks(plugin);
+		plugin.game = null;
+		new Metrics(plugin, 79307);
 	}
 
 	private void sendStartTitle() {
@@ -192,14 +238,22 @@ public class HOHGame {
 	}
 
 	public HOHTeam getWinnerTeam() {
-		return teams.values().stream().filter(t -> !t.eliminated).findAny().orElseGet(null);
+		return teams.values().stream().filter(t -> !t.eliminated).findAny().orElse(null);
 	}
 
 	public boolean areAllTeamsNamed() {
-		return !plugin.getHohPlayers().values().stream().anyMatch(p -> p.isNamingTeam());
+		return !plugin.game.getHohPlayers().values().stream().anyMatch(p -> p.isNamingTeam());
 	}
 
 	public boolean allPlayersSelectedTeam() {
-		return plugin.getHohPlayers().values().stream().allMatch(p -> p.hasTeam());
+		return plugin.game.getHohPlayers().values().stream().allMatch(p -> p.hasTeam());
+	}
+
+	public Map<UUID, HOHPlayer> getHohPlayers() {
+		return hohPlayers;
+	}
+
+	public HOHPlayer getHohPlayer(UUID uuid) {
+		return hohPlayers.get(uuid);
 	}
 }

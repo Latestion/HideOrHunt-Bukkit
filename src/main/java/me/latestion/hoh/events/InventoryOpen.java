@@ -1,5 +1,6 @@
 package me.latestion.hoh.events;
 
+import me.latestion.hoh.HideOrHunt;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,14 +11,15 @@ import me.latestion.hoh.game.GameState;
 
 public class InventoryOpen implements Listener {
 
-	public InventoryOpen() {
-
+	HideOrHunt plugin;
+	public InventoryOpen(HideOrHunt plugin) {
+		this.plugin = plugin;
 	}
 
 	@EventHandler
 	public void ioe(InventoryOpenEvent event) {
 		Player player = (Player) event.getPlayer();
-		if (GameState.getCurrentGameState() != GameState.ON) return;
+		if (plugin.game.gameState != GameState.ON) return;
 		if (event.getInventory().getType().equals(InventoryType.BEACON)) {
 			event.setCancelled(true);
 			player.openWorkbench(null, true);

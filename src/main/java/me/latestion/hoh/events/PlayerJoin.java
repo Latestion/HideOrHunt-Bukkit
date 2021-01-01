@@ -1,5 +1,7 @@
 package me.latestion.hoh.events;
 
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -17,13 +19,17 @@ public class PlayerJoin implements Listener {
 
 	@EventHandler
 	public void pje(final PlayerJoinEvent event) {
-		if (GameState.getCurrentGameState() == GameState.ON) {
-			plugin.sbUtil.addPlayer(event.getPlayer());
-			if (!plugin.game.bar.getBar().getPlayers().contains(event.getPlayer()))
-				plugin.game.bar.addPlayer(event.getPlayer());
+		Player p = event.getPlayer();
+		if (plugin.game.gameState == GameState.ON) {
+			plugin.sbUtil.addPlayer(p);
+			if (!plugin.game.bar.getBar().getPlayers().contains(p))
+				plugin.game.bar.addPlayer(p);
+			if(plugin.game.getHohPlayer(p.getUniqueId()) == null){
+				p.setGameMode(GameMode.SPECTATOR);
+			}
 			return;
 		}
-		event.getPlayer().teleport(event.getPlayer().getLocation().getWorld().getSpawnLocation());
+		p.teleport(p.getLocation().getWorld().getSpawnLocation());
 
 	}
 }

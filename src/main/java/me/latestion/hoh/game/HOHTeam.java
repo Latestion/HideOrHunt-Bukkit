@@ -9,9 +9,10 @@ import me.latestion.hoh.HideOrHunt;
 
 public class HOHTeam {
 
-	public List<HOHPlayer> players = new ArrayList<>();
 	private String name;
 	private Integer id;
+
+	public List<HOHPlayer> players = new ArrayList<>();
 
 	public List<HOHPlayer> alivePlayers = new ArrayList<>();
 
@@ -19,12 +20,24 @@ public class HOHTeam {
 
 	private Block beacon;
 
-	public HOHTeam(HideOrHunt plugin, Integer id) {
+	public HOHTeam(Integer id) {
 		this.id = id;
 	}
 
 	public String getName() {
 		return name;
+	}
+
+	public void setPlayers(List<HOHPlayer> players) {
+		this.players = players;
+	}
+
+	public void setAlivePlayers(List<HOHPlayer> alivePlayers) {
+		this.alivePlayers = alivePlayers;
+	}
+
+	public void setEliminated(boolean eliminated) {
+		this.eliminated = eliminated;
 	}
 
 	public void setName(String name) {
