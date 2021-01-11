@@ -26,7 +26,10 @@ public class BlockBreak implements Listener {
 	@EventHandler
 	public void onBreak(BlockBreakEvent event) {
 		MessageManager messageManager = plugin.getMessageManager();
-		if (plugin.game.gameState != GameState.ON) return;
+		if (plugin.game.gameState != GameState.ON || plugin.game.freeze){
+			event.setCancelled(true);
+			return;
+		}
 		if (event.getBlock().getType() != Material.BEACON) return;
 		Player player = event.getPlayer();
 		HOHPlayer hohPlayer = plugin.game.getHohPlayer(player.getUniqueId());

@@ -54,7 +54,7 @@ public class FlatHOHGame {
 		game.freeze = freeze;
 		game.grace = grace;
 		game.ep = episode;
-		game.gameState = gameState;
+		game.setGameState(gameState);
 		game.setSpawnLocation(loc);
 
 		return game;

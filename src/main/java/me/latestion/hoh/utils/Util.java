@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
+import me.latestion.hoh.game.HOHPlayer;
 import me.latestion.hoh.localization.MessageManager;
+import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -73,9 +75,15 @@ public class Util {
 		return item;
 	}
 
-	public void givePlayerKit(Player p, HOHTeam team, String name) {
-		if (team.getLeader().getPlayer().equals(p)) {
-			p.getInventory().addItem(beacon(name));
+	public void givePlayerKit(HOHPlayer hohPlayer) {
+		if(hohPlayer == null || hohPlayer.getPlayer() == null){
+			return;
+		}
+		Player p = hohPlayer.getPlayer();
+		HOHTeam team = hohPlayer.getTeam();
+		Validate.notNull(team);
+		if (team.getLeader() == null || team.getLeader().equals(hohPlayer)) {
+			p.getInventory().addItem(beacon(team.getName()));
 		}
 		for (String items : this.plugin.getConfig().getStringList("Kits")) {
 			String[] item = items.split(", ");
@@ -88,7 +96,7 @@ public class Util {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, (Runnable) new Runnable() {
 				@Override
 				public void run() {
-					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "give " + p.getName() + " " + potion);
+					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "give " + hohPlayer.getName() + " " + potion);
 				}
 			}, 0L);
 		}

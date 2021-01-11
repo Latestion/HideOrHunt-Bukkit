@@ -2,6 +2,7 @@ package me.latestion.hoh.game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.block.Block;
 
@@ -22,6 +23,8 @@ public class HOHTeam {
 
 	public HOHTeam(Integer id) {
 		this.id = id;
+		Random rand = new Random();
+		name = Integer.toString(id);
 	}
 
 	public String getName() {
@@ -79,5 +82,9 @@ public class HOHTeam {
 
 	public void setID(int id) {
 		this.id = id;
+	}
+
+	public List<HOHPlayer> getPlayers(){
+		return this.players;
 	}
 }

@@ -1,6 +1,7 @@
 package me.latestion.hoh.myrunnables;
 
 import me.latestion.hoh.data.flat.FlatHOHGame;
+import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -23,28 +24,32 @@ public class Episodes extends BukkitRunnable {
 
 	@Override
 	public void run() {
+		HOHGame game = plugin.getGame();
 		MessageManager messageManager = plugin.getMessageManager();
-		Bukkit.broadcastMessage(messageManager.getMessage("episode-end").replace("%episode%", Integer.toString(plugin.game.ep)));
-		if (plugin.game.ep == 1) {
-			if (plugin.game.grace)
-				plugin.game.graceOff();
+		Bukkit.broadcastMessage(messageManager.getMessage("episode-end").replace("%episode%", Integer.toString(game.ep)));
+		if (game.ep == 1) {
+			if (game.grace)
+				game.graceOff();
 		}
-		if (plugin.getConfig().getInt("Episode-End-Break-Time") != 0) {
-			plugin.game.freeze = true;
+		int breakTime = plugin.getConfig().getInt("Episode-End-Break-Time");
+		if (breakTime != 0) {
+			game.freezeGame();
 			Bukkit.broadcastMessage(messageManager.getMessage("game-freezed"));
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				@Override
-				public void run() {
-					plugin.game.freeze = false;
-					Bukkit.broadcastMessage(messageManager.getMessage("game-unfreezed"));
-					sendReminders();
-				}
-			}, (plugin.getConfig().getInt("Episode-End-Break-Time") * 20));
+			if(breakTime != -1) {
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					@Override
+					public void run() {
+						game.unFreezeGame();
+						Bukkit.broadcastMessage(messageManager.getMessage("game-unfreezed"));
+						sendReminders();
+					}
+				}, (plugin.getConfig().getInt("Episode-End-Break-Time") * 20));
+			}
 		} else {
 			sendReminders();
 		}
-		FlatHOHGame.save(plugin.game, plugin, new File(plugin.getDataFolder(), "hohGame.yml"));
-		plugin.game.ep++;
+		game.ep++;
+		FlatHOHGame.save(game, plugin, new File(plugin.getDataFolder(), "hohGame.yml"));
 	}
 
 	private void sendReminders() {

@@ -1,6 +1,9 @@
 package me.latestion.hoh.events;
 
 import me.latestion.hoh.HideOrHunt;
+import me.latestion.hoh.game.GameState;
+import me.latestion.hoh.game.HOHGame;
+import me.latestion.hoh.game.HOHPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,8 +22,24 @@ public class PlayerLogin implements Listener {
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent e){
 		Player p = e.getPlayer();
-		if(!e.getPlayer().hasPermission("hoh.spectate")){
-			e.disallow(PlayerLoginEvent.Result.KICK_OTHER, plugin.getMessageManager().getMessage("no-spectate-permissions"));
+		HOHGame game = plugin.getGame();
+		if(game.getGameState().equals(GameState.ON)) {
+			HOHPlayer hp = game.getHohPlayers().get(p.getUniqueId());
+			if (hp != null) {
+				if (hp.banned) {
+					String msg = plugin.getMessageManager().getMessage("player-eliminated").replace("%player%", p.getDisplayName());
+					e.disallow(PlayerLoginEvent.Result.KICK_OTHER, msg);
+				}
+			}
+			if (!e.getPlayer().hasPermission("hoh.spectate")) {
+				e.disallow(PlayerLoginEvent.Result.KICK_OTHER, plugin.getMessageManager().getMessage("no-spectate-permissions"));
+				return;
+			}
+		}else if(game.getGameState().equals(GameState.PREPARE)){
+			if (!e.getPlayer().hasPermission("hoh.spectate")) {
+				e.disallow(PlayerLoginEvent.Result.KICK_OTHER, plugin.getMessageManager().getMessage("no-spectate-permissions"));
+				return;
+			}
 		}
 	}
 

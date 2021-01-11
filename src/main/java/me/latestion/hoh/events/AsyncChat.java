@@ -26,6 +26,8 @@ public class AsyncChat implements Listener {
 	@EventHandler
 	public void ce(AsyncPlayerChatEvent event) {
 		HOHPlayer hohPlayer = plugin.game.getHohPlayer(event.getPlayer().getUniqueId());
+		if(hohPlayer == null)
+			return;
 		if (hohPlayer.isNamingTeam()) {
 			event.setCancelled(true);
 			Player player = event.getPlayer();

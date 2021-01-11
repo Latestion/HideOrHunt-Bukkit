@@ -36,9 +36,16 @@ public class FlatHOHTeam {
 			List<String> players = sc.getStringList("players");
 			List<String> allivePlayers = sc.getStringList("allive-players");
 			boolean eliminated = sc.getBoolean("eliminated");
-			Location beaconLoc = Util.deserializeLocation(sc.getString("beacon-loc"));
 
 			HOHTeam team = new HOHTeam(id);
+
+			if(!sc.getString("beacon-loc").equalsIgnoreCase("null")){
+				Location beaconLoc = Util.deserializeLocation(sc.getString("beacon-loc"));
+				team.setBeacon(beaconLoc.getBlock());
+			}else{
+				team.setBeacon(null);
+			}
+
 			team.setName(name);
 
 			team.setPlayers(game.getHohPlayers().values().stream()
@@ -48,7 +55,6 @@ public class FlatHOHTeam {
 					.filter(p -> allivePlayers.contains(p.getUUID().toString())).collect(Collectors.toList()));
 
 			team.setEliminated(eliminated);
-			team.setBeacon(beaconLoc.getBlock());
 			teams.add(team);
 		}
 		return teams;
@@ -65,7 +71,11 @@ public class FlatHOHTeam {
 			sc.set("allive-players", team.alivePlayers.stream().map(p -> p.getUUID().toString())
 					.collect(Collectors.toList()));
 			sc.set("eliminated", team.eliminated);
-			sc.set("beacon-loc", Util.serializeLocation(team.getBeacon().getLocation()));
+			if(team.getBeacon()!= null) {
+				sc.set("beacon-loc", Util.serializeLocation(team.getBeacon().getLocation()));
+			}else{
+				sc.set("beacon-loc", "null");
+			}
 		}
 		try {
 			yc.save(file);

@@ -25,7 +25,10 @@ public class BlockPlace implements Listener {
 	@EventHandler
 	public void onPlace(BlockPlaceEvent event) {
 		
-		if (plugin.game.gameState != GameState.ON) return;
+		if (plugin.game.gameState != GameState.ON || plugin.game.freeze){
+			event.setCancelled(true);
+			return;
+		}
 		
 		if (event.getBlockPlaced().getType() == Material.BEACON) {
 			HOHPlayer player = plugin.game.hohPlayers.get(event.getPlayer().getUniqueId());

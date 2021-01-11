@@ -10,6 +10,7 @@ public class HOHPlayer {
 
 	private HOHGame game;
 	private UUID uuid;
+	private String name;
 	private HOHTeam team = null;
 
 	public boolean banned = false;
@@ -18,9 +19,10 @@ public class HOHPlayer {
 	public boolean teamChat = false;
 	private boolean namingTeam = false;
 
-	public HOHPlayer(HOHGame game, UUID uuid) {
+	public HOHPlayer(HOHGame game, UUID uuid, String name) {
 		this.game = game;
 		this.uuid = uuid;
+		this.name = name;
 	}
 
 	public Player getPlayer() {
@@ -55,6 +57,9 @@ public class HOHPlayer {
 		if (game.gameState == GameState.PREPARE) {
 			getPlayer().openInventory(inv);
 		}
+	}
+	public String getName(){
+		return this.name;
 	}
 
 }

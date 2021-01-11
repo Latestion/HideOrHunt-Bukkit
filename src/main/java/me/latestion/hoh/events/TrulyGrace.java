@@ -25,6 +25,8 @@ public class TrulyGrace implements Listener {
 					event.setCancelled(true);
 				}
 			}
+		}else{
+			event.setCancelled(true);
 		}
 	}
 

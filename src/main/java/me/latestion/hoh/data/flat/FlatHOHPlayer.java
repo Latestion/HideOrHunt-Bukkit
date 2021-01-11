@@ -32,12 +32,13 @@ public class FlatHOHPlayer {
 
 		for(ConfigurationSection se : sections){
 			UUID uuid = UUID.fromString(se.getString("uuid"));
+			String name = se.getString("name");
 			boolean banned = se.getBoolean("banned");
 			boolean dead = se.getBoolean("dead");
 			boolean teamChat = se.getBoolean("teamChat");
 			boolean namingTeam = se.getBoolean("namingTeam");
 
-			HOHPlayer player = new HOHPlayer(game, uuid);
+			HOHPlayer player = new HOHPlayer(game, uuid, name);
 			player.banned = banned;
 			player.dead = dead;
 			player.teamChat = teamChat;
@@ -53,6 +54,7 @@ public class FlatHOHPlayer {
 		for(HOHPlayer player : players) {
 			ConfigurationSection section = yc.createSection(player.getUUID().toString());
 			section.set("uuid", player.getUUID().toString());
+			section.set("name", player.getName());
 			section.set("banned", player.banned);
 			section.set("dead", player.dead);
 			section.set("teamChat", player.teamChat);

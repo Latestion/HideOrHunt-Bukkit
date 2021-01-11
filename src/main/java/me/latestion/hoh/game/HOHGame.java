@@ -5,9 +5,7 @@ import java.util.*;
 
 import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.localization.MessageManager;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
@@ -37,6 +35,9 @@ public class HOHGame {
 	public boolean freeze = false;
 	public boolean grace = false;
 
+	private int minPlayersToStart = 4;
+	private int timeToStart = 60;
+
 	public GameState gameState = GameState.OFF;
 
 	public int ep = 1;
@@ -65,12 +66,13 @@ public class HOHGame {
 		if (plugin.getConfig().getBoolean("Auto-Supply-Drops")) new SupplyDrop(plugin);
 	}
 	public void prepareGame() {
-		this.gameState = GameState.PREPARE;
+		HOHGame game = plugin.getGame();
+		setGameState(GameState.PREPARE);
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			if (player.isOp() && !util.getAllowOp()) {
 				continue;
 			}
-			HOHPlayer p = new HOHPlayer(this, player.getUniqueId());
+			HOHPlayer p = new HOHPlayer(this, player.getUniqueId(), player.getName());
 			hohPlayers.put(player.getUniqueId(), p);
 		}
 		double neededTeams = Math.ceil(hohPlayers.size() / (double) teamSize);
@@ -79,23 +81,49 @@ public class HOHGame {
 		for (HOHPlayer player : hohPlayers.values()) {
 			player.prepareTeam(inv);
 		}
+		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+			@Override
+			public void run() {
+				for(HOHPlayer p : game.getHohPlayers().values()){
+					p.setNamingTeam(false);
+					if(!p.hasTeam()){
+						HOHTeam team = null;
+						for(HOHTeam teams : game.getTeams().values()){
+							if(teams.getPlayers().size()<=game.teamSize){
+								team = teams;
+								break;
+							}
+						}
+//						HOHTeam team = game.getTeams().values().stream()
+//								.filter(t -> t.getPlayers().size() <= game.teamSize).findAny().orElse(null);
+						if(team != null) {
+							p.setTeam(team);
+							team.addPlayer(p);
+						}else{
+							Bukkit.getLogger().severe("Couldn't find a team!");
+						}
+					}
+				}
+				game.startGame();
+			}
+		}, timeToStart * 20L);
 	}
 
 	public void startGame() {
 		if (gameState != GameState.PREPARE) return;
-		Bukkit.getServer().broadcastMessage(plugin.getMessageManager().getMessage("starting-game"));
+		MessageManager msgMan = plugin.getMessageManager();
+		Bukkit.getServer().broadcastMessage(msgMan.getMessage("starting-game"));
 		setBorder();
 		for (HOHTeam team : teams.values()) {
 			String name = team.getName();
 			plugin.sbUtil.addTeam(name);
 			for (HOHPlayer player : team.players) {
-				Player p = player.getPlayer();
-				util.givePlayerKit(p, team, name);
+				util.givePlayerKit(player);
 			}
 		}
 		plugin.sbUtil.addAllPlayers();
 		this.bar = new Bar(plugin);
-		gameState = GameState.ON;
+		setGameState(GameState.ON);
 		sendStartTitle();
 		plugin.sbUtil.setAsthetic();
 		if (plugin.getConfig().getBoolean("Grace-Period")) grace = true;
@@ -103,6 +131,18 @@ public class HOHGame {
 		if (plugin.getConfig().getBoolean("Enable-Effect-After-Start")) addAfterPotEffects();
 		if (plugin.getConfig().getBoolean("Auto-Episodes")) new Episodes(plugin);
 		if (plugin.getConfig().getBoolean("Auto-Supply-Drops")) new SupplyDrop(plugin);
+
+		for(HOHPlayer hohPlayer : hohPlayers.values()){
+			Player p = hohPlayer.getPlayer();
+			p.closeInventory();
+			if(p != null){
+				p.sendMessage(msgMan.getMessage("team-list-header"));
+				HOHTeam t = hohPlayer.getTeam();
+				for(HOHPlayer tm : t.getPlayers()){
+					p.sendMessage(tm.getName());
+				}
+			}
+		}
 	}
 
 	public void addTeam(HOHTeam team) {
@@ -138,6 +178,10 @@ public class HOHGame {
 		this.loc = loc;
 	}
 
+	public Location getSpawnLocation(){
+		return loc;
+	}
+
 	public void setHohPlayers(Map<UUID, HOHPlayer> hohPlayers) {
 		this.hohPlayers = hohPlayers;
 	}
@@ -169,7 +213,7 @@ public class HOHGame {
 				player.getPlayer().teleport(loc);
 			}
 		}
-		gameState = GameState.OFF;
+		setGameState(GameState.OFF);
 		hohPlayers.clear();
 		teams.clear();
 		bar.stop();
@@ -249,11 +293,83 @@ public class HOHGame {
 		return plugin.game.getHohPlayers().values().stream().allMatch(p -> p.hasTeam());
 	}
 
+	public void setGameState(GameState gameState){
+		this.gameState = gameState;
+	}
+
+	public GameState getGameState(){
+		return this.gameState;
+	}
+
 	public Map<UUID, HOHPlayer> getHohPlayers() {
 		return hohPlayers;
 	}
 
 	public HOHPlayer getHohPlayer(UUID uuid) {
 		return hohPlayers.get(uuid);
+	}
+
+	public void unFreezeGame(){
+		this.freeze = false;
+		for(HOHPlayer p : getHohPlayers().values()){
+			if(p.getPlayer() == null){
+				if(p!= null)
+				eliminatePlayer(p);
+			}
+		}
+	}
+
+	public void eliminatePlayer(HOHPlayer player){
+		MessageManager messageManager = plugin.getMessageManager();
+		String msg;
+		msg = messageManager.getMessage("player-eliminated").replace("%player%", player.getName());
+		Bukkit.broadcastMessage(msg);
+
+		player.dead = true;
+		player.getTeam().diedPlayer(player);
+
+		if (player.getTeam().eliminated) {
+			msg = messageManager.getMessage("team-eliminated").replace("%team%", player.getTeam().getName());
+			Bukkit.broadcastMessage(msg);
+			plugin.sbUtil.eliminateTeam(player.getTeam().getName());
+		}
+
+		if (this.plugin.getConfig().getBoolean("Ban-Player-On-Death")) {
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				@Override
+				public void run() {
+					if(player.getPlayer() != null){
+						player.banned = true;
+						player.getPlayer().kickPlayer("");
+					}
+//					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban " + player.getName() + " Eliminated");
+				}
+			}, 0L);
+		} else {
+			if(player.getPlayer() != null)
+				player.getPlayer().setGameMode(GameMode.SPECTATOR);
+		}
+
+		if (plugin.game.checkEndConditions()) {
+			HOHTeam winnerTeam = plugin.game.getWinnerTeam();
+			if (winnerTeam == null) return;
+			Bukkit.broadcastMessage(messageManager.getMessage("win-message").replace("%winner-team%", winnerTeam.getName()));
+			plugin.game.gameState = GameState.OFF;
+//			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+//				@Override
+//				public void run() {
+//					for (UUID p : plugin.game.hohPlayers.keySet()) {
+//						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pardon " + Bukkit.getPlayer(p).getName());
+//					}
+//				}
+//			}, 0L);
+			plugin.game.endGame();
+		}
+	}
+
+
+
+	public void freezeGame(){
+		this.freeze = true;
 	}
 }

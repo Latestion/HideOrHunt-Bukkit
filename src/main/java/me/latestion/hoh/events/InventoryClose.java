@@ -22,7 +22,7 @@ public class InventoryClose implements Listener {
 		if (plugin.game.gameState == GameState.OFF)
 			return;
 		HOHPlayer hohPlayer = plugin.game.getHohPlayer(event.getPlayer().getUniqueId());
-		if (!hohPlayer.hasTeam()) {
+		if (hohPlayer != null && !hohPlayer.hasTeam()) {
 			Player player = (Player) event.getPlayer();
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, (Runnable) new Runnable() {
 				@Override

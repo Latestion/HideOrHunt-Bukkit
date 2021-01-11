@@ -5,6 +5,7 @@ import me.latestion.hoh.events.*;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -97,6 +98,8 @@ public class HideOrHunt extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new PlayerWorld(this), this);
 		this.getServer().getPluginManager().registerEvents(new TrulyGrace(this), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerLogin(this), this);
+		this.getServer().getPluginManager().registerEvents(new ServerListPing(this), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerQuit(this), this);
 		this.getCommand("hoh").setExecutor(new Executor(this));
 	}
 
@@ -107,5 +110,9 @@ public class HideOrHunt extends JavaPlugin {
 	public void saveLanguagesFiles() {
 		this.saveResource("locales/en.yml", false);
 		this.saveResource("locales/pl.yml", false);
+	}
+
+	public HOHGame getGame(){
+		return this.game;
 	}
 }

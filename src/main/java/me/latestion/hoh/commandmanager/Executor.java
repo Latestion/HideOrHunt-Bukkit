@@ -1,8 +1,12 @@
 package me.latestion.hoh.commandmanager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import me.latestion.hoh.data.flat.FlatHOHGame;
+import me.latestion.hoh.game.HOHTeam;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,6 +47,7 @@ public class Executor implements CommandExecutor {
 				 */
 				return false;
 			}
+			HOHGame game = plugin.game;
 
 			if (args[0].equalsIgnoreCase("start")) {
 				if (player.hasPermission("hoh.start")) {
@@ -52,7 +57,6 @@ public class Executor implements CommandExecutor {
 						if (size == 0) {
 							return false;
 						}
-						HOHGame game = plugin.game;
 						if (game.gameState != GameState.OFF) {
 							return false;
 						}
@@ -65,10 +69,10 @@ public class Executor implements CommandExecutor {
 			if (args[0].equalsIgnoreCase("freeze") && plugin.game.gameState == GameState.ON && player.hasPermission("hoh.freeze")) {
 				if (plugin.game.freeze) {
 					Bukkit.broadcastMessage(messageManager.getMessage("unfreezed-game"));
-					plugin.game.freeze = false;
+					plugin.getGame().unFreezeGame();
 				} else {
 					Bukkit.broadcastMessage(messageManager.getMessage("freezed-game"));
-					plugin.game.freeze = true;
+					plugin.getGame().freezeGame();
 				}
 			}
 			if (args[0].equalsIgnoreCase("reload") && player.hasPermission("hoh.reload")) {
@@ -89,16 +93,16 @@ public class Executor implements CommandExecutor {
 			}
 			if (args[0].equalsIgnoreCase("beacon") && player.hasPermission("hoh.beacon")
 					&& plugin.game.gameState == GameState.ON) {
-				if (plugin.game.hohPlayers.containsKey(player.getUniqueId())) {
-					player.sendMessage(messageManager.getMessage("possible-cheat-attempt"));
-				} else if (args[1] != null) {
-					List<String> playerNames = new ArrayList<String>();
-					for (Player p2 : Bukkit.getOnlinePlayers()) {
-						playerNames.add(p2.getName().toLowerCase());
-					}
-					if (playerNames.contains(args[1].toLowerCase())) {
-						Player teleport = Bukkit.getPlayerExact(args[1]);
-						player.teleport(plugin.game.hohPlayers.get(teleport.getUniqueId()).getTeam().getBeacon().getLocation());
+				 if (args[1] != null) {
+					Optional<HOHPlayer> op = game.getHohPlayers().values().stream().filter(p -> p.getName().equalsIgnoreCase(args[1])).findAny();
+					if(op.isPresent()){
+						HOHPlayer p = op.get();
+						HOHTeam t = p.getTeam();
+						if(t.hasBeacon()){
+							player.teleport(t.getBeacon().getLocation());
+						}else{
+							//TODO send message
+						}
 					} else {
 						player.sendMessage(messageManager.getMessage("invalid-player"));
 					}
@@ -120,7 +124,16 @@ public class Executor implements CommandExecutor {
 					player.sendMessage(messageManager.getMessage("game-not-started"));
 				}
 			}
-
+			if (args[0].equalsIgnoreCase("save")) {
+				if (player.hasPermission("hoh.save")) {
+					FlatHOHGame.save(game, plugin, new File(plugin.getDataFolder(), "hohGame.yml"));
+				}
+			}
+			if (args[0].equalsIgnoreCase("reaload")) {
+				if (player.hasPermission("hoh.reload")) {
+					plugin.reloadConfig();
+				}
+			}
 		}
 
 		return false;
