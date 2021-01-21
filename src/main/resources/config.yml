@@ -5,7 +5,7 @@ language: en
 # IF set to false, It wont allow any OPed player to Play the game!
 Allow-Op: true
 
-WorldBorder: 200 # sets the worldborder from the location of the player who starts the game! DIAMETER !
+WorldBorder: 200 # sets the world border from the location of the player who starts the game! DIAMETER !
 
 # Normal kits
 # Do not add beacon into it!
@@ -20,7 +20,7 @@ Kits:
 
 # Potions that will be given to the player!
 # https://minecraftitemids.com/types/potion
-# Use the above link to get the item id with ease and sprecify the number of items you would like to get!
+# Use the above link to get the item id with ease and specify the number of items you would like to get!
 Kits-Potion:
   - minecraft:potion{Potion:long_invisibility} 1 # 1 represents the number of potions
 
@@ -37,8 +37,8 @@ Effect-On-Start:
 # INVISIBILITY, 900, 5, 900
 # INVISIBILITY --> Represents The Potion Type
 # 900 --> Represent The Duration IN Seconds
-# 5 --> Represents The Strenght of the potion
-# 900 --> Reprsents AFTER WHEN to apply that effect to the players in SECONDS!
+# 5 --> Represents The Strength of the potion
+# 900 --> Represents AFTER WHEN to apply that effect to the players in SECONDS!
 Enable-Effect-After-Start: true
 Effect-After-Start:
   - INVISIBILITY, 900, 5, 900
@@ -48,7 +48,7 @@ Ban-Player-On-Death: true # Bans the player on death
 Inventory-Keep: 20 # Inventory keep chance! Compared out of 100. Keep 0 for disabling it!
 
 #Gives player item each time they respawn
-# Personally 32 iron is best because, A full set of iron 24iron, set of tooks 7 iron and a shield costs 32 iron!
+# Personally 32 iron is best because, A full set of iron 24iron, set of tools 7 iron and a shield costs 32 iron!
 Item-On-Respawn:
   - IRON_INGOT, 32
   - OAK_WOOD, 16

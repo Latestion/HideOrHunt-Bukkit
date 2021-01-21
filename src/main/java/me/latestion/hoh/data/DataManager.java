@@ -4,21 +4,13 @@
 
 package me.latestion.hoh.data;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.io.InputStream;
-
+import me.latestion.hoh.HideOrHunt;
 import org.bukkit.configuration.Configuration;
-
-import java.io.Reader;
-import java.io.InputStreamReader;
-
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-
-import org.bukkit.configuration.file.FileConfiguration;
-import me.latestion.hoh.HideOrHunt;
+import java.io.*;
+import java.util.logging.Level;
 
 public class DataManager {
 	private HideOrHunt plugin;
@@ -36,11 +28,11 @@ public class DataManager {
 		if (this.configFile == null) {
 			this.configFile = new File(this.plugin.getDataFolder(), "data.yml");
 		}
-		this.dataConfig = (FileConfiguration) YamlConfiguration.loadConfiguration(this.configFile);
+		this.dataConfig = YamlConfiguration.loadConfiguration(this.configFile);
 		final InputStream defaultStream = this.plugin.getResource("data.yml");
 		if (defaultStream != null) {
-			final YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration((Reader) new InputStreamReader(defaultStream));
-			this.dataConfig.setDefaults((Configuration) defaultConfig);
+			final YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defaultStream));
+			this.dataConfig.setDefaults(defaultConfig);
 		}
 	}
 

@@ -1,5 +1,6 @@
 package me.latestion.hoh;
 
+import me.latestion.hoh.commandmanager.CommandInitializer;
 import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.events.*;
 import me.latestion.hoh.localization.MessageManager;
@@ -8,7 +9,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.latestion.hoh.commandmanager.Executor;
 import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.stats.Metrics;
@@ -97,7 +97,7 @@ public class HideOrHunt extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new PlayerWorld(this), this);
 		this.getServer().getPluginManager().registerEvents(new TrulyGrace(this), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerLogin(this), this);
-		this.getCommand("hoh").setExecutor(new Executor(this));
+		new CommandInitializer(this).initialize();
 	}
 
 	public MessageManager getMessageManager() {
