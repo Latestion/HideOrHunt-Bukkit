@@ -28,3 +28,5 @@ permissions:
         description: view other teams' private chats
       hoh.craft:
         description: enable / disable crafting tables
+      hoh.continue:
+        description: continues previous game

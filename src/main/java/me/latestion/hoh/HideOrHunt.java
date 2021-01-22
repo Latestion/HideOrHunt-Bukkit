@@ -37,13 +37,7 @@ public class HideOrHunt extends JavaPlugin {
 		new Metrics(this, 8350);
 		hoh();
 		registerAll();
-		game = FlatHOHGame.deserialize(new File(this.getDataFolder(), "hohGame.yml"), this);
-		if(game != null){
-			game.loadGame();
-		}
-		else{
-			this.game = new HOHGame(this);
-		}
+		this.game = new HOHGame(this);
 		loadSchems();
 	}
 

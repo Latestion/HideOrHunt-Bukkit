@@ -1,6 +1,7 @@
 package me.latestion.hoh.commandmanager;
 
 import me.latestion.hoh.HideOrHunt;
+import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.game.HOHPlayer;
@@ -15,6 +16,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,6 +141,22 @@ public class CommandInitializer {
             }
             return true;
         }).setUsage("/hoh chat").build());
+        builder.addSubCommand(new SubCommandBuilder("continue").setCommandHandler((sender, command, label, args) -> {
+            if (plugin.game.gameState != GameState.OFF) {
+                sender.sendMessage("§cThere is already a game in progress");
+                return true;
+            }
+            if (sender.hasPermission("hoh.continue")) {
+                plugin.game = FlatHOHGame.deserialize(new File(plugin.getDataFolder(), "hohGame.yml"), plugin);
+                if(plugin.game != null){
+                    plugin.game.loadGame();
+                }
+                else{
+                    sender.sendMessage(ChatColor.RED + "There is no game to continue!");
+                }
+            }
+            return true;
+        }).setUsage("/hoh continue").build());
         builder.addSubCommand(new SubCommandBuilder("help").setUsage("/hoh help").setCommandHandler((sender, command, label, args) -> {
             //todo: idk what color scheme you use so i just did Gold and gray
             StringBuilder helpMessage = new StringBuilder();
@@ -167,6 +185,10 @@ public class CommandInitializer {
             if(sender.hasPermission("hoh.beacon")){
                 helpMessage.append("\n");
                 helpMessage.append("§6/hoh beacon <player> §7§l>§8 Teleport to a player's beacon");
+            }
+            if (sender.hasPermission("hoh.continue")) {
+                helpMessage.append("\n");
+                helpMessage.append("§6/hoh continue §7§l>§8 Continues previous game!");
             }
             sender.sendMessage(helpMessage.toString());
             return true;
