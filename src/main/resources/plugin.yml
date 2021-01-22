@@ -21,7 +21,7 @@ permissions:
       hoh.freeze:
         description: temporarily pause games
       hoh.reload:
-        description: reload the config
+        description: reload the config.yml
       hoh.beacon:
         description: teleport to players' beacons
       hoh.spy:
