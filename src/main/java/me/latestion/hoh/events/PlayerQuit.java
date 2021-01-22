@@ -22,7 +22,7 @@ public class PlayerQuit implements Listener {
 	public void onPlayerQuit(PlayerQuitEvent e){
 		HOHGame game = plugin.getGame();
 		Player p = e.getPlayer();
-		if(game.getGameState().equals(GameState.ON) && !game.freeze){
+		if(game.getGameState().equals(GameState.ON) && !game.frozen){
 			if(game.getHohPlayer(p.getUniqueId()) != null){
 				p.damage(p.getHealth() * 4); //*4 just in case
 			}

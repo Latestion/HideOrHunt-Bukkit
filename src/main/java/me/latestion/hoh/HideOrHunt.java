@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.latestion.hoh.commandmanager.Executor;
@@ -82,24 +83,29 @@ public class HideOrHunt extends JavaPlugin {
 	}
 
 	private void registerAll() {
-		this.getServer().getPluginManager().registerEvents(new AsyncChat(this), this);
-		this.getServer().getPluginManager().registerEvents(new BlockBreak(this), this);
-		this.getServer().getPluginManager().registerEvents(new BlockPlace(this), this);
-		this.getServer().getPluginManager().registerEvents(new CraftItem(this), this);
-		this.getServer().getPluginManager().registerEvents(new EntityDamage(this), this);
-		this.getServer().getPluginManager().registerEvents(new GameModeChange(this), this);
-		this.getServer().getPluginManager().registerEvents(new InventoryClick(this), this);
-		this.getServer().getPluginManager().registerEvents(new InventoryClose(this), this);
-		this.getServer().getPluginManager().registerEvents(new InventoryOpen(this), this);
-		this.getServer().getPluginManager().registerEvents(new PlayerDeath(this), this);
-		this.getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
-		this.getServer().getPluginManager().registerEvents(new PlayerMove(this), this);
-		this.getServer().getPluginManager().registerEvents(new PlayerRespawn(this), this);
-		this.getServer().getPluginManager().registerEvents(new PlayerWorld(this), this);
-		this.getServer().getPluginManager().registerEvents(new TrulyGrace(this), this);
-		this.getServer().getPluginManager().registerEvents(new PlayerLogin(this), this);
-		this.getServer().getPluginManager().registerEvents(new ServerListPing(this), this);
-		this.getServer().getPluginManager().registerEvents(new PlayerQuit(this), this);
+		PluginManager pm = this.getServer().getPluginManager();
+		pm.registerEvents(new AsyncChat(this), this);
+		pm.registerEvents(new BlockBreak(this), this);
+		pm.registerEvents(new BlockPlace(this), this);
+		pm.registerEvents(new CraftItem(this), this);
+		pm.registerEvents(new EntityDamage(this), this);
+		pm.registerEvents(new GameModeChange(this), this);
+		pm.registerEvents(new InventoryClick(this), this);
+		pm.registerEvents(new InventoryClose(this), this);
+		pm.registerEvents(new InventoryOpen(this), this);
+		pm.registerEvents(new PlayerDeath(this), this);
+		pm.registerEvents(new PlayerJoin(this), this);
+		pm.registerEvents(new PlayerMove(this), this);
+		pm.registerEvents(new PlayerRespawn(this), this);
+		pm.registerEvents(new PlayerWorld(this), this);
+		pm.registerEvents(new TrulyGrace(this), this);
+		pm.registerEvents(new PlayerLogin(this), this);
+		pm.registerEvents(new ServerListPing(this), this);
+		pm.registerEvents(new PlayerQuit(this), this);
+		pm.registerEvents(new PlayerQuit(this), this);
+		pm.registerEvents(new PlayerInteract(), this);
+		pm.registerEvents(new EntityPickupItem(), this);
+
 		this.getCommand("hoh").setExecutor(new Executor(this));
 	}
 

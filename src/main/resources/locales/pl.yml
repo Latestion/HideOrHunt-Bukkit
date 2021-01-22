@@ -46,3 +46,4 @@ messages:
   scoreboard-teams: "&l&cZespoły:"
   no-spectate-permissions: "&cNie możesz obserwować tej gry!"
   team-list-header: "&eTwoja drużyna składa się z:"
+  team-locked: "&cTen zespół jest zablokowany!"

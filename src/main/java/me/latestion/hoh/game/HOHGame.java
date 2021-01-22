@@ -2,10 +2,13 @@ package me.latestion.hoh.game;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import me.latestion.hoh.customitems.TrackingItem;
 import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.*;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
@@ -32,7 +35,7 @@ public class HOHGame {
 
 	public Bar bar;
 
-	public boolean freeze = false;
+	public boolean frozen = false;
 	public boolean grace = false;
 
 	private int minPlayersToStart = 4;
@@ -40,13 +43,17 @@ public class HOHGame {
 
 	public GameState gameState = GameState.OFF;
 
+	private long episodeTime; //episode time in seconds
+	private long breakTime; //break time in seconds
+	private boolean duringBreak = false;
+	private Map<Long, String> episodeReminders;
+
 	public int ep = 1;
 
 	public Inventory inv;
 
 	public HOHGame(HideOrHunt plugin){
-		this.plugin = plugin;
-		this.util = new Util(plugin);
+		this(plugin, null, 0);
 	}
 
 	public HOHGame(HideOrHunt plugin, Location loc, int teamSize) {
@@ -54,6 +61,13 @@ public class HOHGame {
 		this.loc = loc;
 		this.util = new Util(plugin);
 		this.teamSize = teamSize;
+
+		//TODO move this to loadConfig() function
+		episodeTime = plugin.getConfig().getLong("Episode-Time") * 60L;
+		breakTime = plugin.getConfig().getLong("Episode-End-Break-Time") * 60L;
+		ConfigurationSection section = plugin.getConfig().getConfigurationSection("Episode-Reminders");
+		Set<String> keys = section.getKeys(false);
+		this.episodeReminders = keys.stream().collect(Collectors.toMap(k -> Long.parseLong(k), k -> section.getString(k)));
 	}
 
 	public void loadGame(){
@@ -137,6 +151,7 @@ public class HOHGame {
 			p.closeInventory();
 			if(p != null){
 				p.sendMessage(msgMan.getMessage("team-list-header"));
+				TrackingItem.addTrackingUses(plugin, p, 2);
 				HOHTeam t = hohPlayer.getTeam();
 				for(HOHPlayer tm : t.getPlayers()){
 					p.sendMessage(tm.getName());
@@ -174,6 +189,28 @@ public class HOHGame {
 		loc.getWorld().setSpawnLocation(loc);
 	}
 
+	public int getEpisodeNumber(){
+		return this.ep;
+	}
+
+	public long getEpisodeTime(){
+		return this.episodeTime;
+	}
+
+	public Map<Long, String> getEpisodeReminders(){
+		return this.episodeReminders;
+	}
+
+	public long getBreakTime(){
+		return this.breakTime;
+	}
+
+	public boolean isDuringBreak(){
+		return this.duringBreak;
+	}
+	public void setDuringBreak(boolean duringBreak){
+		this.duringBreak = duringBreak;
+	}
 	public void setSpawnLocation(Location loc){
 		this.loc = loc;
 	}
@@ -309,14 +346,35 @@ public class HOHGame {
 		return hohPlayers.get(uuid);
 	}
 
-	public void unFreezeGame(){
-		this.freeze = false;
+	public HOHPlayer getHohPlayer(Player p){
+		return getHohPlayer(p.getUniqueId());
+	}
+
+	public void freeze(){
+		Bukkit.broadcastMessage(plugin.getMessageManager().getMessage("game-freezed"));
+		for(Player p : Bukkit.getOnlinePlayers()){
+			p.setAllowFlight(true); //prevent kicking for fly when game is frozen
+		}
+		this.frozen = true;
+	}
+
+	public void unFreeze(){
+		this.frozen = false;
+		this.duringBreak = false;
+		Bukkit.broadcastMessage(plugin.getMessageManager().getMessage("game-unfreezed"));
+		for(Player p : Bukkit.getOnlinePlayers()){ //TODO fix: offline players can have flying allowed when joining later
+			p.setAllowFlight(false);
+		}
 		for(HOHPlayer p : getHohPlayers().values()){
-			if(p.getPlayer() == null){
+			if(p.getPlayer() == null || !p.getPlayer().isOnline()){
 				if(p!= null)
-				eliminatePlayer(p);
+					eliminatePlayer(p);
 			}
 		}
+	}
+
+	public boolean isFrozen(){
+		return this.frozen;
 	}
 
 	public void eliminatePlayer(HOHPlayer player){
@@ -338,8 +396,8 @@ public class HOHGame {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				@Override
 				public void run() {
+					player.banned = true;
 					if(player.getPlayer() != null){
-						player.banned = true;
 						player.getPlayer().kickPlayer("");
 					}
 //					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban " + player.getName() + " Eliminated");
@@ -365,11 +423,5 @@ public class HOHGame {
 //			}, 0L);
 			plugin.game.endGame();
 		}
-	}
-
-
-
-	public void freezeGame(){
-		this.freeze = true;
 	}
 }

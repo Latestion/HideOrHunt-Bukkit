@@ -4,7 +4,6 @@ import me.latestion.hoh.HideOrHunt;
 import me.latestion.hoh.game.GameState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 
 /**
@@ -18,7 +17,7 @@ public class ServerListPing implements Listener {
 	}
 
 	@EventHandler
-	public void serverListPing(ServerListPingEvent e) {
+	public void onServerListPing(ServerListPingEvent e) {
 		GameState state = plugin.getGame().getGameState();
 		switch (state){
 			case OFF:

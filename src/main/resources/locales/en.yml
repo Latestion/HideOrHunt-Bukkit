@@ -46,3 +46,4 @@ messages:
   scoreboard-teams: "&l&cTeams:"
   no-spectate-permissions: "&cYou are not allowed to spectate this game!"
   team-list-header: "&eYour team members are:"
+  team-locked: "&cThis team is locked for joining!"

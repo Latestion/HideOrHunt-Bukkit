@@ -1,7 +1,6 @@
 package me.latestion.hoh.commandmanager;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,12 +66,12 @@ public class Executor implements CommandExecutor {
 				}
 			}
 			if (args[0].equalsIgnoreCase("freeze") && plugin.game.gameState == GameState.ON && player.hasPermission("hoh.freeze")) {
-				if (plugin.game.freeze) {
+				if (plugin.game.frozen) {
 					Bukkit.broadcastMessage(messageManager.getMessage("unfreezed-game"));
-					plugin.getGame().unFreezeGame();
+					plugin.getGame().unFreeze();
 				} else {
 					Bukkit.broadcastMessage(messageManager.getMessage("freezed-game"));
-					plugin.getGame().freezeGame();
+					plugin.getGame().freeze();
 				}
 			}
 			if (args[0].equalsIgnoreCase("reload") && player.hasPermission("hoh.reload")) {

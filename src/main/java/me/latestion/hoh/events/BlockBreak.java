@@ -1,5 +1,6 @@
 package me.latestion.hoh.events;
 
+import me.latestion.hoh.customitems.TrackingItem;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -26,7 +27,7 @@ public class BlockBreak implements Listener {
 	@EventHandler
 	public void onBreak(BlockBreakEvent event) {
 		MessageManager messageManager = plugin.getMessageManager();
-		if (plugin.game.gameState != GameState.ON || plugin.game.freeze){
+		if (plugin.game.gameState != GameState.ON || plugin.game.frozen){
 			event.setCancelled(true);
 			return;
 		}
@@ -44,6 +45,7 @@ public class BlockBreak implements Listener {
 		}
 		event.setDropItems(false);
 		team.setBeacon(null);
+		TrackingItem.addTrackingUses(plugin, player, 7);
 		plugin.sbUtil.beaconBreakTeam(team.getName());
 		doAsthetic(team, event.getPlayer());
 	}

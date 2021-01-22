@@ -30,6 +30,7 @@ public class PlayerLogin implements Listener {
 					String msg = plugin.getMessageManager().getMessage("player-eliminated").replace("%player%", p.getDisplayName());
 					e.disallow(PlayerLoginEvent.Result.KICK_OTHER, msg);
 				}
+				return;
 			}
 			if (!e.getPlayer().hasPermission("hoh.spectate")) {
 				e.disallow(PlayerLoginEvent.Result.KICK_OTHER, plugin.getMessageManager().getMessage("no-spectate-permissions"));

@@ -1,6 +1,5 @@
 package me.latestion.hoh.events;
 
-import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -25,7 +24,7 @@ public class BlockPlace implements Listener {
 	@EventHandler
 	public void onPlace(BlockPlaceEvent event) {
 		
-		if (plugin.game.gameState != GameState.ON || plugin.game.freeze){
+		if (plugin.game.gameState != GameState.ON || plugin.game.frozen){
 			event.setCancelled(true);
 			return;
 		}

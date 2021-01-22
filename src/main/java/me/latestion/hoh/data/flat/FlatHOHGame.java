@@ -51,7 +51,7 @@ public class FlatHOHGame {
 			Bukkit.getLogger().info("Players in team: "+team.players.size());
 		}
 
-		game.freeze = freeze;
+		game.frozen = freeze;
 		game.grace = grace;
 		game.ep = episode;
 		game.setGameState(gameState);
@@ -68,7 +68,7 @@ public class FlatHOHGame {
 		FlatHOHTeam.save(game.getTeams().values(), new File(plugin.getDataFolder(), "teams.yml"));
 
 		yc.set("location", Util.serializeLocation(game.loc));
-		yc.set("freeze", game.freeze);
+		yc.set("freeze", game.frozen);
 		yc.set("grace", game.grace);
 		yc.set("episode", game.ep);
 		yc.set("gameState", game.gameState.toString());

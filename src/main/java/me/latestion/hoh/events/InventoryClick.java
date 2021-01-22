@@ -72,12 +72,14 @@ public class InventoryClick implements Listener {
 					player.closeInventory();
 					return;
 				} else if (team.getPlayers().size() < plugin.game.teamSize) {
+					if(team.getLeader().getPlayer().hasPermission("hoh.join.lock.others")){
+						if(!player.hasPermission("hoh.join.lock.ignore")){
+							player.sendMessage(messageManager.getMessage("team-is-locked"));
+							return;
+						}
+					}
 					Util util = new Util(plugin);
-//					HOHPlayer namingHohPlayer = team.getLeader();
-//					if (namingHohPlayer.isNamingTeam()) {
-//						player.sendMessage(messageManager.getMessage("still-naming-team"));
-//						return;
-//					}
+
 					lore.add(player.getName());
 					event.getCurrentItem().getItemMeta().setLore(lore);
 					for (Player p2 : Bukkit.getOnlinePlayers()) {
