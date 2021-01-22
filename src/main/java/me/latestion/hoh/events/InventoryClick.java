@@ -48,9 +48,12 @@ public class InventoryClick implements Listener {
 			event.setCancelled(true);
 			Player player = (Player) event.getWhoClicked();
 			HOHPlayer hohPlayer = plugin.game.getHohPlayer(player.getUniqueId());
-			if (event.getInventory().equals(plugin.game.inv) && event.getCurrentItem().getItemMeta().hasLore()) {
+
+			if (event.getInventory().equals(plugin.game.inv)) {
+				Integer id = event.getSlot();
+				HOHTeam team = plugin.game.getTeam(id);
 				List<String> lore = event.getCurrentItem().getItemMeta().getLore();
-				if (lore.size() == 1) {
+				if (team == null) {
 					lore.add(player.getName());
 					ItemStack item = event.getCurrentItem();
 					ItemMeta meta = item.getItemMeta();
@@ -61,30 +64,28 @@ public class InventoryClick implements Listener {
 						p.updateInventory();
 					}
 					hohPlayer.setNamingTeam(true);
-					HOHTeam team = new HOHTeam(event.getSlot());
+					team = new HOHTeam(id);
 					plugin.game.addTeam(team);
 					hohPlayer.setTeam(team);
 					team.addPlayer(hohPlayer);
 					player.sendMessage(messageManager.getMessage("enter-team-name"));
 					player.closeInventory();
 					return;
-				} else if (lore.size() - 1 < plugin.game.teamSize) {
-
-					Util util = new Util(plugin);
-					Player namingPlayer = Bukkit.getPlayerExact(ChatColor.stripColor(lore.get(1)));
-					HOHPlayer namingHohPlayer = plugin.game.getHohPlayer(namingPlayer.getUniqueId());
-					if (namingHohPlayer.isNamingTeam()) {
-						player.sendMessage(messageManager.getMessage("still-naming-team"));
-						return;
+				} else if (team.getPlayers().size() < plugin.game.teamSize) {
+					if(team.getLeader().getPlayer().hasPermission("hoh.join.lock.others")){
+						if(!player.hasPermission("hoh.join.lock.ignore")){
+							player.sendMessage(messageManager.getMessage("team-is-locked"));
+							return;
+						}
 					}
+					Util util = new Util(plugin);
+
 					lore.add(player.getName());
 					event.getCurrentItem().getItemMeta().setLore(lore);
 					for (Player p2 : Bukkit.getOnlinePlayers()) {
 						p2.updateInventory();
 					}
 
-					Integer id = event.getSlot();
-					HOHTeam team = plugin.game.getTeam(id);
 					hohPlayer.setTeam(team);
 					team.addPlayer(hohPlayer);
 

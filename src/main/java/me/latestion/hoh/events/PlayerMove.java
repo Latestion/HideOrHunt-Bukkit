@@ -19,7 +19,7 @@ public class PlayerMove implements Listener {
 	public void pme(PlayerMoveEvent event) {
 		if(plugin.game.getGameState() == GameState.OFF) return;
 		if (plugin.game.gameState == GameState.ON) {
-			if (!plugin.game.freeze) return;
+			if (!plugin.game.frozen) return;
 			if (event.getPlayer().isOp() && !this.plugin.getConfig().getBoolean("Allow-Op")) {
 				event.setCancelled(false);
 			} else {

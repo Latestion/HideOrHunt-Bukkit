@@ -62,12 +62,12 @@ public class CommandInitializer {
                 sender.sendMessage(messageManager.getMessage("game-not-started"));
                 return true;
             }
-            if (plugin.game.freeze) {
+            if (plugin.game.frozen) {
                 Bukkit.broadcastMessage(messageManager.getMessage("unfreezed-game"));
-                plugin.game.freeze = false;
+                plugin.game.frozen = false;
             } else {
                 Bukkit.broadcastMessage(messageManager.getMessage("freezed-game"));
-                plugin.game.freeze = true;
+                plugin.game.frozen = true;
             }
             return true;
         }).setUsage("/hoh freeze").build());

@@ -1,6 +1,7 @@
 package me.latestion.hoh.utils;
 
 import me.latestion.hoh.HideOrHunt;
+import me.latestion.hoh.game.HOHPlayer;
 import me.latestion.hoh.game.HOHTeam;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.*;
@@ -87,9 +88,11 @@ public class Util {
         return item;
     }
 
-    public void givePlayerKit(Player p, HOHTeam team, String name) {
+    public void givePlayerKit(HOHPlayer player) {
+        HOHTeam team = player.getTeam();
+        Player p = player.getPlayer();
         if (team.getLeader().getPlayer().equals(p)) {
-            p.getInventory().addItem(beacon(name));
+            p.getInventory().addItem(beacon(player.getName()));
         }
         for (String items : this.plugin.getConfig().getStringList("Kits")) {
             String[] item = items.split(", ");

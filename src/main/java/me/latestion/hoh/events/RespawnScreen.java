@@ -1,6 +1,7 @@
 package me.latestion.hoh.events;
 
 import me.latestion.hoh.HideOrHunt;
+import me.latestion.hoh.customitems.TrackingItem;
 import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHPlayer;
 import me.latestion.hoh.game.HOHTeam;
@@ -43,54 +44,13 @@ public class RespawnScreen implements Listener {
         event.setCancelled(true);
 
         if (!player.getTeam().hasBeacon()) {
-
-            String msg = messageManager.getMessage("player-eliminated").replace("%player%", player.getPlayer().getDisplayName());
-            Bukkit.broadcastMessage(msg);
-
-            if (player.getPlayer().getInventory().containsAtLeast(util.beacon(player.getTeam().getName()), 1)) {
-                p.getInventory().remove(util.beacon(player.getTeam().getName()));
-            }
-
-            player.banned = true;
-            player.dead = true;
-            player.getTeam().diedPlayer(player);
-
-            if (player.getTeam().eliminated) {
-                msg = messageManager.getMessage("team-eliminated").replace("%team%", player.getTeam().getName());
-                Bukkit.broadcastMessage(msg);
-                plugin.sbUtil.eliminateTeam(player.getTeam().getName());
-            }
-
-            if (this.plugin.getConfig().getBoolean("Ban-Player-On-Death")) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban " + player.getPlayer().getName() + " Eliminated");
-                    }
-                }, 0L);
-            } else {
-                player.getPlayer().setGameMode(GameMode.SPECTATOR);
-            }
-
-            if (plugin.game.checkEndConditions()) {
-                HOHTeam winnerTeam = plugin.game.getWinnerTeam();
-                if (winnerTeam == null) return;
-                Bukkit.broadcastMessage(messageManager.getMessage("win-message").replace("%winner-team%", winnerTeam.getName()));
-                plugin.game.gameState = GameState.OFF;
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        for (UUID p : plugin.game.hohPlayers.keySet()) {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pardon " + Bukkit.getPlayer(p).getName());
-                        }
-                    }
-                }, 0L);
-                plugin.game.endGame();
-            }
-
+            if(p.getKiller() != null)
+                TrackingItem.addTrackingUses(plugin, p.getKiller(), 3);
+            plugin.getGame().eliminatePlayer(player);
         }
         else {
-
+            if(p.getKiller() != null)
+                TrackingItem.addTrackingUses(plugin, p.getKiller(), 1);
 			p.teleport(plugin.game.hohPlayers.get(p.getUniqueId()).getTeam().getBeacon().getLocation().clone().add(0, 1, 0));
 
             if (this.plugin.getConfig().getInt("Inventory-Keep") == 0) {

@@ -4,6 +4,7 @@ import me.latestion.hoh.api.HOHEpisodeEndEvent;
 import me.latestion.hoh.api.HOHGameEvent;
 import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.game.GameState;
+import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,49 +13,57 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.latestion.hoh.HideOrHunt;
 
 import java.io.File;
+import java.util.Map;
 
 public class Episodes extends BukkitRunnable {
 
 	private HideOrHunt plugin;
+	long time;
 
-	public Episodes(HideOrHunt plugin) {
+	public Episodes(HideOrHunt plugin){
+		this(plugin, 0);
+	}
+	public Episodes(HideOrHunt plugin, long time) {
 		this.plugin = plugin;
-		runTaskTimer(plugin, (plugin.getConfig().getInt("Episode-Time") * 60 * 20),
-				(plugin.getConfig().getInt("Episode-Time") * 60 * 20L));
-		sendReminders();
+		this.time = time;
+		runTaskTimer(plugin, 0L, 20L);
 	}
 
 	@Override
 	public void run() {
+		HOHGame game = plugin.getGame();
 		MessageManager messageManager = plugin.getMessageManager();
-		Bukkit.broadcastMessage(messageManager.getMessage("episode-end").replace("%episode%", Integer.toString(plugin.game.ep)));
-		if (plugin.game.ep == 1) {
-			if (plugin.game.grace)
-				plugin.game.graceOff();
+		long breakTime = game.getBreakTime();
+		if(game.isDuringBreak() && breakTime != -1 && time >= breakTime){
+			game.unFreeze();
 		}
-		if (plugin.getConfig().getInt("Episode-End-Break-Time") != 0) {
-			plugin.game.freeze = true;
-			Bukkit.broadcastMessage(messageManager.getMessage("game-freezed"));
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-				plugin.game.freeze = false;
-				Bukkit.broadcastMessage(messageManager.getMessage("game-unfreezed"));
-				sendReminders();
-			}, (plugin.getConfig().getInt("Episode-End-Break-Time") * 20));
-		} else {
-			sendReminders();
+		if(game.isFrozen()){
+			return;
 		}
-		FlatHOHGame.save(plugin.game, plugin, new File(plugin.getDataFolder(), "hohGame.yml"));
-		plugin.game.ep++;
-		HOHEpisodeEndEvent event = new HOHEpisodeEndEvent(plugin.game.ep);
-		Bukkit.getPluginManager().callEvent(event);
+		sendReminders(game.getEpisodeTime() - time);
+		if(time != 0 && time % plugin.getGame().getEpisodeTime() == 0){
+			Bukkit.broadcastMessage(messageManager.getMessage("episode-end").replace("%episode%", Integer.toString(game.ep)));
+			if (game.getEpisodeNumber() == 1) {
+				if (game.grace)
+					game.graceOff();
+			}
+			if (breakTime != 0) {
+				game.freeze();
+				game.setDuringBreak(true);
+			}
+			time = 0;
+			game.ep++;
+			FlatHOHGame.save(game, plugin, new File(plugin.getDataFolder(), "hohGame.yml"));
+			return;
+		}
+		time++;
 	}
 
-	private void sendReminders() {
-		for (String s : plugin.getConfig().getStringList("Episode-Reminders")) {
-			String[] split = s.split(", ");
-			int interval = Integer.parseInt(split[0]);
-			String message = format(split[1].replace("%ep%", Integer.toString(plugin.game.ep)));
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(message), interval * 20L);
+	private void sendReminders(long remainingTime) {
+		Map<Long, String> reminders = plugin.getGame().getEpisodeReminders();
+		if(reminders.containsKey(remainingTime)){
+			String message = format(reminders.get(remainingTime).replace("%ep%", Integer.toString(plugin.game.ep)));
+			Bukkit.broadcastMessage(message);
 		}
 	}
 
