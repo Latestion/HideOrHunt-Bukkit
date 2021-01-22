@@ -64,6 +64,7 @@ public class HOHGame {
 		if (plugin.getConfig().getBoolean("Auto-Episodes")) new Episodes(plugin);
 		if (plugin.getConfig().getBoolean("Auto-Supply-Drops")) new SupplyDrop(plugin);
 	}
+
 	public void prepareGame() {
 		this.gameState = GameState.PREPARE;
 		for (Player player : Bukkit.getOnlinePlayers()) {
@@ -148,14 +149,15 @@ public class HOHGame {
 
 	public boolean checkEndConditions() {
 		List<HOHTeam> aliveTeams = new ArrayList<>();
-		for (HOHPlayer player : hohPlayers.values()) {
-			if (!player.dead) {
-				if (!aliveTeams.contains(player.getTeam())) {
-					aliveTeams.add(player.getTeam());
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			HOHPlayer p = hohPlayers.get(player.getUniqueId());
+			if (!p.dead) {
+				if (!aliveTeams.contains(p.getTeam())) {
+					aliveTeams.add(p.getTeam());
 				}
 			}
 		}
-		return aliveTeams.size() == 1 ? true : false;
+		return aliveTeams.size() == 1;
 	}
 
 	public void endGame(){

@@ -37,7 +37,8 @@ public class HideOrHunt extends JavaPlugin {
 		game = FlatHOHGame.deserialize(new File(this.getDataFolder(), "hohGame.yml"), this);
 		if(game != null){
 			game.loadGame();
-		}else{
+		}
+		else{
 			this.game = new HOHGame(this);
 		}
 	}
@@ -97,6 +98,7 @@ public class HideOrHunt extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new PlayerWorld(this), this);
 		this.getServer().getPluginManager().registerEvents(new TrulyGrace(this), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerLogin(this), this);
+		this.getServer().getPluginManager().registerEvents(new EntityExplode(this), this);
 		new CommandInitializer(this).initialize();
 	}
 
