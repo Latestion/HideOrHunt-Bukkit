@@ -16,6 +16,9 @@ import me.latestion.hoh.utils.ScoreBoardUtil;
 import me.latestion.hoh.versioncheck.UpdateChecker;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class HideOrHunt extends JavaPlugin {
 
@@ -41,6 +44,7 @@ public class HideOrHunt extends JavaPlugin {
 		else{
 			this.game = new HOHGame(this);
 		}
+		loadSchems();
 	}
 
 	@Override
@@ -109,5 +113,14 @@ public class HideOrHunt extends JavaPlugin {
 	public void saveLanguagesFiles() {
 		this.saveResource("locales/en.yml", false);
 		this.saveResource("locales/pl.yml", false);
+	}
+
+	public void loadSchems()  {
+		try {
+			Files.createDirectories(Paths.get(this.getDataFolder().getAbsolutePath() + "/schems"));
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

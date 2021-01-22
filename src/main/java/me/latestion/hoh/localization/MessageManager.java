@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
  * @author barpec12 on 27.12.2020
  */
 public class MessageManager {
+
 	String languageFilePath;
 	File dataFolder;
 	Map<String, String> messages;

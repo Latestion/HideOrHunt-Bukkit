@@ -8,6 +8,7 @@ import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
@@ -258,4 +259,6 @@ public class HOHGame {
 	public HOHPlayer getHohPlayer(UUID uuid) {
 		return hohPlayers.get(uuid);
 	}
+
+	public World getWorld() { return loc.getWorld(); }
 }

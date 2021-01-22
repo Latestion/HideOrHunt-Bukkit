@@ -55,8 +55,15 @@ Item-On-Respawn:
 
 # The plugin will pick any one combination of items between 1 and 2 from the above example. You can have unlimited amount of combinations!
 # You can even use AIR to make the chest look better but thats all up to you.
+# MAKE SURE ITS ONLY SKY THINGS
 Auto-Supply-Drops: true
 Supply-Drop-Delay: 10 # Delay between supply drops in minutes
+World-Edit-Api: false # Allows World Edit api for better performance and more custom features
+# MAKE SURE TO HAVE ALL YOUR SCHEMATICS IN YOUR WORLD EDIT FOLDER!
+# Ignore the fellow if World-Edit-Api is on
+Schem-Names:
+  # - Drop_Ship_1
+  # - Drop_Ship_2
 Supply-Drop-Items:
   1:
     - BOW, 1

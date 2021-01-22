@@ -1,9 +1,12 @@
 package me.latestion.hoh.myrunnables;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Supplier;
 
+import me.latestion.hoh.drops.SchemLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -18,9 +21,15 @@ import me.latestion.hoh.HideOrHunt;
 public class SupplyDrop extends BukkitRunnable {
 
 	private HideOrHunt plugin;
+	private SchemLoader drop;
+	private boolean schem = false;
 
 	public SupplyDrop(HideOrHunt plugin) {
 		this.plugin = plugin;
+		schem = plugin.getConfig().getBoolean("World-Edit-Api");
+		if (schem) {
+			drop = new SchemLoader(plugin);
+		}
 		runTaskTimer(plugin, plugin.getConfig().getInt("Supply-Drop-Delay") * 60 * 20L
 				, this.plugin.getConfig().getInt("Supply-Drop-Delay") * 60 * 20L);
 	}
@@ -32,7 +41,15 @@ public class SupplyDrop extends BukkitRunnable {
 		int x = getRandomNumberInRange(borderCenter.getBlockX() - borderRadius, borderCenter.getBlockX() + borderRadius);
 		int z = getRandomNumberInRange(borderCenter.getBlockZ() - borderRadius, borderCenter.getBlockZ() + borderRadius);
 		Location higestBlock = borderCenter.getWorld().getHighestBlockAt(x, z).getLocation().clone().add(0.0, 60.0, 0.0);
-		createDrop(higestBlock);
+		if (!schem) createDrop(higestBlock);
+		else {
+			try {
+				drop.grab(higestBlock.getBlockX(), higestBlock.getBlockY(), higestBlock.getBlockZ());
+				Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "Supply drop at X:" + higestBlock.getBlockX() + " Z:" + higestBlock.getBlockZ());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		};
 	}
 
 	public void createDrop(Location loc) {
