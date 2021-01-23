@@ -32,6 +32,7 @@ public class PlugMessage implements PluginMessageListener {
                 if (plugin.getConfig().getString("Main-Lobby").equals(servername)) {
                     plugin.support.isHub = true;
                 }
+                support.thisServer = servername;
             }
 
             if (subChannel.equals("PlayerCount")) {
@@ -63,5 +64,4 @@ public class PlugMessage implements PluginMessageListener {
         output.writeUTF(serverState.name);
         Bukkit.getServer().sendPluginMessage(plugin, "BungeeCord", output.toByteArray());
     }
-
 }

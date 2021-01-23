@@ -16,6 +16,8 @@ public class BungeeSupport {
     public List<UUID> inQueue = new ArrayList<>();
     public Map<String, ServerState> state = new HashMap<>();
 
+    public String thisServer;
+
     public BungeeSupport(HideOrHunt plugin) {
         this.plugin = plugin;
         this.pm = new PlugMessage(plugin);

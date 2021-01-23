@@ -1,6 +1,8 @@
 package me.latestion.hoh.events;
 
+import me.latestion.hoh.bungee.PlugMessage;
 import me.latestion.hoh.game.HOHGame;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,7 +24,15 @@ public class PlayerJoin implements Listener {
 	public void pje(final PlayerJoinEvent event) {
 		Player p = event.getPlayer();
 		HOHGame game = plugin.getGame();
-		if (plugin.support != null) plugin.support.pm.isHub();
+		if (plugin.support != null) {
+			if (!plugin.support.isHub) {
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					public void run() {
+						plugin.support.pm.isHub();
+					}
+				}, 1 * 20);
+			}
+		}
 		if (game.gameState == GameState.ON) {
 			plugin.sbUtil.addPlayer(p);
 			if (!plugin.game.bar.getBar().getPlayers().contains(p))
