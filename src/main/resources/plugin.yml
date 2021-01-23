@@ -30,3 +30,5 @@ permissions:
         description: enable / disable crafting tables
       hoh.continue:
         description: continues previous game
+softdepend:
+  - WorldEdit

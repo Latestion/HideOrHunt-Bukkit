@@ -1,6 +1,9 @@
 package me.latestion.hoh.events;
 
+import me.latestion.hoh.game.HOHGame;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -26,7 +29,17 @@ public class PlayerMove implements Listener {
 				Location to = event.getFrom();
 				to.setPitch(event.getTo().getPitch());
 				to.setYaw(event.getTo().getYaw());
+				to.setY(to.getY());
 				event.setTo(to);
+			}
+		}else{
+			Location to = event.getTo();
+			Location from = event.getFrom();
+			Location spawn = to.getWorld().getSpawnLocation();//plugin.getGame().getSpawnLocation();
+			if(spawn.distance(to)>20D){
+				from.setPitch(to.getPitch());
+				from.setYaw(to.getYaw());
+				event.setTo(from);
 			}
 		}
 	}

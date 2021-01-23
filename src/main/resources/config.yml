@@ -109,3 +109,13 @@ Rules-Messages:
 # %playerteam%
 Main-Chat-Format: "&f[&c%playerteam%&f] &f%playername% &7>> &f%message%"
 Team-Chat-Format: "&f[&2TeamChat&f] &f%playername% &7>> &f%message%"
+
+# WORK IN PROGRESS
+# RECOMMENDED NOT TO USE YET
+Bungee-Cord: false #Enables Bungee Cord Support
+Main-Lobby: "Main"
+# <name>, <team size>, <total player>
+# Eg: "hoh_1, 1, 2"
+HOH-Servers:
+  - "hoh_1, 1, 2"
+  - "hoh_2, 2, 2"

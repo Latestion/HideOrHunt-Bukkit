@@ -3,6 +3,7 @@ package me.latestion.hoh.game;
 import java.io.File;
 import java.util.*;
 
+import me.latestion.hoh.api.HOHGameEvent;
 import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
@@ -57,6 +58,11 @@ public class HOHGame {
 	}
 
 	public void loadGame(){
+		HOHGameEvent event = new HOHGameEvent(GameState.ON, loc, teamSize, plugin);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled()) {
+			return;
+		}
 		double neededTeams = Math.ceil(hohPlayers.size() / (double) teamSize);
 		int totalTeams = (int) neededTeams;
 		this.inv = util.createInv(totalTeams);
@@ -67,6 +73,11 @@ public class HOHGame {
 	}
 
 	public void prepareGame() {
+		HOHGameEvent event = new HOHGameEvent(GameState.PREPARE, loc, teamSize, plugin);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled()) {
+			return;
+		}
 		this.gameState = GameState.PREPARE;
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			if (player.isOp() && !util.getAllowOp()) {
@@ -84,6 +95,11 @@ public class HOHGame {
 	}
 
 	public void startGame() {
+		HOHGameEvent event = new HOHGameEvent(GameState.ON, loc, teamSize, plugin);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled()) {
+			return;
+		}
 		if (gameState != GameState.PREPARE) return;
 		Bukkit.getServer().broadcastMessage(plugin.getMessageManager().getMessage("starting-game"));
 		setBorder();
@@ -162,6 +178,11 @@ public class HOHGame {
 	}
 
 	public void endGame(){
+		HOHGameEvent event = new HOHGameEvent(GameState.ON, loc, teamSize, plugin);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled()) {
+			return;
+		}
 		loc.getWorld().getWorldBorder().reset();
 		for (HOHTeam team : teams.values()) {
 			if (team.getBeacon() != null) team.getBeacon().setType(Material.AIR);
@@ -226,6 +247,7 @@ public class HOHGame {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				public void run() {
 					for (HOHPlayer player : hohPlayers.values()) {
+						if (player.getPlayer().isOnline())
 						player.getPlayer().addPotionEffect(effect);
 					}
 				}
@@ -261,4 +283,12 @@ public class HOHGame {
 	}
 
 	public World getWorld() { return loc.getWorld(); }
+
+	public void setGameState(GameState gameState){
+		this.gameState = gameState;
+	}
+
+	public GameState getGameState(){
+		return this.gameState;
+	}
 }

@@ -157,6 +157,41 @@ public class CommandInitializer {
             }
             return true;
         }).setUsage("/hoh continue").build());
+        builder.addSubCommand(new SubCommandBuilder("queue").setCommandHandler((sender, command, label, args) -> {
+            if (plugin.support == null) {
+                sender.sendMessage("Bungee Cord is not active!");
+            }
+            if (args.length == 1) {
+                if (sender instanceof Player) {
+                    plugin.support.queuePlayer((Player) sender);
+                }
+                else {
+                    sender.sendMessage(ChatColor.RED + " This command can only be ran by players.");
+                    return false;
+                }
+                return true;
+            }
+            if (args.length == 2) {
+                try {
+                    Player p = Bukkit.getPlayerExact(args[1]);
+                    if (p == null) {
+                        sender.sendMessage("Invalid Player!");
+                        return true;
+                    }
+                    if (p.isOnline()) {
+                        plugin.support.queuePlayer(p);
+                    }
+                    else {
+                        sender.sendMessage(ChatColor.RED + "Player is offline!");
+                    }
+                }
+                catch (Exception e) {
+                    sender.sendMessage("Invalid Player!");
+                    return true;
+                }
+            }
+            return true;
+        }).setUsage("/hoh continue").build());
         builder.addSubCommand(new SubCommandBuilder("help").setUsage("/hoh help").setCommandHandler((sender, command, label, args) -> {
             //todo: idk what color scheme you use so i just did Gold and gray
             StringBuilder helpMessage = new StringBuilder();

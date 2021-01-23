@@ -1,6 +1,9 @@
 package me.latestion.hoh.myrunnables;
 
+import me.latestion.hoh.api.HOHEpisodeEndEvent;
+import me.latestion.hoh.api.HOHGameEvent;
 import me.latestion.hoh.data.flat.FlatHOHGame;
+import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -45,6 +48,8 @@ public class Episodes extends BukkitRunnable {
 		}
 		FlatHOHGame.save(plugin.game, plugin, new File(plugin.getDataFolder(), "hohGame.yml"));
 		plugin.game.ep++;
+		HOHEpisodeEndEvent event = new HOHEpisodeEndEvent(plugin.game.ep);
+		Bukkit.getPluginManager().callEvent(event);
 	}
 
 	private void sendReminders() {

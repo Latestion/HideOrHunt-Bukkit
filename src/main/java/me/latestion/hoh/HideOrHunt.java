@@ -1,7 +1,7 @@
 package me.latestion.hoh;
 
+import me.latestion.hoh.bungee.BungeeSupport;
 import me.latestion.hoh.commandmanager.CommandInitializer;
-import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.events.*;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
@@ -15,8 +15,6 @@ import me.latestion.hoh.stats.Metrics;
 import me.latestion.hoh.utils.ScoreBoardUtil;
 import me.latestion.hoh.versioncheck.UpdateChecker;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -26,19 +24,21 @@ public class HideOrHunt extends JavaPlugin {
 	public ScoreBoardUtil sbUtil;
 	private MessageManager msgManager;
 
+	public BungeeSupport support;
+
 	@Override
 	public void onEnable() {
 		this.saveDefaultConfig();
 		this.saveLanguagesFiles();
 		String lang = getConfig().getString("language");
 		this.msgManager = new MessageManager(this.getDataFolder(), lang);
-
 		sbUtil = new ScoreBoardUtil(this);
 		new Metrics(this, 8350);
 		hoh();
 		registerAll();
 		this.game = new HOHGame(this);
 		loadSchems();
+		if (getConfig().getBoolean("Bungee-Cord")) { support = new BungeeSupport(this); }
 	}
 
 	@Override
@@ -116,5 +116,13 @@ public class HideOrHunt extends JavaPlugin {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public HOHGame getGame() {
+		return game;
+	}
+
+	public static HideOrHunt getInstance() {
+		return JavaPlugin.getPlugin(HideOrHunt.class);
 	}
 }

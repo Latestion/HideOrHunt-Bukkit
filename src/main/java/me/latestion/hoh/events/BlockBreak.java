@@ -1,5 +1,6 @@
 package me.latestion.hoh.events;
 
+import me.latestion.hoh.api.HOHBeaconBreakEvent;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -34,6 +35,12 @@ public class BlockBreak implements Listener {
 		HOHTeam team = util.getTeamFromBlock(event.getBlock());
 		if (team == null)
 			return;
+		HOHBeaconBreakEvent e = new HOHBeaconBreakEvent(event.getBlock(), team, player.getUniqueId());
+		Bukkit.getPluginManager().callEvent(e);
+		if (e.isCancelled()) {
+			event.setCancelled(true);
+			return;
+		}
 		if (team.equals(hohPlayer.getTeam())) {
 			event.setCancelled(true);
 			player.sendMessage(messageManager.getMessage("cannot-break-own-beacon"));
