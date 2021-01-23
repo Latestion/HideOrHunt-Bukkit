@@ -1,24 +1,21 @@
 package me.latestion.hoh.events;
 
-import me.latestion.hoh.bungee.PlugMessage;
+import me.latestion.hoh.HideOrHunt;
+import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHGame;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import me.latestion.hoh.HideOrHunt;
-import me.latestion.hoh.game.GameState;
-
 public class PlayerJoin implements Listener {
 
-	private HideOrHunt plugin;
+    private final HideOrHunt plugin;
 
-	public PlayerJoin(HideOrHunt plugin) {
-		this.plugin = plugin;
-	}
+    public PlayerJoin(HideOrHunt plugin) {
+        this.plugin = plugin;
+    }
 
 	@EventHandler
 	public void pje(final PlayerJoinEvent event) {

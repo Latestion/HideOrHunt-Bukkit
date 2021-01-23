@@ -23,11 +23,21 @@ public final class HOHBeaconBreakEvent extends Event implements Cancellable {
         this.id = id;
     }
 
-    public Block getBeacon() { return beacon; }
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-    public HOHTeam getTeam() { return team; }
+    public Block getBeacon() {
+        return beacon;
+    }
 
-    public UUID getPlayerID() { return id; }
+    public HOHTeam getTeam() {
+        return team;
+    }
+
+    public UUID getPlayerID() {
+        return id;
+    }
 
     public boolean isCancelled() {
         return cancelled;
@@ -38,10 +48,6 @@ public final class HOHBeaconBreakEvent extends Event implements Cancellable {
     }
 
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

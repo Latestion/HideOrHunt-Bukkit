@@ -64,4 +64,5 @@ public class PlugMessage implements PluginMessageListener {
         output.writeUTF(serverState.name);
         Bukkit.getServer().sendPluginMessage(plugin, "BungeeCord", output.toByteArray());
     }
+
 }

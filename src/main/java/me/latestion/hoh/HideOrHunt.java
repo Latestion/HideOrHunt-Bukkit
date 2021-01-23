@@ -89,9 +89,10 @@ public class HideOrHunt extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new InventoryClick(this), this);
 		this.getServer().getPluginManager().registerEvents(new InventoryClose(this), this);
 		this.getServer().getPluginManager().registerEvents(new InventoryOpen(this), this);
-		this.getServer().getPluginManager().registerEvents(new RespawnScreen(this), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerDeath(this), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerMove(this), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerRespawn(this), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerWorld(this), this);
 		this.getServer().getPluginManager().registerEvents(new TrulyGrace(this), this);
 		this.getServer().getPluginManager().registerEvents(new PlayerLogin(this), this);
