@@ -13,9 +13,9 @@ public final class HOHBeaconBreakEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private String message;
     private boolean cancelled;
-    private Block beacon;
-    private HOHTeam team;
-    private UUID id;
+    private final Block beacon;
+    private final HOHTeam team;
+    private final UUID id;
 
     public HOHBeaconBreakEvent(Block beacon, HOHTeam team, UUID id) {
         this.beacon = beacon;

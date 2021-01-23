@@ -13,7 +13,7 @@ import java.util.List;
 
 public class PlugMessage implements PluginMessageListener {
 
-    private HideOrHunt plugin;
+    private final HideOrHunt plugin;
     private BungeeSupport support;
 
     public PlugMessage(HideOrHunt plugin) {

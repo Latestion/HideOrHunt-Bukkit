@@ -13,10 +13,10 @@ public class HOHBeaconPlaceEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private String message;
     private boolean cancelled;
-    private Block beacon;
-    private HOHTeam team;
-    private UUID id;
-    private boolean success;
+    private final Block beacon;
+    private final HOHTeam team;
+    private final UUID id;
+    private final boolean success;
 
     public HOHBeaconPlaceEvent(Block beacon, HOHTeam team, UUID id, boolean success) {
         this.beacon = beacon;

@@ -46,7 +46,7 @@ public class Bar extends BukkitRunnable {
     public void run() {
         String title = plugin.getMessageManager().getMessage("alive-teams-bar").replace("%number%", Integer.toString(plugin.game.getAliveTeams().size()));
         bar.setTitle(format(title));
-        double progress = (plugin.game.getAliveTeams().size() / plugin.game.getTeams().size());
+        double progress = ((double) plugin.game.getAliveTeams().size() / (double) plugin.game.getTeams().size());
         bar.setProgress(progress);
     }
 

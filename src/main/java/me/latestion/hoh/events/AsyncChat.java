@@ -68,7 +68,6 @@ public class AsyncChat implements Listener {
         if (!plugin.game.hohPlayers.containsKey(event.getPlayer().getUniqueId())) return;
 
         HOHPlayer player = plugin.game.hohPlayers.get(event.getPlayer().getUniqueId());
-        event.setCancelled(true);
         if (player.dead) return;
 
 
