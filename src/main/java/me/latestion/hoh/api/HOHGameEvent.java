@@ -15,13 +15,11 @@ public final class HOHGameEvent extends Event implements Cancellable {
     private GameState state;
     private Location loc;
     private int teamsize;
-    private HideOrHunt plugin;
 
-    public HOHGameEvent(GameState state, Location loc, int teamsize, HideOrHunt plugin) {
+    public HOHGameEvent(GameState state, Location loc, int teamsize) {
         this.state = state;
         this.loc = loc;
         this.teamsize = teamsize;
-        this.plugin = plugin;
     }
 
     public GameState getState() { return state; }
@@ -46,7 +44,7 @@ public final class HOHGameEvent extends Event implements Cancellable {
 
     public void setLoc(Location setLoc) {
         if (state != GameState.OFF) {
-            plugin.game.loc = setLoc;
+            HideOrHunt.getInstance().game.loc = setLoc;
         }
     }
 
@@ -54,7 +52,7 @@ public final class HOHGameEvent extends Event implements Cancellable {
 
     public void setTeamsize(int newSize) {
         if (state == GameState.PREPARE) {
-            plugin.game.teamSize = newSize;
+            HideOrHunt.getInstance().game.teamSize = newSize;
         }
     }
 

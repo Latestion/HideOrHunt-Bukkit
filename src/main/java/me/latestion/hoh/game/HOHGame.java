@@ -58,7 +58,7 @@ public class HOHGame {
 	}
 
 	public void loadGame(){
-		HOHGameEvent event = new HOHGameEvent(GameState.ON, loc, teamSize, plugin);
+		HOHGameEvent event = new HOHGameEvent(GameState.ON, loc, teamSize);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()) {
 			return;
@@ -73,7 +73,7 @@ public class HOHGame {
 	}
 
 	public void prepareGame() {
-		HOHGameEvent event = new HOHGameEvent(GameState.PREPARE, loc, teamSize, plugin);
+		HOHGameEvent event = new HOHGameEvent(GameState.PREPARE, loc, teamSize);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()) {
 			return;
@@ -95,7 +95,7 @@ public class HOHGame {
 	}
 
 	public void startGame() {
-		HOHGameEvent event = new HOHGameEvent(GameState.ON, loc, teamSize, plugin);
+		HOHGameEvent event = new HOHGameEvent(GameState.ON, loc, teamSize);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()) {
 			return;
@@ -178,7 +178,7 @@ public class HOHGame {
 	}
 
 	public void endGame(){
-		HOHGameEvent event = new HOHGameEvent(GameState.ON, loc, teamSize, plugin);
+		HOHGameEvent event = new HOHGameEvent(GameState.ON, loc, teamSize);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()) {
 			return;
