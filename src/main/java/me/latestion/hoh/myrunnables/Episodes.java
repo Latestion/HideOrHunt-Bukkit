@@ -35,13 +35,10 @@ public class Episodes extends BukkitRunnable {
 		if (plugin.getConfig().getInt("Episode-End-Break-Time") != 0) {
 			plugin.game.freeze = true;
 			Bukkit.broadcastMessage(messageManager.getMessage("game-freezed"));
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				@Override
-				public void run() {
-					plugin.game.freeze = false;
-					Bukkit.broadcastMessage(messageManager.getMessage("game-unfreezed"));
-					sendReminders();
-				}
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+				plugin.game.freeze = false;
+				Bukkit.broadcastMessage(messageManager.getMessage("game-unfreezed"));
+				sendReminders();
 			}, (plugin.getConfig().getInt("Episode-End-Break-Time") * 20));
 		} else {
 			sendReminders();
@@ -57,11 +54,7 @@ public class Episodes extends BukkitRunnable {
 			String[] split = s.split(", ");
 			int interval = Integer.parseInt(split[0]);
 			String message = format(split[1].replace("%ep%", Integer.toString(plugin.game.ep)));
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				public void run() {
-					Bukkit.broadcastMessage(message);
-				}
-			}, interval * 20L);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.broadcastMessage(message), interval * 20L);
 		}
 	}
 

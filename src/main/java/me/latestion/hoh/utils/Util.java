@@ -30,18 +30,17 @@ public class Util {
     }
 
     public static Location deserializeLocation(String locString) {
-        String[] splitted = locString.split(",");
-        World w = Bukkit.getWorld(splitted[0]);
-        double x = Double.valueOf(splitted[1]);
-        double y = Double.valueOf(splitted[2]);
-        double z = Double.valueOf(splitted[3]);
+        String[] split = locString.split(",");
+        World w = Bukkit.getWorld(split[0]);
+        double x = Double.parseDouble(split[1]);
+        double y = Double.parseDouble(split[2]);
+        double z = Double.parseDouble(split[3]);
         return new Location(w, x, y, z);
     }
 
     public int getInt(String s) {
         try {
-            int i = Integer.parseInt(s);
-            return i;
+            return  Integer.parseInt(s);
         } catch (Exception e) {
             return 0;
         }
@@ -100,12 +99,7 @@ public class Util {
             }
         }
         for (String potion : this.plugin.getConfig().getStringList("Kits-Potion")) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, (Runnable) new Runnable() {
-                @Override
-                public void run() {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "give " + p.getName() + " " + potion);
-                }
-            }, 0L);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "give " + p.getName() + " " + potion), 0L);
         }
     }
 
