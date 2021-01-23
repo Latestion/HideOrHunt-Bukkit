@@ -33,6 +33,12 @@ public class PlugMessage implements PluginMessageListener {
                     plugin.support.isHub = true;
                 }
                 support.thisServer = servername;
+                ServerState ss = support.state.get(servername);
+                if (ss.maxPlayers == Bukkit.getOnlinePlayers().size()) {
+                    if (!support.isHub) {
+
+                    }
+                }
             }
 
             if (subChannel.equals("PlayerCount")) {

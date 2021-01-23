@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Random;
@@ -29,9 +30,7 @@ public class RespawnScreen implements Listener {
     }
 
     @EventHandler
-    public void damageEntity(EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof Player))
-            return;
+    public void damageEntity(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player))
             return;
         if (plugin.game.getGameState() != GameState.ON)
@@ -39,7 +38,6 @@ public class RespawnScreen implements Listener {
         Player p = (Player) event.getEntity();
         if (!(p.getHealth() < 1))
             return;
-        Player d = (Player) event.getDamager();
         HOHPlayer player = plugin.game.hohPlayers.get(event.getEntity().getUniqueId());
         MessageManager messageManager = plugin.getMessageManager();
         event.setCancelled(true);
