@@ -1,6 +1,7 @@
 package me.latestion.hoh.events;
 
-import me.latestion.hoh.game.HOHGame;
+import me.latestion.hoh.HideOrHunt;
+import me.latestion.hoh.game.GameState;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -8,12 +9,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 
-import me.latestion.hoh.HideOrHunt;
-import me.latestion.hoh.game.GameState;
-
 public class GameModeChange implements Listener {
 
-	private HideOrHunt plugin;
+	private final HideOrHunt plugin;
 
 	public GameModeChange(final HideOrHunt plugin) {
 		this.plugin = plugin;

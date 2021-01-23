@@ -1,8 +1,7 @@
 package me.latestion.hoh.utils.commandbuilder;
 
 
-import me.latestion.hoh.utils.commandbuilder.handlers.CommandHandler;
-import me.latestion.hoh.utils.commandbuilder.handlers.TabHandler;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.permissions.Permission;
 
 import java.util.HashMap;
@@ -11,15 +10,15 @@ import java.util.Set;
 public class SubCommand {
     private final String commandName;
     private final Permission permission;
-    private final CommandHandler commandHandler;
-    private final TabHandler tabHandler;
+    private final CommandExecutor commandHandler;
+    private final org.bukkit.command.TabCompleter tabHandler;
 
     private final String usageMessage;
     private final String permissionMessage;
     private final Set<SubCommand> subCommands;
-    private final HashMap<String,Boolean> aliases;
+    private final HashMap<String, Boolean> aliases;
 
-     SubCommand(String commandName, Permission permission, CommandHandler handler, TabHandler tabHandler, String usageMessage, String permissionMessage, Set<SubCommand> subCommands, HashMap<String, Boolean> aliases) {
+    SubCommand(String commandName, Permission permission, CommandExecutor handler, org.bukkit.command.TabCompleter tabHandler, String usageMessage, String permissionMessage, Set<SubCommand> subCommands, HashMap<String, Boolean> aliases) {
         this.commandName = commandName;
         this.permission = permission;
         this.commandHandler = handler;
@@ -27,7 +26,7 @@ public class SubCommand {
         this.usageMessage = usageMessage;
         this.permissionMessage = permissionMessage;
         this.subCommands = subCommands;
-        aliases.put(commandName,true);
+        aliases.put(commandName, true);
         this.aliases = aliases;
 
     }
@@ -40,11 +39,11 @@ public class SubCommand {
         return permission;
     }
 
-    public CommandHandler getCommandHandler() {
+    public CommandExecutor getCommandHandler() {
         return commandHandler;
     }
 
-    public TabHandler getTabHandler() {
+    public org.bukkit.command.TabCompleter getTabHandler() {
         return tabHandler;
     }
 

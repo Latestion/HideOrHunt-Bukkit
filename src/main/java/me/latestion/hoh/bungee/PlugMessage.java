@@ -13,7 +13,7 @@ import java.util.List;
 
 public class PlugMessage implements PluginMessageListener {
 
-    private HideOrHunt plugin;
+    private final HideOrHunt plugin;
     private BungeeSupport support;
 
     public PlugMessage(HideOrHunt plugin) {
@@ -64,4 +64,5 @@ public class PlugMessage implements PluginMessageListener {
         output.writeUTF(serverState.name);
         Bukkit.getServer().sendPluginMessage(plugin, "BungeeCord", output.toByteArray());
     }
+
 }

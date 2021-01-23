@@ -2,14 +2,12 @@ package me.latestion.hoh.bungee;
 
 import me.latestion.hoh.HideOrHunt;
 import org.bukkit.ChatColor;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 
 public class BungeeSupport {
 
-    private HideOrHunt plugin;
     public PlugMessage pm;
     public boolean isHub = false;
 
@@ -19,7 +17,6 @@ public class BungeeSupport {
     public String thisServer;
 
     public BungeeSupport(HideOrHunt plugin) {
-        this.plugin = plugin;
         this.pm = new PlugMessage(plugin);
         loadServers();
     }
@@ -38,7 +35,7 @@ public class BungeeSupport {
     }
 
     private void loadServers() {
-        for (String s : plugin.getConfig().getStringList("HOH-Servers")) {
+        for (String s : HideOrHunt.getInstance().getConfig().getStringList("HOH-Servers")) {
             String[] split = s.split(", ");
             state.put(split[0], (new ServerState(split[0], parseInt(split[1]), parseInt(split[2]))));
         }

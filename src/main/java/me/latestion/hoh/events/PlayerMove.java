@@ -1,15 +1,11 @@
 package me.latestion.hoh.events;
 
-import me.latestion.hoh.game.HOHGame;
-import org.bukkit.GameMode;
+import me.latestion.hoh.HideOrHunt;
+import me.latestion.hoh.game.GameState;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-
-import me.latestion.hoh.HideOrHunt;
-import me.latestion.hoh.game.GameState;
 
 public class PlayerMove implements Listener {
 
@@ -21,6 +17,7 @@ public class PlayerMove implements Listener {
 
 	@EventHandler
 	public void pme(PlayerMoveEvent event) {
+		if(plugin.game.getGameState() == GameState.OFF) return;
 		if (plugin.game.gameState == GameState.ON) {
 			if (!plugin.game.freeze) return;
 			if (event.getPlayer().isOp() && !this.plugin.getConfig().getBoolean("Allow-Op")) {

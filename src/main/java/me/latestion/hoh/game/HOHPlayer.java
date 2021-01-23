@@ -1,60 +1,58 @@
 package me.latestion.hoh.game;
 
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import java.util.UUID;
+
 public class HOHPlayer {
 
-	private HOHGame game;
-	private UUID uuid;
-	private HOHTeam team = null;
+    private final HOHGame game;
+    private final UUID uuid;
+    public boolean banned = false;
+    public boolean dead = false;
+    public boolean teamChat = false;
+    private HOHTeam team = null;
+    private boolean namingTeam = false;
 
-	public boolean banned = false;
-	public boolean dead = false;
+    public HOHPlayer(HOHGame game, UUID uuid) {
+        this.game = game;
+        this.uuid = uuid;
+    }
 
-	public boolean teamChat = false;
-	private boolean namingTeam = false;
+    public Player getPlayer() {
+        return Bukkit.getPlayer(uuid);
+    }
 
-	public HOHPlayer(HOHGame game, UUID uuid) {
-		this.game = game;
-		this.uuid = uuid;
-	}
+    public HOHTeam getTeam() {
+        return team;
+    }
 
-	public Player getPlayer() {
-		return Bukkit.getPlayer(uuid);
-	}
+    public void setTeam(HOHTeam t) {
+        this.team = t;
+    }
 
-	public HOHTeam getTeam() {
-		return team;
-	}
+    public UUID getUUID() {
+        return uuid;
+    }
 
-	public UUID getUUID(){
-		return uuid;
-	}
+    public boolean hasTeam() {
+        return this.team != null;
+    }
 
-	public boolean hasTeam() {
-		return this.team != null;
-	}
+    public boolean isNamingTeam() {
+        return this.namingTeam;
+    }
 
-	public void setNamingTeam(boolean namingTeam) {
-		this.namingTeam = namingTeam;
-	}
+    public void setNamingTeam(boolean namingTeam) {
+        this.namingTeam = namingTeam;
+    }
 
-	public boolean isNamingTeam() {
-		return this.namingTeam;
-	}
-
-	public void setTeam(HOHTeam t) {
-		this.team = t;
-	}
-
-	public void prepareTeam(Inventory inv) {
-		if (game.gameState == GameState.PREPARE) {
-			getPlayer().openInventory(inv);
-		}
-	}
+    public void prepareTeam(Inventory inv) {
+        if (game.gameState == GameState.PREPARE) {
+            getPlayer().openInventory(inv);
+        }
+    }
 
 }
