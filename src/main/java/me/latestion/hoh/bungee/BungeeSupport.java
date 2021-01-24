@@ -17,7 +17,8 @@ public class BungeeSupport {
     public boolean isHub = false;
 
     public Map<String, ServerState> state = new HashMap<>();
-    public Map<Integer, List<UUID>> queue = new HashMap<>();
+    public Map<Integer, Map<Integer, List<UUID>>> queue = new HashMap<>();
+    //        TeamSize,  Max Teams, Players In Queue
 
     public String thisServer;
     public String hub;
@@ -28,16 +29,16 @@ public class BungeeSupport {
         this.pm = new PlugMessage(plugin);
         loadServers();
         this.hub = plugin.getConfig().getString("Main-Lobby");
-        plugin.getServer().getPluginManager().registerEvents(new BungeeSupportHandler(this), plugin);
     }
 
-    public void queuePlayer(Player player, int i) {
+    public void queuePlayer(Player player, int tSize, int pMax) {
        if (!isHub) return;
-       if (queue.containsKey(i)) {
-           List<UUID> players = queue.get(i);
+       if (isPlayerInQueue(player)) return;;
+       if (queue.containsKey(tSize)) {
+           List<UUID> players = queue.get(tSize).get(pMax);
            players.add(player.getUniqueId());
            for (ServerState ss : state.values()) {
-               if (ss.maxPlayers == players.size() && ss.teamsize == i && !ss.game) {
+               if (ss.maxPlayers == players.size() && ss.teamsize == tSize && !ss.game) {
                    String server = ss.name;
                    for (UUID p : players) {
                        pm.connect(Bukkit.getPlayer(p), server);
@@ -46,6 +47,25 @@ public class BungeeSupport {
                }
            }
        }
+    }
+
+    public void removeQueuePlayer(Player player) {
+        for (int i : queue.keySet()) {
+            if (queue.get(i).containsValue(player)) {
+                queue.get(i).remove(player.getUniqueId());
+                return;
+            }
+        }
+    }
+
+    public boolean isPlayerInQueue(Player player) {
+        UUID id = player.getUniqueId();
+        for (Map<Integer, List<UUID>> maps : queue.values()) {
+            if (maps.containsValue(id)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean rejoin(Player player) {

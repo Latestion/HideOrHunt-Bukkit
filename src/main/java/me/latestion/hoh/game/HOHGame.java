@@ -80,25 +80,30 @@ public class HOHGame {
             hohPlayers.put(player.getUniqueId(), p);
         }
 
-        if (teamSize == 1 && plugin.getConfig().getBoolean("Auto-Team-Join-Solo")) {
-            int i = 0;
+        double neededTeams = Math.ceil(hohPlayers.size() / (double) teamSize);
+        int totalTeams = (int) neededTeams;
+
+        if (plugin.getConfig().getBoolean("Auto-Team-Join")) {
             List<String> teamNames = plugin.getConfig().getStringList("Team-Names");
-            for (HOHPlayer player : hohPlayers.values()) {
+            parentLoop:
+            for (int i = 0; i < totalTeams; i++) {
                 HOHTeam team = new HOHTeam(i);
                 addTeam(team);
-                player.setTeam(team);
-                team.addPlayer(player);
                 team.setName(teamNames.get(i));
-                i++;
+                for (HOHPlayer player : hohPlayers.values()) {
+                    if (!player.hasTeam()) {
+                        if (!team.addPlayer(player)) continue parentLoop;
+                        player.setTeam(team);
+                    }
+                }
             }
+
             if (allPlayersSelectedTeam() && areAllTeamsNamed()) {
                 startGame();
             }
             return;
         }
 
-        double neededTeams = Math.ceil(hohPlayers.size() / (double) teamSize);
-        int totalTeams = (int) neededTeams;
         this.inv = util.createInv(totalTeams);
         for (HOHPlayer player : hohPlayers.values()) {
             player.prepareTeam(inv);
@@ -116,7 +121,7 @@ public class HOHGame {
                             return;
                         }
                     }
-                    int neededTeam = totalTeam - totalNeededTeam;
+                    int neededTeam = totalNeededTeam - totalTeam;
                     List<String> teamNames = plugin.getConfig().getStringList("Team-Names");
                     parentLoop:
                     for (int i = 0; i < neededTeam; i++) {
@@ -124,23 +129,20 @@ public class HOHGame {
                         addTeam(team);
                         team.setName(teamNames.get(i));
                         for (HOHPlayer player : hohPlayers.values()) {
-                            if (player.getTeam() == null) {
-                                player.setTeam(team);
+                            if (!player.hasTeam()) {
                                 if (!team.addPlayer(player)) {
                                     continue parentLoop;
                                 }
+                                player.setTeam(team);
                             }
                         }
                     }
                     if (allPlayersSelectedTeam() && areAllTeamsNamed()) {
                         startGame();
                     }
-                    return;
                 }
-                else {
-                    return;
-                }
-             }, secs * 20L);
+                return;
+            }, secs * 20L);
         }
     }
 

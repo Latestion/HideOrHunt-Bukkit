@@ -177,31 +177,43 @@ public class CommandInitializer {
 
         if (plugin.support != null) {
             builder.addSubCommand(new SubCommandBuilder("queue").setCommandHandler((sender, command, label, args) -> {
-                if (args.length == 1) {
+                if (args.length == 2) {
                     if (sender instanceof Player) {
-                        int i = new Util(plugin).getInt(args[0]);
-                        if (i <= 0) {
+                        if (args[0].equalsIgnoreCase("leave") || args[0].equalsIgnoreCase("l")) {
+                            plugin.support.removeQueuePlayer((Player) sender);
                             return true;
                         }
-                        plugin.support.queuePlayer((Player) sender, i);
+                        int teamSize = new Util(plugin).getInt(args[0]);
+                        if (teamSize <= 0) {
+                            return true;
+                        }
+                        int maxPlayers = new Util(plugin).getInt(args[1]);
+                        if (maxPlayers <= 0) {
+                            return true;
+                        }
+                        plugin.support.queuePlayer((Player) sender, teamSize, maxPlayers);
                     } else {
                         sender.sendMessage(ChatColor.RED + " This command can only be ran by players.");
                         return false;
                     }
                     return true;
                 }
-                if (args.length == 2) {
+                if (args.length == 3) {
                     try {
                         int i = new Util(plugin).getInt(args[0]);
                         if (i <= 0) {
                             return true;
                         }
-                        Player p = Bukkit.getPlayerExact(args[1]);
+                        int maxPlayers = new Util(plugin).getInt(args[1]);
+                        if (maxPlayers <= 0) {
+                            return true;
+                        }
+                        Player p = Bukkit.getPlayerExact(args[2]);
                         if (p == null || !p.isValid()) {
                             sender.sendMessage(messageManager.getMessage("invalid-player"));
                             return true;
                         }
-                        plugin.support.queuePlayer(p, i);
+                        plugin.support.queuePlayer(p, i, maxPlayers);
                         return true;
                     } catch (Exception e) {
                         sender.sendMessage(messageManager.getMessage("invalid-player"));
@@ -213,15 +225,23 @@ public class CommandInitializer {
                 List<String> out = new ArrayList<>();
                 Bukkit.getOnlinePlayers().forEach(p -> out.add(p.getName()));
                 return out;
-            }).setUsageMessage("/hoh queue [<player>]").build());
+            }).setUsageMessage("/hoh queue [<teamsize>] [<maxplayers>] [<player>]").build());
         }
         if (plugin.support != null) {
             builder.addSubCommand(new SubCommandBuilder("rejoin").setCommandHandler((sender, command, label, args) -> {
-                plugin.support.rejoin((Player) sender);
-                /*
-                if (true) // Teleported Back To Game.
-                else // No Game Available
-                 */
+                if (!(sender instanceof Player)) {
+                    // Not Player
+                }
+                Player player = (Player) sender;
+                if (plugin.support.rejoin(player)) {
+                    plugin.support.pm.connect(player, plugin.support.rejoinServer.get(player.getUniqueId()));
+                }
+                else {
+                    //todo: msg
+                    // No GAME
+                    return true;
+                }
+
                 return false;
             }).setUsageMessage("/hoh rejoin").build());
         }

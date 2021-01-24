@@ -37,6 +37,7 @@ public class PlayerQuit implements Listener {
             Player player = event.getPlayer();
             int secs = plugin.getConfig().getInt("Remove-Player-After");
             if (secs <= 0) return;
+            if (plugin.getConfig().getBoolean("Auto-Team-Join")) return;
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
                 if (player.isOnline()) {
                     return;

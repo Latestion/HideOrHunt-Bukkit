@@ -119,6 +119,8 @@ HOH-Servers:
   - "hoh_1, 1, 2"
   - "hoh_2, 2, 2"
 # Make sure all your servers have restart script or this wont work!
+# Console Command: /hoh queue <teamsize> <total players> <player name>
+# Player Command: /hoh queue <teamsize> <total players>
 
 Teleport-To-Spawn: true # Teleports All Player To Spawn When The Game Ends!
 
@@ -142,15 +144,15 @@ Team-Names:
 # Auto Joins Team For Solo When Game Is Started
 # By Default Sets Replace-Custom-Team-Names to true
 # GOOD FOR SERVERS WHO WANT TO MAKE THIS AS A MINI GAME
-Auto-Team-Join-Solo: false
-# TEAMS FEATURE WILL BE ADDED SOON
+Auto-Team-Join: false
 
 # If player doesn't select a team in the given time, plugin force puts him in a team
-# ONLY FOR SOLOS. TEAM SUPPORT WILL BE ADDED
 # Gives the team Random name from Team-Names and Random teammate if not selected any!
 # Set 0 to disable
+# DOES NOT WORK IF Auto-Team-Join is enabled
 Force-Team-After: 0 # In Seconds
 
-# Removes player from game after player leaves the server
+# Removes player from game after player leaves the server (Before Game Start)
 # Set 0 to disable
+# DOES NOT WORK IF Auto-Team-Join is enabled
 Remove-Player-After: 0 # In Seconds
