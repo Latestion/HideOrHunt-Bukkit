@@ -1,8 +1,9 @@
 package me.latestion.hoh.commandmanager;
 
-import com.bingorufus.commandcreator.builders.CommandBuilder;
-import com.bingorufus.commandcreator.builders.SubCommandBuilder;
+
 import me.latestion.hoh.HideOrHunt;
+import me.latestion.hoh.commandmanager.builders.CommandBuilder;
+import me.latestion.hoh.commandmanager.builders.SubCommandBuilder;
 import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHGame;
@@ -176,7 +177,7 @@ public class CommandInitializer {
 
         if (plugin.support != null) {
             builder.addSubCommand(new SubCommandBuilder("queue").setCommandHandler((sender, command, label, args) -> {
-                if (args.length == 1) {
+                if (args.length == 0) {
                     if (sender instanceof Player) {
                         plugin.support.queuePlayer((Player) sender);
                     } else {
@@ -185,9 +186,9 @@ public class CommandInitializer {
                     }
                     return true;
                 }
-                if (args.length == 2) {
+                if (args.length == 1) {
                     try {
-                        Player p = Bukkit.getPlayerExact(args[1]);
+                        Player p = Bukkit.getPlayerExact(args[0]);
                         if (p == null || !p.isValid()) {
                             sender.sendMessage(messageManager.getMessage("invalid-player"));
                             return true;
