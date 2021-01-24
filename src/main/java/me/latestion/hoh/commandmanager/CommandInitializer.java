@@ -31,11 +31,6 @@ public class CommandInitializer {
         CommandBuilder builder = new CommandBuilder("hoh");
         PluginManager pm = Bukkit.getPluginManager();
         builder.addSubCommand(new SubCommandBuilder("start").setPermission(pm.getPermission("hoh.start")).setUsageMessage("/hoh start <team size>").setCommandHandler((sender, command, label, args) -> {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage(ChatColor.RED + " This command can only be ran by players.");
-                return false;
-            }
-            Player player = (Player) sender;
             if (args.length != 1) {
                 return false;
             }
@@ -52,7 +47,12 @@ public class CommandInitializer {
                 //todo: add to message manager
                 return true;
             }
-            game.setSpawnLocation(player.getLocation());
+            if (sender instanceof Player) {
+                game.setSpawnLocation(((Player) sender).getLocation());
+            }
+            else {
+                game.setSpawnLocation(Bukkit.getWorlds().get(0).getSpawnLocation());
+            }
             game.teamSize = size;
             game.prepareGame();
             return true;

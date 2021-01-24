@@ -8,6 +8,7 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
+import java.io.File;
 import java.util.*;
 
 public class BungeeSupport {
@@ -19,12 +20,14 @@ public class BungeeSupport {
     public Map<Integer, List<UUID>> queue = new HashMap<>();
 
     public String thisServer;
+    public String hub;
 
     public Map<UUID, String> rejoinServer = new HashMap<>();
 
     public BungeeSupport(HideOrHunt plugin) {
         this.pm = new PlugMessage(plugin);
         loadServers();
+        this.hub = plugin.getConfig().getString("Main-Lobby");
         plugin.getServer().getPluginManager().registerEvents(new BungeeSupportHandler(this), plugin);
     }
 
@@ -71,4 +74,20 @@ public class BungeeSupport {
             return 0;
         }
     }
+
+    public void deleteWorlds(File path) {
+        if(path.exists()) {
+            File files[] = path.listFiles();
+            for(int i=0; i<files.length; i++) {
+                if(files[i].isDirectory()) {
+                    deleteWorlds(files[i]);
+                }
+                else {
+                    files[i].delete();
+                }
+            }
+        }
+        path.delete();
+    }
+
 }

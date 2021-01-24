@@ -26,26 +26,22 @@ public class PlugMessage implements PluginMessageListener {
         if (channel.equals("BungeeCord")) {
             ByteArrayDataInput in = ByteStreams.newDataInput(message);
             String subChannel = in.readUTF();
-
             if (subChannel.equals("GetServer")) {
                 String servername = in.readUTF();
                 if (plugin.getConfig().getString("Main-Lobby").equals(servername)) {
                     plugin.support.isHub = true;
                 }
                 support.thisServer = servername;
-                ServerState ss = support.state.get(servername);
-                if (ss.maxPlayers == Bukkit.getOnlinePlayers().size()) {
-                    if (!support.isHub) {
-
-                    }
-                }
             }
-
-            if (subChannel.equals("PlayerCount")) {
+            if (subChannel.equals("HideOrHunt")) {
+                String state = in.readUTF();
                 String server = in.readUTF();
-                int i = in.readInt();
-                ServerState ss = support.state.get(server);
-                ss.totalOnlinePlayers = i;
+                if (state.equalsIgnoreCase("false")) {
+                    support.state.get(server).game = false;
+                }
+                else {
+                    support.state.get(server).game = true;
+                }
             }
         }
     }
@@ -63,11 +59,11 @@ public class PlugMessage implements PluginMessageListener {
         Bukkit.getServer().sendPluginMessage(plugin, "BungeeCord", output.toByteArray());
     }
 
-    public void sendPlayerToServer(ServerState serverState, Player player) {
-        connect(player, serverState.name);
+    public void customHOH(boolean bol, String server) {
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
-        output.writeUTF("PlayerCount");
-        output.writeUTF(serverState.name);
+        output.writeUTF("HideOrHunt");
+        output.writeUTF(bol + "");
+        output.writeUTF(server);
         Bukkit.getServer().sendPluginMessage(plugin, "BungeeCord", output.toByteArray());
     }
 

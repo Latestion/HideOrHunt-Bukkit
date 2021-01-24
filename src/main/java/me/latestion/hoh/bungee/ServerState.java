@@ -7,8 +7,6 @@ public class ServerState {
     public int teamsize;
     public int maxPlayers;
 
-    public int totalOnlinePlayers = 0;
-
     public ServerState(String name, int teamsize, int maxPlayers) {
         this.name = name;
         this.game = false;
