@@ -34,9 +34,11 @@ public class PlayerJoin implements Listener {
 			if(plugin.game.getHohPlayer(p.getUniqueId()) == null){
 				p.setGameMode(GameMode.SPECTATOR);
 			}
-		}else if(game.getGameState().equals(GameState.PREPARE)){
+		}
+		else if(game.getGameState().equals(GameState.PREPARE)){
 			p.setGameMode(GameMode.SPECTATOR);
-		}else{
+		}
+		else{
 			p.teleport(p.getWorld().getSpawnLocation());
 		}
 	}

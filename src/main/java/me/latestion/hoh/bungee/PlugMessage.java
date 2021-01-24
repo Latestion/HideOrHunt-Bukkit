@@ -34,9 +34,9 @@ public class PlugMessage implements PluginMessageListener {
                 support.thisServer = servername;
             }
             if (subChannel.equals("HideOrHunt")) {
-                String state = in.readUTF();
+                boolean state = Boolean.getBoolean(in.readUTF());
                 String server = in.readUTF();
-                if (state.equalsIgnoreCase("false")) {
+                if (!state) {
                     support.state.get(server).game = false;
                 }
                 else {
@@ -62,7 +62,7 @@ public class PlugMessage implements PluginMessageListener {
     public void customHOH(boolean bol, String server) {
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
         output.writeUTF("HideOrHunt");
-        output.writeUTF(bol + "");
+        output.writeUTF(Boolean.toString(bol));
         output.writeUTF(server);
         Bukkit.getServer().sendPluginMessage(plugin, "BungeeCord", output.toByteArray());
     }
