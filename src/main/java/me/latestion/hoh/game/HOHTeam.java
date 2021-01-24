@@ -1,6 +1,9 @@
 package me.latestion.hoh.game;
 
+import me.latestion.hoh.HideOrHunt;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +41,29 @@ public class HOHTeam {
         this.eliminated = eliminated;
     }
 
-    public void addPlayer(HOHPlayer hohPlayer) {
+    public boolean addPlayer(HOHPlayer hohPlayer) {
+        if (players.size() == HideOrHunt.getInstance().game.teamSize) {
+            return false;
+        }
         players.add(hohPlayer);
         alivePlayers.add(hohPlayer);
+        return true;
+    }
+
+    public void removePlayer(HOHPlayer hohPlayer) {
+        players.remove(hohPlayer);
+        alivePlayers.remove(hohPlayer);
+        hohPlayer.setTeam(null);
+        setItemStack(hohPlayer.getGame(), hohPlayer.getPlayer().getName());
+        if (players.size() == 0) {
+            HOHGame game = HideOrHunt.getInstance().getGame();
+            for (int i : game.getTeams().keySet()) {
+                if (game.getTeams().get(i).equals(this)) {
+                    game.getTeams().remove(i);
+                    break;
+                }
+            }
+        }
     }
 
     public HOHPlayer getLeader() {
@@ -73,5 +96,14 @@ public class HOHTeam {
 
     public void setID(int id) {
         this.id = id;
+    }
+
+    private void setItemStack(HOHGame game, String name) {
+        ItemStack item = game.inv.getItem(id);
+        ItemMeta meta = item.getItemMeta();
+        List<String> lore = meta.getLore();
+        lore.remove(name);
+        item.setItemMeta(meta);
+        game.inv.setItem(id, item);
     }
 }

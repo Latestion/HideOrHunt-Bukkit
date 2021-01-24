@@ -85,14 +85,14 @@ public class HOHGame {
             List<String> teamNames = plugin.getConfig().getStringList("Team-Names");
             for (HOHPlayer player : hohPlayers.values()) {
                 HOHTeam team = new HOHTeam(i);
-                plugin.game.addTeam(team);
+                addTeam(team);
                 player.setTeam(team);
                 team.addPlayer(player);
                 team.setName(teamNames.get(i));
                 i++;
             }
-            if (plugin.game.allPlayersSelectedTeam() && plugin.game.areAllTeamsNamed()) {
-                plugin.game.startGame();
+            if (allPlayersSelectedTeam() && areAllTeamsNamed()) {
+                startGame();
             }
             return;
         }
@@ -102,6 +102,45 @@ public class HOHGame {
         this.inv = util.createInv(totalTeams);
         for (HOHPlayer player : hohPlayers.values()) {
             player.prepareTeam(inv);
+        }
+
+        if (plugin.getConfig().getInt("Force-Team-After") > 0) {
+            int secs = plugin.getConfig().getInt("Force-Team-After");
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                if (getGameState() == GameState.PREPARE) {
+                    int totalNeededTeam = (int) Math.ceil(hohPlayers.size() / (double) teamSize);
+                    int totalTeam = teams.size();
+                    if (totalNeededTeam >= totalTeam) {
+                        if (allPlayersSelectedTeam() && areAllTeamsNamed()) {
+                            startGame();
+                            return;
+                        }
+                    }
+                    int neededTeam = totalTeam - totalNeededTeam;
+                    List<String> teamNames = plugin.getConfig().getStringList("Team-Names");
+                    parentLoop:
+                    for (int i = 0; i < neededTeam; i++) {
+                        HOHTeam team = new HOHTeam(i);
+                        addTeam(team);
+                        team.setName(teamNames.get(i));
+                        for (HOHPlayer player : hohPlayers.values()) {
+                            if (player.getTeam() == null) {
+                                player.setTeam(team);
+                                if (!team.addPlayer(player)) {
+                                    continue parentLoop;
+                                }
+                            }
+                        }
+                    }
+                    if (allPlayersSelectedTeam() && areAllTeamsNamed()) {
+                        startGame();
+                    }
+                    return;
+                }
+                else {
+                    return;
+                }
+             }, secs * 20L);
         }
     }
 

@@ -148,3 +148,13 @@ Team-Names:
 # GOOD FOR SERVERS WHO WANT TO MAKE THIS AS A MINI GAME
 Auto-Team-Join-Solo: false
 # TEAMS FEATURE WILL BE ADDED SOON
+
+# If player doesn't select a team in the given time, plugin force puts him in a team
+# ONLY FOR SOLOS. TEAM SUPPORT WILL BE ADDED
+# Gives the team Random name from Team-Names and Random teammate if not selected any!
+# Set 0 to disable
+Force-Team-After: 0 # In Seconds
+
+# Removes player from game after player leaves the server
+# Set 0 to disable
+Remove-Player-After: 0 # In Seconds
