@@ -218,6 +218,10 @@ public class CommandInitializer {
         if (plugin.support != null) {
             builder.addSubCommand(new SubCommandBuilder("rejoin").setCommandHandler((sender, command, label, args) -> {
                 plugin.support.rejoin((Player) sender);
+                /*
+                if (true) // Teleported Back To Game.
+                else // No Game Available
+                 */
                 return false;
             }).setUsageMessage("/hoh rejoin").build());
         }

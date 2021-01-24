@@ -79,6 +79,24 @@ public class HOHGame {
             HOHPlayer p = new HOHPlayer(this, player.getUniqueId());
             hohPlayers.put(player.getUniqueId(), p);
         }
+
+        if (teamSize == 1 && plugin.getConfig().getBoolean("Auto-Team-Join-Solo")) {
+            int i = 0;
+            List<String> teamNames = plugin.getConfig().getStringList("Team-Names");
+            for (HOHPlayer player : hohPlayers.values()) {
+                HOHTeam team = new HOHTeam(i);
+                plugin.game.addTeam(team);
+                player.setTeam(team);
+                team.addPlayer(player);
+                team.setName(teamNames.get(i));
+                i++;
+            }
+            if (plugin.game.allPlayersSelectedTeam() && plugin.game.areAllTeamsNamed()) {
+                plugin.game.startGame();
+            }
+            return;
+        }
+
         double neededTeams = Math.ceil(hohPlayers.size() / (double) teamSize);
         int totalTeams = (int) neededTeams;
         this.inv = util.createInv(totalTeams);
@@ -178,9 +196,11 @@ public class HOHGame {
         for (HOHTeam team : teams.values()) {
             if (team.getBeacon() != null) team.getBeacon().setType(Material.AIR);
             for (HOHPlayer player : team.players) {
-                player.getPlayer().getInventory().clear();
-                player.getPlayer().setScoreboard(plugin.sbUtil.manager.getNewScoreboard());
-                if (plugin.getConfig().getBoolean("Teleport-To-Spawn")) player.getPlayer().teleport(loc);
+                if (player.getPlayer().isOnline()) {
+                    player.getPlayer().getInventory().clear();
+                    player.getPlayer().setScoreboard(plugin.sbUtil.manager.getNewScoreboard());
+                    if (plugin.getConfig().getBoolean("Teleport-To-Spawn")) player.getPlayer().teleport(loc);
+                }
             }
         }
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {

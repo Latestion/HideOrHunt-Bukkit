@@ -104,24 +104,47 @@ Rules-Messages:
   - "&4Rules"
   - "&2Your Rules"
   
-# %message%
-# %playername%
-# %playerteam%
+# %message% = message
+# %playername% = player name
+# %playerteam% = player team name
 Main-Chat-Format: "&f[&c%playerteam%&f] &f%playername% &7>> &f%message%"
 Team-Chat-Format: "&f[&2TeamChat&f] &f%playername% &7>> &f%message%"
 
-#################################################
-#################################################
-# WORK IN PROGRESS ##############################
-# RECOMMENDED NOT TO USE YET ####################
-Bungee-Cord: false #Enables Bungee Cord Support #
-Main-Lobby: "Main" ##############################
-# <name>, <team size>, <total player> ###########
-# Eg: "hoh_1, 1, 2" #############################
-HOH-Servers: ####################################
-  - "hoh_1, 1, 2" ###############################
-  - "hoh_2, 2, 2" ###############################
-#################################################
-#################################################
+####################################################
+####################################################
+# WORK IN PROGRESS #################################
+# RECOMMENDED NOT TO USE YET #######################
+Bungee-Cord: false #Enables Bungee Cord Support ####
+Main-Lobby: "Main" #################################
+# <name>, <team size>, <total player> ##############
+# Eg: "hoh_1, 1, 2" ################################
+HOH-Servers: #######################################
+  - "hoh_1, 1, 2" ##################################
+  - "hoh_2, 2, 2" ##################################
+####################################################
+####################################################
 
 Teleport-To-Spawn: true # Teleports All Player To Spawn When The Game Ends!
+
+Replace-Custom-Team-Names: false # Replaces the team naming system to specified team names!
+# Make Sure To Add More Names Soo You Don't Run Out Of Them :)
+# COLOR CODES SUPPORTED
+Team-Names:
+  - "Red"
+  - "Blue"
+  - "Green"
+  - "Yellow"
+  - "Pink"
+  - "Black"
+  - "Green"
+  - "White"
+  - "Violet"
+  - "Purple"
+  - "Dark Blue"
+  - "Dark Red"
+
+# Auto Joins Team For Solo When Game Is Started
+# By Default Sets Replace-Custom-Team-Names to true
+# GOOD FOR SERVERS WHO WANT TO MAKE THIS AS A MINI GAME
+Auto-Team-Join-Solo: false
+# TEAMS FEATURE WILL BE ADDED SOON
