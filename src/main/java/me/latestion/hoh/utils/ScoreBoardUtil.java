@@ -24,7 +24,7 @@ public class ScoreBoardUtil {
     }
 
     public void addAllPlayers() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
+        for (Player player : plugin.game.getWorld().getPlayers()) {
             player.setScoreboard(board);
         }
     }

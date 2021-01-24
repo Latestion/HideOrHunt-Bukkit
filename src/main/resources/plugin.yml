@@ -30,5 +30,7 @@ permissions:
         description: enable / disable crafting tables
       hoh.continue:
         description: continues previous game
+      hoh.queue:
+        description: queue players for bungee
 softdepend:
   - WorldEdit

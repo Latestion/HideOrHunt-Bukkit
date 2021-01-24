@@ -88,7 +88,7 @@ public class CommandInitializer {
         }).setUsageMessage("/hoh rules").build());
         builder.addSubCommand(new SubCommandBuilder("stop").setPermission(pm.getPermission("hoh.reload")).setCommandHandler((sender, command, label, args) -> {
             if (plugin.game.gameState == GameState.ON)
-                plugin.game.endGame();
+                plugin.game.endGame("none");
             else
                 sender.sendMessage(messageManager.getMessage("game-not-started"));
             return true;
@@ -177,23 +177,31 @@ public class CommandInitializer {
 
         if (plugin.support != null) {
             builder.addSubCommand(new SubCommandBuilder("queue").setCommandHandler((sender, command, label, args) -> {
-                if (args.length == 0) {
+                if (args.length == 1) {
                     if (sender instanceof Player) {
-                        plugin.support.queuePlayer((Player) sender);
+                        int i = new Util(plugin).getInt(args[0]);
+                        if (i <= 0) {
+                            return true;
+                        }
+                        plugin.support.queuePlayer((Player) sender, i);
                     } else {
                         sender.sendMessage(ChatColor.RED + " This command can only be ran by players.");
                         return false;
                     }
                     return true;
                 }
-                if (args.length == 1) {
+                if (args.length == 2) {
                     try {
-                        Player p = Bukkit.getPlayerExact(args[0]);
+                        int i = new Util(plugin).getInt(args[0]);
+                        if (i <= 0) {
+                            return true;
+                        }
+                        Player p = Bukkit.getPlayerExact(args[1]);
                         if (p == null || !p.isValid()) {
                             sender.sendMessage(messageManager.getMessage("invalid-player"));
                             return true;
                         }
-                        plugin.support.queuePlayer(p);
+                        plugin.support.queuePlayer(p, i);
                         return true;
                     } catch (Exception e) {
                         sender.sendMessage(messageManager.getMessage("invalid-player"));
@@ -207,8 +215,12 @@ public class CommandInitializer {
                 return out;
             }).setUsageMessage("/hoh queue [<player>]").build());
         }
-
-
+        if (plugin.support != null) {
+            builder.addSubCommand(new SubCommandBuilder("rejoin").setCommandHandler((sender, command, label, args) -> {
+                plugin.support.rejoin((Player) sender);
+                return false;
+            }).setUsageMessage("/hoh rejoin").build());
+        }
         builder.addSubCommand(new SubCommandBuilder("help").setUsageMessage("/hoh help").setCommandHandler((sender, command, label, args) -> {
             //todo: idk what color scheme you use so i just did Gold and gray
             StringBuilder helpMessage = new StringBuilder();

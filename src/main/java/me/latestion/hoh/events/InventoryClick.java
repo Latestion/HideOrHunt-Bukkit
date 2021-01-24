@@ -57,7 +57,7 @@ public class InventoryClick implements Listener {
 					meta.setLore(lore);
 					item.setItemMeta(meta);
 					event.getClickedInventory().setItem(event.getSlot(), item);
-					for (Player p : Bukkit.getOnlinePlayers()) {
+					for (Player p : plugin.game.getWorld().getPlayers()) {
 						p.updateInventory();
 					}
 					hohPlayer.setNamingTeam(true);
@@ -79,7 +79,7 @@ public class InventoryClick implements Listener {
 					}
 					lore.add(player.getName());
 					event.getCurrentItem().getItemMeta().setLore(lore);
-					for (Player p2 : Bukkit.getOnlinePlayers()) {
+					for (Player p2 : plugin.game.getWorld().getPlayers()) {
 						p2.updateInventory();
 					}
 
