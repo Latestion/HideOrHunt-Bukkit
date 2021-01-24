@@ -56,7 +56,6 @@ public class FlatHOHGame {
         game.ep = episode;
         game.gameState = gameState;
         game.setSpawnLocation(loc);
-
         return game;
     }
 
