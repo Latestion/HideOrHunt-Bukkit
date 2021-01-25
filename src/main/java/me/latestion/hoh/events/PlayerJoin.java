@@ -39,7 +39,7 @@ public class PlayerJoin implements Listener {
 			p.setGameMode(GameMode.SPECTATOR);
 		}
 		else{
-			p.teleport(p.getWorld().getSpawnLocation());
+			if (plugin.getConfig().getBoolean("Teleport-To-Spawn")) p.teleport(p.getWorld().getSpawnLocation());
 		}
 	}
 }
