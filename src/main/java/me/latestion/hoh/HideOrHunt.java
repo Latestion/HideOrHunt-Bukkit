@@ -6,6 +6,8 @@ import me.latestion.hoh.bungee.PlugMessage;
 import me.latestion.hoh.commandmanager.CommandInitializer;
 import me.latestion.hoh.events.*;
 import me.latestion.hoh.localization.MessageManager;
+import me.latestion.hoh.party.HOHParty;
+import me.latestion.hoh.party.HOHPartyEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -29,6 +31,7 @@ public class HideOrHunt extends JavaPlugin {
 	private MessageManager msgManager;
 
 	public BungeeSupport support;
+	public HOHParty party;
 
 	@Override
 	public void onEnable() {
@@ -140,5 +143,13 @@ public class HideOrHunt extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(new BungeeSupportHandler(support), this);
 		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new PlugMessage(this));
+
+		if (!getConfig().getBoolean("Party-System")) {
+			return;
+		}
+
+		this.party = new HOHParty();
+		this.getServer().getPluginManager().registerEvents(new HOHPartyEvents(party), this);
+
 	}
 }

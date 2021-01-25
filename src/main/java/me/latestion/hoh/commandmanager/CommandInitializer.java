@@ -9,6 +9,7 @@ import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.game.HOHPlayer;
 import me.latestion.hoh.localization.MessageManager;
+import me.latestion.hoh.party.HOHPartyHandler;
 import me.latestion.hoh.utils.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -244,6 +245,56 @@ public class CommandInitializer {
 
                 return false;
             }).setUsageMessage("/hoh rejoin").build());
+        }
+        if (plugin.party != null) {
+            builder.addSubCommand(new SubCommandBuilder("party").setCommandHandler((sender, command, label, args) -> {
+                if (!(sender instanceof Player)) {
+                    // Not Player
+                }
+                Player player = (Player) sender;
+
+                if (args.length == 2) {
+                    if (args[0].equalsIgnoreCase("invite") || args[0].equalsIgnoreCase("join")) {
+                        Player p = Bukkit.getPlayerExact(args[1]);
+                        if (!p.isValid() || p == null) {
+                            sender.sendMessage(messageManager.getMessage("invalid-player"));
+                            return true;
+                        }
+                        if (args[0].equalsIgnoreCase("invite")) plugin.party.createParty(player.getUniqueId(), p.getUniqueId());
+                        else plugin.party.joinParty(player.getUniqueId(), p.getUniqueId());
+                        return true;
+                    }
+                    return true;
+                }
+
+                if (args.length == 1) {
+                    if (args[0].equalsIgnoreCase("leave")) {
+                        if (plugin.party.inParty(player.getUniqueId())) {
+                            HOHPartyHandler hand = plugin.party.partyPlayer.get(player.getUniqueId()).party;
+                            hand.removePlayer(player.getUniqueId());
+                        }
+                        else {
+                            // Not In Party
+                        }
+                        return true;
+                    }
+                    if (args[0].equalsIgnoreCase("disband")) {
+                        if (plugin.party.inParty(player.getUniqueId())) {
+                            HOHPartyHandler hand = plugin.party.partyPlayer.get(player.getUniqueId()).party;
+                            hand.removePlayer(hand.getLeader());
+                        }
+                        else {
+                            // Not In Party
+                        }
+                        return true;
+                    }
+                }
+                return false;
+            }).setTabHandler((sender, command, label, args) -> {
+                List<String> out = new ArrayList<>();
+                out.add("invite"); out.add("join"); out.add("leave"); out.add("disband");
+                return out;
+            }).setUsageMessage("/hoh party invite,join,leave,disband").build());
         }
         builder.addSubCommand(new SubCommandBuilder("help").setUsageMessage("/hoh help").setCommandHandler((sender, command, label, args) -> {
             //todo: idk what color scheme you use so i just did Gold and gray

@@ -164,4 +164,17 @@ Remove-Player-After: 0 # In Seconds
 
 # Use party system provided by HideOrHunt For BungeeCord Servers
 # Party Needs To Be The Perfect Size i.e. matching the max teamsize of the game!
+# Commands:
+# /hoh party invite <player> : Creates an party and invites the player to it
+# /hoh party join <player> : Joins the party if he/she was invited!
+# /hoh party leave : Removes the player from party, If the player is leader party is disbanded
+# /hoh party disband: disbands the party
 Party-System: false
+
+# In Seconds, Disbands The Party If No One Joins
+# Keep 0 to disable (Wont recommended)
+Disband-Party-After: 20
+
+# In seconds, Expiry time of a party invite
+# Keep 0 to disable (Not recommended)
+Party-Invite-Expire: 10

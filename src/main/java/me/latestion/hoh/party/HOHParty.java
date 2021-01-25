@@ -10,34 +10,49 @@ public class HOHParty {
     public Map<UUID, HOHPartyHandler> parties = new HashMap<>();
     public Map<UUID, HOHPartyPlayer> partyPlayer = new HashMap<>();
 
-    public List<UUID> getParty(UUID id) {
-        return parties.get(id).getParty();
-    }
-
     public boolean ownsParty(UUID id) {
         return parties.containsKey(id);
     }
 
-    public boolean isParty(UUID id) {
-        return partyPlayer.get(id).inParty;
-    }
-
-    public HOHPartyHandler createParty(UUID owner) {
+    public HOHPartyHandler createParty(UUID owner, UUID invited) {
+        if (parties.containsKey(owner)) {
+            return null;
+        }
         HOHPartyHandler hand = new HOHPartyHandler(this, owner);
         parties.put(owner, hand);
+        hand.invitePlayer(invited);
         return hand;
     }
 
     public void deleteParty(UUID id) {
         HOHPartyHandler hand = parties.get(id);
         for (UUID p : hand.getParty()) {
-            partyPlayer.get(p).inParty = false;
+            partyPlayer.get(p).party = null;
         }
         parties.remove(id);
     }
 
     public int getPartySize(UUID id) {
         return parties.get(id).getParty().size();
+    }
+
+    public void joinParty(UUID player, UUID p) {
+        if (parties.containsKey(p)) {
+            HOHPartyHandler hand = parties.get(p);
+            if (hand.isInvited(player)) {
+                hand.addPlayer(player);
+            }
+            else {
+                // Not Invited OR Invite Expired
+            }
+        }
+        else {
+            // No such team
+        }
+    }
+
+    public boolean inParty(UUID id) {
+        return partyPlayer.get(id).inParty();
     }
 
 }
