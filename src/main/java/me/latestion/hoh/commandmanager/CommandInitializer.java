@@ -180,8 +180,9 @@ public class CommandInitializer {
             builder.addSubCommand(new SubCommandBuilder("queue").setCommandHandler((sender, command, label, args) -> {
                 if (args.length == 2) {
                     if (sender instanceof Player) {
+                        Player player = (Player) sender;
                         if (args[0].equalsIgnoreCase("leave") || args[0].equalsIgnoreCase("l")) {
-                            plugin.support.removeQueuePlayer((Player) sender);
+                            plugin.support.removeQueuePlayer(player.getUniqueId());
                             return true;
                         }
                         int teamSize = new Util(plugin).getInt(args[0]);
@@ -192,7 +193,7 @@ public class CommandInitializer {
                         if (maxPlayers <= 0) {
                             return true;
                         }
-                        plugin.support.queuePlayer((Player) sender, teamSize, maxPlayers);
+                        plugin.support.queuePlayer(player.getUniqueId(), teamSize, maxPlayers);
                     } else {
                         sender.sendMessage(ChatColor.RED + " This command can only be ran by players.");
                         return false;
@@ -214,7 +215,7 @@ public class CommandInitializer {
                             sender.sendMessage(messageManager.getMessage("invalid-player"));
                             return true;
                         }
-                        plugin.support.queuePlayer(p, i, maxPlayers);
+                        plugin.support.queuePlayer(p.getUniqueId(), i, maxPlayers);
                         return true;
                     } catch (Exception e) {
                         sender.sendMessage(messageManager.getMessage("invalid-player"));
@@ -234,7 +235,7 @@ public class CommandInitializer {
                     // Not Player
                 }
                 Player player = (Player) sender;
-                if (plugin.support.rejoin(player)) {
+                if (plugin.support.rejoin(player.getUniqueId())) {
                     plugin.support.pm.connect(player, plugin.support.rejoinServer.get(player.getUniqueId()));
                 }
                 else {

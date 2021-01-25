@@ -24,7 +24,7 @@ public class BungeeSupportHandler implements Listener {
     @EventHandler
     public void pLeave(PlayerQuitEvent event) {
         if (!support.isHub) return;
-        support.removeQueuePlayer(event.getPlayer());
+        support.removeQueuePlayer(event.getPlayer().getUniqueId());
     }
 
     @EventHandler

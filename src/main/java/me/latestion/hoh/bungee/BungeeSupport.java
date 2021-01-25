@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import scala.concurrent.impl.FutureConvertersImpl;
 
 import java.io.File;
 import java.util.*;
@@ -17,8 +18,6 @@ public class BungeeSupport {
     public boolean isHub = false;
 
     public Map<String, ServerState> state = new HashMap<>();
-    public Map<Integer, Map<Integer, List<UUID>>> queue = new HashMap<>();
-    //        TeamSize,  Max Teams, Players In Queue
 
     public String thisServer;
     public String hub;
@@ -31,46 +30,108 @@ public class BungeeSupport {
         this.hub = plugin.getConfig().getString("Main-Lobby");
     }
 
-    public void queuePlayer(Player player, int tSize, int pMax) {
+    public void queuePlayer(UUID player, int tSize, int pMax) {
        if (!isHub) return;
        if (isPlayerInQueue(player)) return;;
-       if (queue.containsKey(tSize)) {
-           List<UUID> players = queue.get(tSize).get(pMax);
-           players.add(player.getUniqueId());
-           for (ServerState ss : state.values()) {
-               if (ss.maxPlayers == players.size() && ss.teamsize == tSize && !ss.game) {
+
+       List<ServerState> serverStates = getAvailableServers(tSize, pMax);
+
+       for (ServerState ss : serverStates) {
+           if (ss.queue.size() < ss.maxPlayers) {
+               ss.queue.add(player);
+               if (ss.maxPlayers == ss.queue.size()) {
                    String server = ss.name;
-                   for (UUID p : players) {
+                   for (UUID p : ss.queue) {
+                       // TODO: Send party information to the plugin
                        pm.connect(Bukkit.getPlayer(p), server);
                        rejoinServer.put(p, server);
                    }
+                   return;
                }
            }
        }
     }
 
-    public void removeQueuePlayer(Player player) {
-        for (int i : queue.keySet()) {
-            if (queue.get(i).containsValue(player)) {
-                queue.get(i).remove(player.getUniqueId());
-                return;
+    public void queuePlayer(List<UUID> partyIDs, int tSize, int pMax) {
+        if (!isHub) return;
+        if (isPlayerInQueue(partyIDs.get(0))) return;;
+
+        List<ServerState> serverStates = getAvailableServers(tSize, pMax);
+
+        for (ServerState ss : serverStates) {
+            if ((ss.queue.size() + partyIDs.size()) <= ss.maxPlayers) {
+                ss.queue.addAll(partyIDs);
+                if (ss.maxPlayers == ss.queue.size()) {
+                    String server = ss.name;
+                    for (UUID p : ss.queue) {
+                        // TODO: Send party information to the plugin
+                        pm.connect(Bukkit.getPlayer(p), server);
+                        rejoinServer.put(p, server);
+                    }
+                    return;
+                }
             }
         }
     }
 
-    public boolean isPlayerInQueue(Player player) {
-        UUID id = player.getUniqueId();
-        for (Map<Integer, List<UUID>> maps : queue.values()) {
-            if (maps.containsValue(id)) {
-                return true;
+    public List<ServerState> getAvailableServers(int teamsize, int maxplayers) {
+        List<ServerState> out = new ArrayList<>();
+        parentLoop:
+        for (ServerState ss : state.values()) {
+            if (ss.teamsize == teamsize && ss.maxPlayers == maxplayers && !ss.game) {
+                int queue = ss.queue.size();
+                if (queue == 0) {
+                    out.add(out.size(), ss);
+                    continue parentLoop;
+                }
+                if (out.size() == 1) {
+                    if (out.get(0).queue.size() <= queue) {
+                        out.add(0, ss);
+                        continue parentLoop;
+                    }
+                    else if (out.get(0).queue.size() > queue) {
+                        out.add(1, ss);
+                        continue parentLoop;
+                    }
+                }
+                else {
+                    for (int i = 0; i < out.size(); i++) {
+                        int sQueue = out.get(i).queue.size();
+                        if (sQueue <= queue) {
+                            out.add(i, ss);
+                            continue parentLoop;
+                        }
+                    }
+                }
             }
         }
-        return false;
+        return out;
     }
 
-    public boolean rejoin(Player player) {
-        if (rejoinServer.containsKey(player.getUniqueId())) {
-            pm.connect(player, rejoinServer.get(player.getUniqueId()));
+    public List<List<UUID>> getAllQueues() {
+        List<List<UUID>> out = new ArrayList<>();
+        for (ServerState ss : state.values()) {
+            out.add(ss.queue);
+        }
+        return out;
+    }
+
+    public void removeQueuePlayer(UUID player) {
+        for (ServerState ss : state.values()) {
+           if (ss.queue.contains(player)) {
+               ss.queue.remove(player);
+               return;
+           }
+        }
+    }
+
+    public boolean isPlayerInQueue(UUID player) {
+        return getAllQueues().contains(player);
+    }
+
+    public boolean rejoin(UUID player) {
+        if (rejoinServer.containsKey(player)) {
+            pm.connect(Bukkit.getPlayer(player), rejoinServer.get(player));
             return true;
         }
         return false;
