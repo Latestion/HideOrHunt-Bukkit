@@ -119,9 +119,23 @@ public class BungeeSupport {
     public void removeQueuePlayer(UUID player) {
         for (ServerState ss : state.values()) {
            if (ss.queue.contains(player)) {
-               /*
-               LOTS OF BUGS TO FIX
-                */
+               if (HideOrHunt.getInstance().party.inParty(player)) {
+                   if (HideOrHunt.getInstance().party.ownsParty(player)) {
+                       /*
+                       Remove Full Team
+                        */
+                       for (UUID id : HideOrHunt.getInstance().party.getParty(player).getParty()) {
+                           ss.queue.remove(id);
+                           return;
+                       }
+                   }
+                   else {
+                       /*
+                       Don't allow as he is not leader
+                        */
+                       return;
+                   }
+               }
                ss.queue.remove(player);
                return;
            }
