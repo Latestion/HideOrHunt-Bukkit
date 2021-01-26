@@ -57,14 +57,22 @@ public class InventoryClick implements Listener {
 					meta.setLore(lore);
 					item.setItemMeta(meta);
 					event.getClickedInventory().setItem(event.getSlot(), item);
-					for (Player p : Bukkit.getOnlinePlayers()) {
+					for (Player p : plugin.game.getWorld().getPlayers()) {
 						p.updateInventory();
 					}
-					hohPlayer.setNamingTeam(true);
 					HOHTeam team = new HOHTeam(event.getSlot());
 					plugin.game.addTeam(team);
 					hohPlayer.setTeam(team);
 					team.addPlayer(hohPlayer);
+					if (plugin.getConfig().getBoolean("Replace-Custom-Team-Names")) {
+						team.setName(plugin.getConfig().getStringList("Team-Name").get(event.getSlot()));
+						if (plugin.game.allPlayersSelectedTeam() && plugin.game.areAllTeamsNamed()) {
+							plugin.game.startGame();
+						}
+					}
+					else {
+						hohPlayer.setNamingTeam(true);
+					}
 					player.sendMessage(messageManager.getMessage("enter-team-name"));
 					player.closeInventory();
 					return;
@@ -79,7 +87,7 @@ public class InventoryClick implements Listener {
 					}
 					lore.add(player.getName());
 					event.getCurrentItem().getItemMeta().setLore(lore);
-					for (Player p2 : Bukkit.getOnlinePlayers()) {
+					for (Player p2 : plugin.game.getWorld().getPlayers()) {
 						p2.updateInventory();
 					}
 

@@ -24,7 +24,6 @@ import java.util.*;
 
 public class HOHGame {
 
-
     private final HideOrHunt plugin;
     private final Util util;
     public Location loc;
@@ -73,18 +72,77 @@ public class HOHGame {
             return;
         }
         this.gameState = GameState.PREPARE;
-        for (Player player : Bukkit.getOnlinePlayers()) {
+        for (Player player : getWorld().getPlayers()) {
             if (player.isOp() && !util.getAllowOp()) {
                 continue;
             }
             HOHPlayer p = new HOHPlayer(this, player.getUniqueId());
             hohPlayers.put(player.getUniqueId(), p);
         }
+
         double neededTeams = Math.ceil(hohPlayers.size() / (double) teamSize);
         int totalTeams = (int) neededTeams;
+
+        if (plugin.getConfig().getBoolean("Auto-Team-Join")) {
+            List<String> teamNames = plugin.getConfig().getStringList("Team-Names");
+            parentLoop:
+            for (int i = 0; i < totalTeams; i++) {
+                HOHTeam team = new HOHTeam(i);
+                addTeam(team);
+                team.setName(teamNames.get(i));
+                for (HOHPlayer player : hohPlayers.values()) {
+                    if (!player.hasTeam()) {
+                        if (!team.addPlayer(player)) continue parentLoop;
+                        player.setTeam(team);
+                    }
+                }
+            }
+
+            if (allPlayersSelectedTeam() && areAllTeamsNamed()) {
+                startGame();
+            }
+            return;
+        }
+
         this.inv = util.createInv(totalTeams);
         for (HOHPlayer player : hohPlayers.values()) {
             player.prepareTeam(inv);
+        }
+
+        if (plugin.getConfig().getInt("Force-Team-After") > 0) {
+            int secs = plugin.getConfig().getInt("Force-Team-After");
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                if (getGameState() == GameState.PREPARE) {
+                    int totalNeededTeam = (int) Math.ceil(hohPlayers.size() / (double) teamSize);
+                    int totalTeam = teams.size();
+                    if (totalNeededTeam >= totalTeam) {
+                        if (allPlayersSelectedTeam() && areAllTeamsNamed()) {
+                            startGame();
+                            return;
+                        }
+                    }
+                    int neededTeam = totalNeededTeam - totalTeam;
+                    List<String> teamNames = plugin.getConfig().getStringList("Team-Names");
+                    parentLoop:
+                    for (int i = 0; i < neededTeam; i++) {
+                        HOHTeam team = new HOHTeam(i);
+                        addTeam(team);
+                        team.setName(teamNames.get(i));
+                        for (HOHPlayer player : hohPlayers.values()) {
+                            if (!player.hasTeam()) {
+                                if (!team.addPlayer(player)) {
+                                    continue parentLoop;
+                                }
+                                player.setTeam(team);
+                            }
+                        }
+                    }
+                    if (allPlayersSelectedTeam() && areAllTeamsNamed()) {
+                        startGame();
+                    }
+                }
+                return;
+            }, secs * 20L);
         }
     }
 
@@ -156,7 +214,7 @@ public class HOHGame {
 
     public boolean checkEndConditions() {
         List<HOHTeam> aliveTeams = new ArrayList<>();
-        for (Player player : Bukkit.getOnlinePlayers()) {
+        for (Player player : getWorld().getPlayers()) {
             HOHPlayer p = hohPlayers.get(player.getUniqueId());
             if (!p.dead) {
                 if (!aliveTeams.contains(p.getTeam())) {
@@ -167,22 +225,33 @@ public class HOHGame {
         return aliveTeams.size() == 1;
     }
 
-    public void endGame() {
+    public void endGame(String winnerTeam) {
         HOHGameEvent event = new HOHGameEvent(GameState.ON, loc, teamSize);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return;
         }
+        MessageManager messageManager = plugin.getMessageManager();
+        Bukkit.broadcastMessage(messageManager.getMessage("win-message").replace("%winner-team%", winnerTeam));
         loc.getWorld().getWorldBorder().reset();
         for (HOHTeam team : teams.values()) {
             if (team.getBeacon() != null) team.getBeacon().setType(Material.AIR);
             for (HOHPlayer player : team.players) {
-                player.getPlayer().getInventory().clear();
-                loc.getWorld().getSpawnLocation();
-                player.getPlayer().setScoreboard(plugin.sbUtil.manager.getNewScoreboard());
-                player.getPlayer().teleport(loc);
+                if (player.getPlayer().isOnline()) {
+                    player.getPlayer().getInventory().clear();
+                    player.getPlayer().setScoreboard(plugin.sbUtil.manager.getNewScoreboard());
+                    if (plugin.getConfig().getBoolean("Teleport-To-Spawn")) player.getPlayer().teleport(loc);
+                }
             }
         }
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                for (UUID p : plugin.game.hohPlayers.keySet()) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pardon " + Bukkit.getPlayer(p).getName());
+                }
+            }
+        }, 0L);
         gameState = GameState.OFF;
         hohPlayers.clear();
         teams.clear();
@@ -209,7 +278,7 @@ public class HOHGame {
 
     private void sendStartTitle() {
         MessageManager messageManager = plugin.getMessageManager();
-        for (Player p : Bukkit.getOnlinePlayers()) {
+        for (Player p : getWorld().getPlayers()) {
             p.sendTitle(messageManager.getMessage("start-title-first-line")
                     , messageManager.getMessage("start-title-second-line")
                     , 10

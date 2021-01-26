@@ -104,14 +104,13 @@ Rules-Messages:
   - "&4Rules"
   - "&2Your Rules"
   
-# %message%
-# %playername%
-# %playerteam%
+# %message% = message
+# %playername% = player name
+# %playerteam% = player team name
 Main-Chat-Format: "&f[&c%playerteam%&f] &f%playername% &7>> &f%message%"
 Team-Chat-Format: "&f[&2TeamChat&f] &f%playername% &7>> &f%message%"
 
-# WORK IN PROGRESS
-# RECOMMENDED NOT TO USE YET
+
 Bungee-Cord: false #Enables Bungee Cord Support
 Main-Lobby: "Main"
 # <name>, <team size>, <total player>
@@ -119,3 +118,63 @@ Main-Lobby: "Main"
 HOH-Servers:
   - "hoh_1, 1, 2"
   - "hoh_2, 2, 2"
+# Make sure all your servers have restart script or this wont work!
+# Console Command: /hoh queue <teamsize> <total players> <player name>
+# Player Command: /hoh queue <teamsize> <total players>
+
+Teleport-To-Spawn: true # Teleports All Player To Spawn When The Game Ends!
+
+Replace-Custom-Team-Names: false # Replaces the team naming system to specified team names!
+# Make Sure To Add More Names Soo You Don't Run Out Of Them :)
+# COLOR CODES SUPPORTED
+Team-Names:
+  - "Red"
+  - "Blue"
+  - "Green"
+  - "Yellow"
+  - "Pink"
+  - "Black"
+  - "Green"
+  - "White"
+  - "Violet"
+  - "Purple"
+  - "Dark Blue"
+  - "Dark Red"
+  - "Dark Green"
+  - "Dark Red"
+  - "Dark Yellow"
+  - "Brown"
+
+# Auto Joins Team For Solo When Game Is Started
+# By Default Sets Replace-Custom-Team-Names to true
+# GOOD FOR SERVERS WHO WANT TO MAKE THIS AS A MINI GAME
+# Recommended to use if your using BUNGEECORD #
+Auto-Team-Join: false
+
+# If player doesn't select a team in the given time, plugin force puts him in a team
+# Gives the team Random name from Team-Names and Random teammate if not selected any!
+# Set 0 to disable
+# DOES NOT WORK IF Auto-Team-Join is enabled
+Force-Team-After: 0 # In Seconds
+
+# Removes player from game after player leaves the server (Before Game Start)
+# Set 0 to disable
+# DOES NOT WORK IF Auto-Team-Join is enabled
+Remove-Player-After: 0 # In Seconds
+
+# Use party system provided by HideOrHunt For BungeeCord Servers
+# Party Needs To Be The Perfect Size i.e. matching the max teamsize of the game!
+# Commands:
+# /hoh party invite <player> : Creates an party and invites the player to it
+# /hoh party join <player> : Joins the party if he/she was invited!
+# /hoh party leave : Removes the player from party, If the player is leader party is disbanded
+# /hoh party disband: disbands the party
+Party-System: false
+
+# In Seconds, Disbands The Party If No One Joins
+# Keep 0 to disable (Wont recommended)
+Disband-Party-After: 20
+
+# In seconds, Expiry time of a party invite
+# Keep 0 to disable (Not recommended)
+Party-Invite-Expire: 10

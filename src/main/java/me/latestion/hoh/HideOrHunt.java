@@ -1,12 +1,17 @@
 package me.latestion.hoh;
 
 import me.latestion.hoh.bungee.BungeeSupport;
+import me.latestion.hoh.bungee.BungeeSupportHandler;
+import me.latestion.hoh.bungee.PlugMessage;
 import me.latestion.hoh.commandmanager.CommandInitializer;
 import me.latestion.hoh.events.*;
 import me.latestion.hoh.localization.MessageManager;
+import me.latestion.hoh.party.HOHParty;
+import me.latestion.hoh.party.HOHPartyEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.latestion.hoh.game.GameState;
@@ -14,6 +19,7 @@ import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.stats.Metrics;
 import me.latestion.hoh.utils.ScoreBoardUtil;
 import me.latestion.hoh.versioncheck.UpdateChecker;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -25,6 +31,7 @@ public class HideOrHunt extends JavaPlugin {
 	private MessageManager msgManager;
 
 	public BungeeSupport support;
+	public HOHParty party;
 
 	@Override
 	public void onEnable() {
@@ -38,8 +45,9 @@ public class HideOrHunt extends JavaPlugin {
 		registerAll();
 		this.game = new HOHGame(this);
 		loadSchems();
-		if (getConfig().getBoolean("Bungee-Cord")) { support = new BungeeSupport(this); }
+		loadBungee();
 	}
+
 
 	@Override
 	public void onDisable() {
@@ -80,22 +88,24 @@ public class HideOrHunt extends JavaPlugin {
 	}
 
 	private void registerAll() {
-		this.getServer().getPluginManager().registerEvents(new AsyncChat(this), this);
-		this.getServer().getPluginManager().registerEvents(new BlockBreak(this), this);
-		this.getServer().getPluginManager().registerEvents(new BlockPlace(this), this);
-		this.getServer().getPluginManager().registerEvents(new CraftItem(this), this);
-		this.getServer().getPluginManager().registerEvents(new EntityDamage(this), this);
-		this.getServer().getPluginManager().registerEvents(new GameModeChange(this), this);
-		this.getServer().getPluginManager().registerEvents(new InventoryClick(this), this);
-		this.getServer().getPluginManager().registerEvents(new InventoryClose(this), this);
-		this.getServer().getPluginManager().registerEvents(new InventoryOpen(this), this);
-		this.getServer().getPluginManager().registerEvents(new RespawnScreen(this),this);
-		this.getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
-		this.getServer().getPluginManager().registerEvents(new PlayerMove(this), this);
-		this.getServer().getPluginManager().registerEvents(new PlayerWorld(this), this);
-		this.getServer().getPluginManager().registerEvents(new TrulyGrace(this), this);
-		this.getServer().getPluginManager().registerEvents(new PlayerLogin(this), this);
-		this.getServer().getPluginManager().registerEvents(new EntityExplode(this), this);
+		PluginManager pm = this.getServer().getPluginManager();
+		pm.registerEvents(new AsyncChat(this), this);
+		pm.registerEvents(new BlockBreak(this), this);
+		pm.registerEvents(new BlockPlace(this), this);
+		pm.registerEvents(new CraftItem(this), this);
+		pm.registerEvents(new EntityDamage(this), this);
+		pm.registerEvents(new EntityExplode(this), this);
+		pm.registerEvents(new GameModeChange(this), this);
+		pm.registerEvents(new InventoryClick(this), this);
+		pm.registerEvents(new InventoryClose(this), this);
+		pm.registerEvents(new InventoryOpen(this), this);
+		pm.registerEvents(new PlayerJoin(this), this);
+		pm.registerEvents(new PlayerLogin(this), this);
+		pm.registerEvents(new PlayerMove(this), this);
+		pm.registerEvents(new PlayerQuit(this), this);
+		pm.registerEvents(new PlayerWorld(this), this);
+		pm.registerEvents(new RespawnScreen(this),this);
+		pm.registerEvents(new TrulyGrace(this), this);
 		new CommandInitializer(this).initialize();
 	}
 
@@ -123,5 +133,23 @@ public class HideOrHunt extends JavaPlugin {
 
 	public static HideOrHunt getInstance() {
 		return JavaPlugin.getPlugin(HideOrHunt.class);
+	}
+
+	private void loadBungee() {
+		if (!getConfig().getBoolean("Bungee-Cord")) {
+			return;
+		}
+		support = new BungeeSupport(this);
+		this.getServer().getPluginManager().registerEvents(new BungeeSupportHandler(support), this);
+		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+		this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new PlugMessage(this));
+
+		if (!getConfig().getBoolean("Party-System")) {
+			return;
+		}
+
+		this.party = new HOHParty();
+		this.getServer().getPluginManager().registerEvents(new HOHPartyEvents(party), this);
+
 	}
 }

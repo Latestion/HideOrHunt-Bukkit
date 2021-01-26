@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class AbstractCommandBuilder<T extends AbstractCommand> implements Builder<T> {
+public abstract class AbstractCommandBuilder<T extends AbstractCommand> {
     private final Set<AbstractCommand> subcommands = new HashSet<>();
     private final String commandName;
     private final HashMap<String, Boolean> aliases = new HashMap<>();
@@ -157,7 +157,7 @@ public abstract class AbstractCommandBuilder<T extends AbstractCommand> implemen
      *
      * @return the built command
      */
-    @Override
+
     public T build() {
         if (createPermission && permissionName != null) {
             if (Bukkit.getPluginManager().getPermission(permissionName) != null) {

@@ -55,4 +55,8 @@ public class HOHPlayer {
         }
     }
 
+    public HOHGame getGame() {
+        return game;
+    }
+
 }

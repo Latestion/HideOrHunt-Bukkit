@@ -81,7 +81,7 @@ public class AsyncChat implements Listener {
         if (!player.teamChat) return;
 
         event.getRecipients().clear();
-        Bukkit.getOnlinePlayers().forEach(p -> {
+        plugin.game.getWorld().getPlayers().forEach(p -> {
             if (plugin.game.isSpying(p)) event.getRecipients().add(p);
         });
         player.getTeam().players.forEach(p -> {

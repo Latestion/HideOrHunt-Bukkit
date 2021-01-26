@@ -1,9 +1,15 @@
 package me.latestion.hoh.bungee;
 
 import me.latestion.hoh.HideOrHunt;
+import me.latestion.hoh.events.EntityExplode;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import scala.concurrent.impl.FutureConvertersImpl;
 
+import java.io.File;
 import java.util.*;
 
 public class BungeeSupport {
@@ -11,27 +17,124 @@ public class BungeeSupport {
     public PlugMessage pm;
     public boolean isHub = false;
 
-    public List<UUID> inQueue = new ArrayList<>();
     public Map<String, ServerState> state = new HashMap<>();
 
     public String thisServer;
+    public String hub;
+
+    public Map<UUID, String> rejoinServer = new HashMap<>();
 
     public BungeeSupport(HideOrHunt plugin) {
         this.pm = new PlugMessage(plugin);
         loadServers();
+        this.hub = plugin.getConfig().getString("Main-Lobby");
     }
 
-    public void queuePlayer(Player player) {
-        inQueue.add(player.getUniqueId());
-        for (ServerState ss : state.values()) {
-            if (!ss.game) {
-                if (ss.totalOnlinePlayers < ss.maxPlayers) {
-                    pm.sendPlayerToServer(ss, player);
-                    break;
+    public void queuePlayer(UUID player, int tSize, int pMax) {
+       if (!isHub) return;
+       if (isPlayerInQueue(player)) return;;
+
+       List<ServerState> serverStates = getAvailableServers(tSize, pMax);
+
+       for (ServerState ss : serverStates) {
+           if (ss.queue.size() < ss.maxPlayers) {
+               ss.queue.add(player);
+               if (ss.maxPlayers == ss.queue.size()) {
+                   String server = ss.name;
+                   for (UUID p : ss.queue) {
+                       // TODO: Send party information to the plugin
+                       pm.connect(Bukkit.getPlayer(p), server);
+                       rejoinServer.put(p, server);
+                   }
+                   return;
+               }
+           }
+       }
+    }
+
+    public void queuePlayer(List<UUID> partyIDs, int tSize, int pMax) {
+        if (!isHub) return;
+        if (isPlayerInQueue(partyIDs.get(0))) return;;
+
+        List<ServerState> serverStates = getAvailableServers(tSize, pMax);
+
+        for (ServerState ss : serverStates) {
+            if ((ss.queue.size() + partyIDs.size()) <= ss.maxPlayers) {
+                ss.queue.addAll(partyIDs);
+                if (ss.maxPlayers == ss.queue.size()) {
+                    String server = ss.name;
+                    for (UUID p : ss.queue) {
+                        // TODO: Send party information to the plugin
+                        pm.connect(Bukkit.getPlayer(p), server);
+                        rejoinServer.put(p, server);
+                    }
+                    return;
                 }
             }
         }
-        player.sendMessage(ChatColor.RED + "No Servers Available, Try again later!");
+    }
+
+    public List<ServerState> getAvailableServers(int teamsize, int maxplayers) {
+        List<ServerState> out = new ArrayList<>();
+        parentLoop:
+        for (ServerState ss : state.values()) {
+            if (ss.teamsize == teamsize && ss.maxPlayers == maxplayers && !ss.game) {
+                int queue = ss.queue.size();
+                if (queue == 0) {
+                    out.add(out.size(), ss);
+                    continue parentLoop;
+                }
+                if (out.size() == 1) {
+                    if (out.get(0).queue.size() <= queue) {
+                        out.add(0, ss);
+                        continue parentLoop;
+                    }
+                    else if (out.get(0).queue.size() > queue) {
+                        out.add(1, ss);
+                        continue parentLoop;
+                    }
+                }
+                else {
+                    for (int i = 0; i < out.size(); i++) {
+                        int sQueue = out.get(i).queue.size();
+                        if (sQueue <= queue) {
+                            out.add(i, ss);
+                            continue parentLoop;
+                        }
+                    }
+                }
+            }
+        }
+        return out;
+    }
+
+    public List<List<UUID>> getAllQueues() {
+        List<List<UUID>> out = new ArrayList<>();
+        for (ServerState ss : state.values()) {
+            out.add(ss.queue);
+        }
+        return out;
+    }
+
+    public void removeQueuePlayer(UUID player) {
+        for (ServerState ss : state.values()) {
+           if (ss.queue.contains(player)) {
+               ss.queue.remove(player);
+               return;
+           }
+        }
+    }
+
+    public boolean isPlayerInQueue(UUID player) {
+        return getAllQueues().contains(player);
+    }
+
+    public boolean rejoin(UUID player) {
+        if (rejoinServer.containsKey(player)) {
+            pm.connect(Bukkit.getPlayer(player), rejoinServer.get(player));
+            return true;
+        }
+        return false;
     }
 
     private void loadServers() {
@@ -41,7 +144,31 @@ public class BungeeSupport {
         }
     }
 
-    private int parseInt(String s) {
-        return Integer.parseInt(s);
+    private ServerState getCurrentServerState() {
+        return state.get(thisServer);
     }
+
+    private int parseInt(String s) {
+        try {
+            return  Integer.parseInt(s);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    public void deleteWorlds(File path) {
+        if(path.exists()) {
+            File files[] = path.listFiles();
+            for(int i=0; i<files.length; i++) {
+                if(files[i].isDirectory()) {
+                    deleteWorlds(files[i]);
+                }
+                else {
+                    files[i].delete();
+                }
+            }
+        }
+        path.delete();
+    }
+
 }

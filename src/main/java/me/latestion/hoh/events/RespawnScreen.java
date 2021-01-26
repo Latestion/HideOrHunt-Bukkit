@@ -75,17 +75,7 @@ public class RespawnScreen implements Listener {
             if (plugin.game.checkEndConditions()) {
                 HOHTeam winnerTeam = plugin.game.getWinnerTeam();
                 if (winnerTeam == null) return;
-                Bukkit.broadcastMessage(messageManager.getMessage("win-message").replace("%winner-team%", winnerTeam.getName()));
-                plugin.game.gameState = GameState.OFF;
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        for (UUID p : plugin.game.hohPlayers.keySet()) {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pardon " + Bukkit.getPlayer(p).getName());
-                        }
-                    }
-                }, 0L);
-                plugin.game.endGame();
+                plugin.game.endGame(winnerTeam.getName());
             }
 
         }

@@ -9,6 +9,7 @@ import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.game.HOHPlayer;
 import me.latestion.hoh.localization.MessageManager;
+import me.latestion.hoh.party.HOHPartyHandler;
 import me.latestion.hoh.utils.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,11 +32,6 @@ public class CommandInitializer {
         CommandBuilder builder = new CommandBuilder("hoh");
         PluginManager pm = Bukkit.getPluginManager();
         builder.addSubCommand(new SubCommandBuilder("start").setPermission(pm.getPermission("hoh.start")).setUsageMessage("/hoh start <team size>").setCommandHandler((sender, command, label, args) -> {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage(ChatColor.RED + " This command can only be ran by players.");
-                return false;
-            }
-            Player player = (Player) sender;
             if (args.length != 1) {
                 return false;
             }
@@ -52,7 +48,12 @@ public class CommandInitializer {
                 //todo: add to message manager
                 return true;
             }
-            game.setSpawnLocation(player.getLocation());
+            if (sender instanceof Player) {
+                game.setSpawnLocation(((Player) sender).getLocation());
+            }
+            else {
+                game.setSpawnLocation(Bukkit.getWorlds().get(0).getSpawnLocation());
+            }
             game.teamSize = size;
             game.prepareGame();
             return true;
@@ -88,7 +89,7 @@ public class CommandInitializer {
         }).setUsageMessage("/hoh rules").build());
         builder.addSubCommand(new SubCommandBuilder("stop").setPermission(pm.getPermission("hoh.reload")).setCommandHandler((sender, command, label, args) -> {
             if (plugin.game.gameState == GameState.ON)
-                plugin.game.endGame();
+                plugin.game.endGame("none");
             else
                 sender.sendMessage(messageManager.getMessage("game-not-started"));
             return true;
@@ -177,23 +178,44 @@ public class CommandInitializer {
 
         if (plugin.support != null) {
             builder.addSubCommand(new SubCommandBuilder("queue").setCommandHandler((sender, command, label, args) -> {
-                if (args.length == 0) {
+                if (args.length == 2) {
                     if (sender instanceof Player) {
-                        plugin.support.queuePlayer((Player) sender);
+                        Player player = (Player) sender;
+                        if (args[0].equalsIgnoreCase("leave") || args[0].equalsIgnoreCase("l")) {
+                            plugin.support.removeQueuePlayer(player.getUniqueId());
+                            return true;
+                        }
+                        int teamSize = new Util(plugin).getInt(args[0]);
+                        if (teamSize <= 0) {
+                            return true;
+                        }
+                        int maxPlayers = new Util(plugin).getInt(args[1]);
+                        if (maxPlayers <= 0) {
+                            return true;
+                        }
+                        plugin.support.queuePlayer(player.getUniqueId(), teamSize, maxPlayers);
                     } else {
                         sender.sendMessage(ChatColor.RED + " This command can only be ran by players.");
                         return false;
                     }
                     return true;
                 }
-                if (args.length == 1) {
+                if (args.length == 3) {
                     try {
-                        Player p = Bukkit.getPlayerExact(args[0]);
+                        int i = new Util(plugin).getInt(args[0]);
+                        if (i <= 0) {
+                            return true;
+                        }
+                        int maxPlayers = new Util(plugin).getInt(args[1]);
+                        if (maxPlayers <= 0) {
+                            return true;
+                        }
+                        Player p = Bukkit.getPlayerExact(args[2]);
                         if (p == null || !p.isValid()) {
                             sender.sendMessage(messageManager.getMessage("invalid-player"));
                             return true;
                         }
-                        plugin.support.queuePlayer(p);
+                        plugin.support.queuePlayer(p.getUniqueId(), i, maxPlayers);
                         return true;
                     } catch (Exception e) {
                         sender.sendMessage(messageManager.getMessage("invalid-player"));
@@ -205,10 +227,76 @@ public class CommandInitializer {
                 List<String> out = new ArrayList<>();
                 Bukkit.getOnlinePlayers().forEach(p -> out.add(p.getName()));
                 return out;
-            }).setUsageMessage("/hoh queue [<player>]").build());
+            }).setUsageMessage("/hoh queue [<teamsize>] [<maxplayers>] [<player>]").build());
         }
+        if (plugin.support != null) {
+            builder.addSubCommand(new SubCommandBuilder("rejoin").setCommandHandler((sender, command, label, args) -> {
+                if (!(sender instanceof Player)) {
+                    // Not Player
+                }
+                Player player = (Player) sender;
+                if (plugin.support.rejoin(player.getUniqueId())) {
+                    plugin.support.pm.connect(player, plugin.support.rejoinServer.get(player.getUniqueId()));
+                }
+                else {
+                    //todo: msg
+                    // No GAME
+                    return true;
+                }
 
+                return false;
+            }).setUsageMessage("/hoh rejoin").build());
+        }
+        if (plugin.party != null) {
+            builder.addSubCommand(new SubCommandBuilder("party").setCommandHandler((sender, command, label, args) -> {
+                if (!(sender instanceof Player)) {
+                    // Not Player
+                }
+                Player player = (Player) sender;
 
+                if (args.length == 2) {
+                    if (args[0].equalsIgnoreCase("invite") || args[0].equalsIgnoreCase("join")) {
+                        Player p = Bukkit.getPlayerExact(args[1]);
+                        if (!p.isValid() || p == null) {
+                            sender.sendMessage(messageManager.getMessage("invalid-player"));
+                            return true;
+                        }
+                        if (args[0].equalsIgnoreCase("invite")) plugin.party.createParty(player.getUniqueId(), p.getUniqueId());
+                        else plugin.party.joinParty(player.getUniqueId(), p.getUniqueId());
+                        return true;
+                    }
+                    return true;
+                }
+
+                if (args.length == 1) {
+                    if (args[0].equalsIgnoreCase("leave")) {
+                        if (plugin.party.inParty(player.getUniqueId())) {
+                            HOHPartyHandler hand = plugin.party.partyPlayer.get(player.getUniqueId()).party;
+                            hand.removePlayer(player.getUniqueId());
+                        }
+                        else {
+                            // Not In Party
+                        }
+                        return true;
+                    }
+                    if (args[0].equalsIgnoreCase("disband")) {
+                        if (plugin.party.inParty(player.getUniqueId())) {
+                            HOHPartyHandler hand = plugin.party.partyPlayer.get(player.getUniqueId()).party;
+                            hand.removePlayer(hand.getLeader());
+                        }
+                        else {
+                            // Not In Party
+                        }
+                        return true;
+                    }
+                }
+                return false;
+            }).setTabHandler((sender, command, label, args) -> {
+                List<String> out = new ArrayList<>();
+                out.add("invite"); out.add("join"); out.add("leave"); out.add("disband");
+                return out;
+            }).setUsageMessage("/hoh party invite,join,leave,disband").build());
+        }
         builder.addSubCommand(new SubCommandBuilder("help").setUsageMessage("/hoh help").setCommandHandler((sender, command, label, args) -> {
             //todo: idk what color scheme you use so i just did Gold and gray
             StringBuilder helpMessage = new StringBuilder();
