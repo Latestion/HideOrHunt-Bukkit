@@ -148,7 +148,7 @@ Team-Names:
 # Auto Joins Team For Solo When Game Is Started
 # By Default Sets Replace-Custom-Team-Names to true
 # GOOD FOR SERVERS WHO WANT TO MAKE THIS AS A MINI GAME
-# Recommended to use if your using BUNGEECORD #
+# **Recommended to use if your using BUNGEECORD**
 Auto-Team-Join: false
 
 # If player doesn't select a team in the given time, plugin force puts him in a team

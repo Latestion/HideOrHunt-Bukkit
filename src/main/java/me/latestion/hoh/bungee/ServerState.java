@@ -13,6 +13,8 @@ public class ServerState {
 
     public List<UUID> queue = new ArrayList<>();
 
+    public List<List<UUID>> teams = new ArrayList<>();
+
     public ServerState(String name, int teamsize, int maxPlayers) {
         this.name = name;
         this.game = false;

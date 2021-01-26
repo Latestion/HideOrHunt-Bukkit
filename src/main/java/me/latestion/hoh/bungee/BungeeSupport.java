@@ -119,6 +119,9 @@ public class BungeeSupport {
     public void removeQueuePlayer(UUID player) {
         for (ServerState ss : state.values()) {
            if (ss.queue.contains(player)) {
+               /*
+               LOTS OF BUGS TO FIX
+                */
                ss.queue.remove(player);
                return;
            }
@@ -144,11 +147,11 @@ public class BungeeSupport {
         }
     }
 
-    private ServerState getCurrentServerState() {
+    public ServerState getCurrentServerState() {
         return state.get(thisServer);
     }
 
-    private int parseInt(String s) {
+    public int parseInt(String s) {
         try {
             return  Integer.parseInt(s);
         } catch (Exception e) {

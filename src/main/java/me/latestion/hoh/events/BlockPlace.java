@@ -57,6 +57,9 @@ public class BlockPlace implements Listener {
                 Bukkit.broadcastMessage(messageManager.getMessage("beacon-placed-broadcast").replace("%team%", player.getTeam().getName()));
                 setSign(loc, player);
                 plugin.sbUtil.beaconPlaceTeam(player.getTeam().getName());
+                if (loc.getBlockY() == 256) {
+                    event.getPlayer().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "You have found an easter egg! Contact Latestion#0529 on discord with a screenshot!");
+                }
             }
         }
     }

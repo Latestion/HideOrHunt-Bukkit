@@ -37,6 +37,7 @@ public class HOHGame {
     public Inventory inv;
     private Map<Integer, HOHTeam> teams = new HashMap<>();
     private List<UUID> chatSpies = new ArrayList<>();
+    public boolean allowCrafting = false;
 
     public HOHGame(HideOrHunt plugin) {
         this.plugin = plugin;
@@ -90,6 +91,18 @@ public class HOHGame {
                 HOHTeam team = new HOHTeam(i);
                 addTeam(team);
                 team.setName(teamNames.get(i));
+                if (plugin.support != null && plugin.party != null) {
+                    for (int ii = 0; ii < plugin.support.getCurrentServerState().teams.size(); ii++) {
+                        List<UUID> add = plugin.support.getCurrentServerState().teams.get(0);
+                        for (UUID pId : add) {
+                            HOHPlayer player = hohPlayers.get(pId);
+                            if (!player.hasTeam()) {
+                                player.setTeam(team);
+                            }
+                        }
+                        plugin.support.getCurrentServerState().teams.remove(0);
+                    }
+                }
                 for (HOHPlayer player : hohPlayers.values()) {
                     if (!player.hasTeam()) {
                         if (!team.addPlayer(player)) continue parentLoop;
@@ -97,7 +110,6 @@ public class HOHGame {
                     }
                 }
             }
-
             if (allPlayersSelectedTeam() && areAllTeamsNamed()) {
                 startGame();
             }

@@ -19,6 +19,7 @@ import org.bukkit.plugin.PluginManager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CommandInitializer {
     private final HideOrHunt plugin;
@@ -144,6 +145,7 @@ public class CommandInitializer {
             }
             return true;
         }).setUsageMessage("/hoh chat").build());
+
         builder.addSubCommand(new SubCommandBuilder("continue").setPermission(pm.getPermission("hoh.continue")).setCommandHandler((sender, command, label, args) -> {
             if (plugin.game.gameState != GameState.OFF) {
                 sender.sendMessage("§cThere is already a game in progress");
@@ -158,6 +160,17 @@ public class CommandInitializer {
 
             return true;
         }).setUsageMessage("/hoh continue").build());
+
+        builder.addSubCommand(new SubCommandBuilder("craft").setPermission(pm.getPermission("hoh.craft")).setCommandHandler((sender, command, label, args) -> {
+            if (plugin.game.allowCrafting) {
+                plugin.game.allowCrafting = false;
+                sender.sendMessage(ChatColor.RED + "Crafting is disabled!");
+                return true;
+            }
+            plugin.game.allowCrafting = true;
+            sender.sendMessage(ChatColor.AQUA + "Crafting is enabled!");
+            return true;
+        }).setUsageMessage("/hoh craft").build());
 
         builder.addSubCommand(new SubCommandBuilder("spy").setPermission(pm.getPermission("hoh.spy")).setCommandHandler((sender, command, label, args) -> {
             if (!(sender instanceof Player)) {
@@ -193,7 +206,22 @@ public class CommandInitializer {
                         if (maxPlayers <= 0) {
                             return true;
                         }
-                        plugin.support.queuePlayer(player.getUniqueId(), teamSize, maxPlayers);
+                        UUID id = player.getUniqueId();
+                        if (plugin.party.inParty(id)) {
+                            if (plugin.party.ownsParty(id)) {
+                                if (plugin.party.getPartySize(id) == 1) {
+                                    return true;
+                                }
+                                else {
+                                    plugin.support.queuePlayer(plugin.party.getParty(id).getParty(), teamSize, maxPlayers);
+                                    return true;
+                                }
+                            }
+                            else {
+                                return true;
+                            }
+                        }
+                        plugin.support.queuePlayer(id, teamSize, maxPlayers);
                     } else {
                         sender.sendMessage(ChatColor.RED + " This command can only be ran by players.");
                         return false;
@@ -202,8 +230,8 @@ public class CommandInitializer {
                 }
                 if (args.length == 3) {
                     try {
-                        int i = new Util(plugin).getInt(args[0]);
-                        if (i <= 0) {
+                        int teamSize = new Util(plugin).getInt(args[0]);
+                        if (teamSize <= 0) {
                             return true;
                         }
                         int maxPlayers = new Util(plugin).getInt(args[1]);
@@ -215,7 +243,22 @@ public class CommandInitializer {
                             sender.sendMessage(messageManager.getMessage("invalid-player"));
                             return true;
                         }
-                        plugin.support.queuePlayer(p.getUniqueId(), i, maxPlayers);
+                        UUID id = p.getUniqueId();
+                        if (plugin.party.inParty(id)) {
+                            if (plugin.party.ownsParty(id)) {
+                                if (plugin.party.getPartySize(id) == 1) {
+                                    return true;
+                                }
+                                else {
+                                    plugin.support.queuePlayer(plugin.party.getParty(id).getParty(), teamSize, maxPlayers);
+                                    return true;
+                                }
+                            }
+                            else {
+                                return true;
+                            }
+                        }
+                        plugin.support.queuePlayer(p.getUniqueId(), teamSize, maxPlayers);
                         return true;
                     } catch (Exception e) {
                         sender.sendMessage(messageManager.getMessage("invalid-player"));
@@ -229,6 +272,7 @@ public class CommandInitializer {
                 return out;
             }).setUsageMessage("/hoh queue [<teamsize>] [<maxplayers>] [<player>]").build());
         }
+
         if (plugin.support != null) {
             builder.addSubCommand(new SubCommandBuilder("rejoin").setCommandHandler((sender, command, label, args) -> {
                 if (!(sender instanceof Player)) {
@@ -247,6 +291,7 @@ public class CommandInitializer {
                 return false;
             }).setUsageMessage("/hoh rejoin").build());
         }
+
         if (plugin.party != null) {
             builder.addSubCommand(new SubCommandBuilder("party").setCommandHandler((sender, command, label, args) -> {
                 if (!(sender instanceof Player)) {
@@ -297,6 +342,7 @@ public class CommandInitializer {
                 return out;
             }).setUsageMessage("/hoh party invite,join,leave,disband").build());
         }
+
         builder.addSubCommand(new SubCommandBuilder("help").setUsageMessage("/hoh help").setCommandHandler((sender, command, label, args) -> {
             //todo: idk what color scheme you use so i just did Gold and gray
             StringBuilder helpMessage = new StringBuilder();

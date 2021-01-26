@@ -1,5 +1,7 @@
 package me.latestion.hoh.party;
 
+import me.latestion.hoh.HideOrHunt;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,12 +30,17 @@ public class HOHParty {
         HOHPartyHandler hand = parties.get(id);
         for (UUID p : hand.getParty()) {
             partyPlayer.get(p).party = null;
+            HideOrHunt.getInstance().support.removeQueuePlayer(p);
         }
         parties.remove(id);
     }
 
     public int getPartySize(UUID id) {
         return parties.get(id).getParty().size();
+    }
+
+    public HOHPartyHandler getParty(UUID id) {
+        return parties.get(id);
     }
 
     public void joinParty(UUID player, UUID p) {

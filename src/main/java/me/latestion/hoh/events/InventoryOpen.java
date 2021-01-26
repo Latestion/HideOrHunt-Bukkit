@@ -24,7 +24,7 @@ public class InventoryOpen implements Listener {
             event.setCancelled(true);
             player.openWorkbench(null, true);
         }
-        if (event.getInventory().getType() == InventoryType.WORKBENCH && event.getInventory().getLocation() != null && plugin.getConfig().getBoolean("Disable-Crafting-Table")) {
+        if (event.getInventory().getType() == InventoryType.WORKBENCH && event.getInventory().getLocation() != null && !plugin.game.allowCrafting) {
             event.setCancelled(true);
             //todo: send message
         }

@@ -51,6 +51,7 @@ public class HOHPartyHandler {
             return;
         }
         party.remove(id);
+        HideOrHunt.getInstance().support.removeQueuePlayer(id);
         if (p.partyPlayer.containsKey(id)) p.partyPlayer.get(id).party = null;
         else p.partyPlayer.put(id, new HOHPartyPlayer(id, null));
         if (party.size() == 1) { HideOrHunt.getInstance().party.deleteParty(getLeader()); }
