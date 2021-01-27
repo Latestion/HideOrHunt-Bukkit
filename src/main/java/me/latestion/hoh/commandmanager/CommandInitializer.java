@@ -55,6 +55,10 @@ public class CommandInitializer {
             else {
                 game.setSpawnLocation(Bukkit.getWorlds().get(0).getSpawnLocation());
             }
+            if (game.getWorld().getPlayers().size() == 0) {
+                // NO Players Online
+                return false;
+            }
             game.teamSize = size;
             game.prepareGame();
             return true;

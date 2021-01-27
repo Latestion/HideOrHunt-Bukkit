@@ -96,6 +96,7 @@ public class HOHGame {
                         List<UUID> add = plugin.support.getCurrentServerState().teams.get(0);
                         for (UUID pId : add) {
                             HOHPlayer player = hohPlayers.get(pId);
+                            player.getPlayer().closeInventory();
                             if (!player.hasTeam()) {
                                 player.setTeam(team);
                             }
@@ -108,6 +109,7 @@ public class HOHGame {
                         if (!team.addPlayer(player)) continue parentLoop;
                         player.setTeam(team);
                     }
+                    player.getPlayer().closeInventory();
                 }
             }
             if (allPlayersSelectedTeam() && areAllTeamsNamed()) {
@@ -185,6 +187,7 @@ public class HOHGame {
         if (plugin.getConfig().getBoolean("Enable-Effect-After-Start")) addAfterPotEffects();
         if (plugin.getConfig().getBoolean("Auto-Episodes")) new Episodes(plugin);
         if (plugin.getConfig().getBoolean("Auto-Supply-Drops")) new SupplyDrop(plugin);
+        if (plugin.xray != null) plugin.xray.start();
     }
 
     public void addTeam(HOHTeam team) {
@@ -269,6 +272,7 @@ public class HOHGame {
         teams.clear();
         bar.stop();
         plugin.sbUtil = new ScoreBoardUtil(plugin);
+        if (plugin.xray != null) plugin.xray.stop();
         Bukkit.getScheduler().cancelTasks(plugin);
 
         File gameFile = new File(plugin.getDataFolder(), "hohGame.yml");
