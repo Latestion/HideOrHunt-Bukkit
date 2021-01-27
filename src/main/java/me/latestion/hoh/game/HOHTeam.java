@@ -1,6 +1,7 @@
 package me.latestion.hoh.game;
 
 import me.latestion.hoh.HideOrHunt;
+import me.latestion.hoh.illegalbase.Base;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -17,6 +18,7 @@ public class HOHTeam {
     private Integer id;
     private Block beacon;
     private Block sign;
+    private Base base;
 
     public HOHTeam(Integer id) {
         this.id = id;
@@ -114,5 +116,19 @@ public class HOHTeam {
 
     public void setSign(Block setSign) {
         this.sign = setSign;
+    }
+
+    public void setBase(Base b) {
+        this.base = b;
+    }
+
+    public Base getBase() {
+        return base;
+    }
+
+    public void checkLegalBase() {
+        if (!HideOrHunt.getInstance().getConfig().getBoolean("Legal-Base-Detector")) return;
+        this.base = new Base(this);
+        base.check();
     }
 }

@@ -274,6 +274,7 @@ public class HOHGame {
         plugin.sbUtil = new ScoreBoardUtil(plugin);
         if (plugin.xray != null) plugin.xray.stop();
         Bukkit.getScheduler().cancelTasks(plugin);
+        ep = 1;
 
         File gameFile = new File(plugin.getDataFolder(), "hohGame.yml");
         gameFile.delete();

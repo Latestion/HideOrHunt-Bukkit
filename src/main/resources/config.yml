@@ -20,6 +20,7 @@ Inventory-Keep: 20 # Inventory keep chance! Compared out of 100. Keep 0 for disa
 Team-Damage: false # On or off team damage
 Teleport-To-Spawn: true # Teleports All Player To Spawn When The Game Ends!
 Disable-Other-Worlds: true # Disables END and NETHER, Set to false if you want to make HOH in other worlds too!
+Cancel-Weather-Change: true # Disables weather change during game
 
 # --> Kit <-- #
 
@@ -216,5 +217,8 @@ Anti-Xray: false
 Show-Beacon-Range: 5 # Shows the beacon if there is a player in it x block range
 Check-Delay: 2 # In seconds. Check if x seconds if player is in range
 
+# --> Legal Base <-- #
+
+Legal-Base-Detector: true # Enables or disables it
 
 # --> End <-- #

@@ -109,6 +109,7 @@ public class HideOrHunt extends JavaPlugin {
 		pm.registerEvents(new PlayerWorld(this), this);
 		pm.registerEvents(new RespawnScreen(this),this);
 		pm.registerEvents(new TrulyGrace(this), this);
+		pm.registerEvents(new WeatherChange(), this);
 		new CommandInitializer(this).initialize();
 	}
 
