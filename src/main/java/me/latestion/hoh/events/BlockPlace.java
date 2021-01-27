@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.event.EventException;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -61,12 +62,7 @@ public class BlockPlace implements Listener {
                 if (loc.getBlockY() == 256) {
                     event.getPlayer().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "You have found an easter egg! Contact Latestion#0529 on discord with a screenshot!");
                 }
-                try {
-                    team.checkLegalBase();
-                }
-                catch (Exception exception) {
-                    // Illegal
-                }
+                team.checkLegalBase();
             }
         }
     }

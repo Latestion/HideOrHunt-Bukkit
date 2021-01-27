@@ -14,11 +14,6 @@ public class Base {
     }
 
     public void check() {
-        try {
-            BaseHandler.isLegal(team.getBeacon(), false, this, null);
-        }
-        catch (Exception e) {
-            // Do Nothing
-        }
+        BaseHandler.isLegal(team.getBeacon(), false, this, null);
     }
 }

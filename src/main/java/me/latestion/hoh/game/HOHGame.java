@@ -177,6 +177,8 @@ public class HOHGame {
                 util.givePlayerKit(p, team, name);
             }
         }
+        getWorld().setStorm(false);
+        getWorld().setThundering(false);
         plugin.sbUtil.addAllPlayers();
         this.bar = new Bar(plugin);
         gameState = GameState.ON;

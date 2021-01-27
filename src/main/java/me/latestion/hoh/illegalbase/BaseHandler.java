@@ -50,10 +50,10 @@ public class BaseHandler {
                 // Somehow check if the block is going totally up and meets the highest block y
                 int x = b.getX();
                 int z = b.getZ();
-                topLoop:
+                topLooop:
                 for (int y = b.getY(); y < highestBlock.getY(); y++) {
                     if (!types.contains(b.getWorld().getBlockAt(x, y, z).getType())) {
-                        break topLoop;
+                        break topLooop;
                     }
                     if (y + 1 == highestBlock.getY() || y == highestBlock.getY() - 1) {
                         base.isLegal = true;
