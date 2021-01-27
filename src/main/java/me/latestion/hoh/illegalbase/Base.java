@@ -8,12 +8,14 @@ public class Base {
     private HOHTeam team;
     public boolean isLegal = true;
 
+    public BaseHandler baseHandler;
+
     public Base(HOHTeam team) {
         this.team = team;
-
+        this.baseHandler = new BaseHandler(this);
     }
 
     public void check() {
-        BaseHandler.isLegal(team.getBeacon(), false, this, null);
+        baseHandler.isLegal(team.getBeacon(), false, null);
     }
 }

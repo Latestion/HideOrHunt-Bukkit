@@ -62,7 +62,12 @@ public class BlockPlace implements Listener {
                 if (loc.getBlockY() == 256) {
                     event.getPlayer().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "You have found an easter egg! Contact Latestion#0529 on discord with a screenshot!");
                 }
-                team.checkLegalBase();
+                try {
+                    team.checkLegalBase();
+                }
+                catch (RuntimeException runtimeException) {
+
+                }
             }
         }
     }

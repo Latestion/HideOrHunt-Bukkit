@@ -13,13 +13,16 @@ import java.util.Set;
 
 public class BaseHandler {
 
-    public static List<Material> types = new ArrayList<>();
+    public List<Material> types = new ArrayList<>();
+    public Base base;
 
-    public BaseHandler() {
+    private int ran;
 
+    public BaseHandler(Base base) {
+        this.base = base;
     }
 
-    public static final BlockFace[] faces = {
+    public final BlockFace[] faces = {
             BlockFace.DOWN,
             BlockFace.NORTH,
             BlockFace.EAST,
@@ -28,7 +31,7 @@ public class BaseHandler {
             BlockFace.UP
     };
 
-    public static void types() {
+    public void types() {
         types.add(Material.AIR);
         types.add(Material.CAVE_AIR);
         types.add(Material.LADDER);
@@ -36,8 +39,14 @@ public class BaseHandler {
         types.add(Material.TORCH);
     }
 
-    public static void isLegal(Block block, boolean bol, Base base, BlockFace ignore) {
+    public void isLegal(Block block, boolean bol, BlockFace ignore) {
         if (types.isEmpty()) types();
+        ran++;
+        if (ran == 100) {
+            base.isLegal = false;
+            ran = 0;
+            throw new RuntimeException("Help!  Somebody debug me!  I'm crashing!");
+        }
         // Block is just a reference for its location and relativity
         for (BlockFace face : faces) {
             Block b = block.getRelative(face); // 1st Block
@@ -57,6 +66,7 @@ public class BaseHandler {
                     }
                     if (y + 1 == highestBlock.getY() || y == highestBlock.getY() - 1) {
                         base.isLegal = true;
+                        ran = 0;
                         throw new RuntimeException("Help!  Somebody debug me!  I'm crashing!");
                     }
                 }
@@ -66,11 +76,12 @@ public class BaseHandler {
                 }
                 if (b.getY() >= highestBlock.getY() || b.getY() >= highestBlock.getY() - 1) {
                     base.isLegal = true;
+                    ran = 0;
                     throw new RuntimeException("Help!  Somebody debug me!  I'm crashing!");
                 }
                 else {
                     // Checks everything back for the block
-                    isLegal(b, true, base, getIgnoreFace(face));
+                    isLegal(b, true, getIgnoreFace(face));
                 }
             }
             else {
@@ -81,6 +92,7 @@ public class BaseHandler {
                     Location relativeLocation = relative.getLocation();
                     if (relativeLocation.getY() >= relative.getWorld().getHighestBlockYAt(relativeLocation)) {
                         base.isLegal = true;
+                        ran = 0;
                         throw new RuntimeException("Help!  Somebody debug me!  I'm crashing!");
                     }
                 }
@@ -88,7 +100,7 @@ public class BaseHandler {
         }
     }
 
-    private static BlockFace getIgnoreFace(BlockFace face) {
+    private BlockFace getIgnoreFace(BlockFace face) {
         if (face == BlockFace.DOWN) return BlockFace.UP;
         if (face == BlockFace.NORTH) return BlockFace.SOUTH;
         if (face == BlockFace.EAST) return BlockFace.WEST;
