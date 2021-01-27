@@ -16,6 +16,7 @@ public class HOHTeam {
     private String name;
     private Integer id;
     private Block beacon;
+    private Block sign;
 
     public HOHTeam(Integer id) {
         this.id = id;
@@ -105,5 +106,13 @@ public class HOHTeam {
         lore.remove(name);
         item.setItemMeta(meta);
         game.inv.setItem(id, item);
+    }
+
+    public Block getSign() {
+        return sign;
+    }
+
+    public void setSign(Block setSign) {
+        this.sign = setSign;
     }
 }

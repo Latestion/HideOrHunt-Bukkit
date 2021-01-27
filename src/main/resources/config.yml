@@ -207,7 +207,7 @@ Party-Invite-Expire: 10
 # --> Anti Xray <-- #
 
 # Turns the beacon into Air when there is no player near to it in a certain range
-
+# Only works with Beacon and not with the chest or any other block near it!
 Anti-Xray: false
 Show-Beacon-Range: 5 # Shows the beacon if there is a player in it x block range
 Check-Delay: 2 # In seconds. Check if x seconds if player is in range
