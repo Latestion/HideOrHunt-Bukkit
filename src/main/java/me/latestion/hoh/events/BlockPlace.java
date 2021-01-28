@@ -10,7 +10,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.event.EventException;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -55,17 +57,28 @@ public class BlockPlace implements Listener {
                 player.getTeam().setBeacon(event.getBlockPlaced());
                 MessageManager messageManager = plugin.getMessageManager();
                 Bukkit.broadcastMessage(messageManager.getMessage("beacon-placed-broadcast").replace("%team%", player.getTeam().getName()));
-                setSign(loc, player);
+                player.getTeam().setSign(setSign(loc, player));
                 plugin.sbUtil.beaconPlaceTeam(player.getTeam().getName());
+                if (loc.getBlockY() == 256) {
+                    event.getPlayer().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "You have found an easter egg! Contact Latestion#0529 on discord with a screenshot!");
+                }
+                try {
+                    team.checkLegalBase();
+                }
+                catch (RuntimeException runtimeException) {
+
+                }
             }
         }
     }
 
-    private void setSign(Location loc, HOHPlayer player) {
+    private Block setSign(Location loc, HOHPlayer player) {
         loc.getWorld().getBlockAt(loc.clone().add(0, 1, 0)).setType(Material.OAK_SIGN);
-        Sign sign = (Sign) loc.getWorld().getBlockAt(loc.clone().add(0, 1, 0)).getState();
+        Block block = loc.getWorld().getBlockAt(loc.clone().add(0, 1, 0));
+        Sign sign = (Sign) block.getState();
         sign.setLine(0, player.getTeam().getName());
         sign.update();
+        return block;
     }
 
 }

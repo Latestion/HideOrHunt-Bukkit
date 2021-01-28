@@ -35,7 +35,7 @@ public class PlayerJoin implements Listener {
 				p.setGameMode(GameMode.SPECTATOR);
 			}
 		}
-		else if(game.getGameState().equals(GameState.PREPARE)){
+		else if(game.getGameState() == GameState.PREPARE){
 			p.setGameMode(GameMode.SPECTATOR);
 		}
 		else{

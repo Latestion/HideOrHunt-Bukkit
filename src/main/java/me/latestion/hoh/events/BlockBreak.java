@@ -27,28 +27,38 @@ public class BlockBreak implements Listener {
     public void onBreak(BlockBreakEvent event) {
         MessageManager messageManager = plugin.getMessageManager();
         if (plugin.game.gameState != GameState.ON) return;
-        if (event.getBlock().getType() != Material.BEACON) return;
-        Player player = event.getPlayer();
-        HOHPlayer hohPlayer = plugin.game.getHohPlayer(player.getUniqueId());
-        Util util = new Util(plugin);
-        HOHTeam team = util.getTeamFromBlock(event.getBlock());
-        if (team == null)
-            return;
-        HOHBeaconBreakEvent e = new HOHBeaconBreakEvent(event.getBlock(), team, player.getUniqueId());
-        Bukkit.getPluginManager().callEvent(e);
-        if (e.isCancelled()) {
-            event.setCancelled(true);
+        if (event.getBlock().getType() == Material.BEACON) {
+            Player player = event.getPlayer();
+            HOHPlayer hohPlayer = plugin.game.getHohPlayer(player.getUniqueId());
+            Util util = new Util(plugin);
+            HOHTeam team = util.getTeamFromBlock(event.getBlock());
+            if (team == null)
+                return;
+            HOHBeaconBreakEvent e = new HOHBeaconBreakEvent(event.getBlock(), team, player.getUniqueId());
+            Bukkit.getPluginManager().callEvent(e);
+            if (e.isCancelled()) {
+                event.setCancelled(true);
+                return;
+            }
+            if (team.equals(hohPlayer.getTeam())) {
+                event.setCancelled(true);
+                player.sendMessage(messageManager.getMessage("cannot-break-own-beacon"));
+                return;
+            }
+            event.setDropItems(false);
+            team.setBeacon(null);
+            plugin.sbUtil.beaconBreakTeam(team.getName());
+            doAsthetic(team, event.getPlayer());
             return;
         }
-        if (team.equals(hohPlayer.getTeam())) {
-            event.setCancelled(true);
-            player.sendMessage(messageManager.getMessage("cannot-break-own-beacon"));
+        if (event.getBlock().getType() == Material.OAK_SIGN) {
+            if (event.getBlock().getLocation().getWorld().getBlockAt(event.getBlock().getLocation().subtract(0, 1, 0)).getType() == Material.BEACON) {
+                event.setCancelled(true);
+                return;
+            }
             return;
         }
-        event.setDropItems(false);
-        team.setBeacon(null);
-        plugin.sbUtil.beaconBreakTeam(team.getName());
-        doAsthetic(team, event.getPlayer());
+        return;
     }
 
     private void doAsthetic(HOHTeam team, Player player) {

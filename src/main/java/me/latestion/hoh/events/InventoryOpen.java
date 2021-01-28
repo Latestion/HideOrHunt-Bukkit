@@ -23,10 +23,7 @@ public class InventoryOpen implements Listener {
         if (event.getInventory().getType().equals(InventoryType.BEACON)) {
             event.setCancelled(true);
             player.openWorkbench(null, true);
-        }
-        if (event.getInventory().getType() == InventoryType.WORKBENCH && event.getInventory().getLocation() != null && plugin.getConfig().getBoolean("Disable-Crafting-Table")) {
-            event.setCancelled(true);
-            //todo: send message
+            return;
         }
     }
 }

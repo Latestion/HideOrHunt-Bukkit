@@ -65,10 +65,13 @@ public class InventoryClick implements Listener {
 					hohPlayer.setTeam(team);
 					team.addPlayer(hohPlayer);
 					if (plugin.getConfig().getBoolean("Replace-Custom-Team-Names")) {
-						team.setName(plugin.getConfig().getStringList("Team-Name").get(event.getSlot()));
+						team.setName(plugin.getConfig().getStringList("Team-Names").get(event.getSlot()));
+						player.closeInventory();
 						if (plugin.game.allPlayersSelectedTeam() && plugin.game.areAllTeamsNamed()) {
 							plugin.game.startGame();
+							return;
 						}
+						return;
 					}
 					else {
 						hohPlayer.setNamingTeam(true);

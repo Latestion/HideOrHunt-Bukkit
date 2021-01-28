@@ -37,6 +37,7 @@ public class HOHGame {
     public Inventory inv;
     private Map<Integer, HOHTeam> teams = new HashMap<>();
     private List<UUID> chatSpies = new ArrayList<>();
+    public boolean allowCrafting = false;
 
     public HOHGame(HideOrHunt plugin) {
         this.plugin = plugin;
@@ -90,14 +91,27 @@ public class HOHGame {
                 HOHTeam team = new HOHTeam(i);
                 addTeam(team);
                 team.setName(teamNames.get(i));
+                if (plugin.support != null && plugin.party != null) {
+                    for (int ii = 0; ii < plugin.support.getCurrentServerState().teams.size(); ii++) {
+                        List<UUID> add = plugin.support.getCurrentServerState().teams.get(0);
+                        for (UUID pId : add) {
+                            HOHPlayer player = hohPlayers.get(pId);
+                            player.getPlayer().closeInventory();
+                            if (!player.hasTeam()) {
+                                player.setTeam(team);
+                            }
+                        }
+                        plugin.support.getCurrentServerState().teams.remove(0);
+                    }
+                }
                 for (HOHPlayer player : hohPlayers.values()) {
                     if (!player.hasTeam()) {
                         if (!team.addPlayer(player)) continue parentLoop;
                         player.setTeam(team);
                     }
+                    player.getPlayer().closeInventory();
                 }
             }
-
             if (allPlayersSelectedTeam() && areAllTeamsNamed()) {
                 startGame();
             }
@@ -163,6 +177,8 @@ public class HOHGame {
                 util.givePlayerKit(p, team, name);
             }
         }
+        getWorld().setStorm(false);
+        getWorld().setThundering(false);
         plugin.sbUtil.addAllPlayers();
         this.bar = new Bar(plugin);
         gameState = GameState.ON;
@@ -173,6 +189,7 @@ public class HOHGame {
         if (plugin.getConfig().getBoolean("Enable-Effect-After-Start")) addAfterPotEffects();
         if (plugin.getConfig().getBoolean("Auto-Episodes")) new Episodes(plugin);
         if (plugin.getConfig().getBoolean("Auto-Supply-Drops")) new SupplyDrop(plugin);
+        if (plugin.xray != null) plugin.xray.start();
     }
 
     public void addTeam(HOHTeam team) {
@@ -257,7 +274,9 @@ public class HOHGame {
         teams.clear();
         bar.stop();
         plugin.sbUtil = new ScoreBoardUtil(plugin);
+        if (plugin.xray != null) plugin.xray.stop();
         Bukkit.getScheduler().cancelTasks(plugin);
+        ep = 1;
 
         File gameFile = new File(plugin.getDataFolder(), "hohGame.yml");
         gameFile.delete();

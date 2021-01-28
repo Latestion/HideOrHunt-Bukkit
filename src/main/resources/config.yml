@@ -1,11 +1,28 @@
 # If you have any doubts regarding this please join my discord server for more questions
+# https://discord.gg/c4vn5BPd
+# OR
+# Contact Latestion#0529
 
+# --> Multi Language <-- #
+
+# Language Support
+# Currently Support Language:
+#   - en = English
+#   - pl = Polish
 language: en
 
-# IF set to false, It wont allow any OPed player to Play the game!
-Allow-Op: true
+# --> General <-- #
 
+Allow-Op: true # IF set to false, It wont allow any OPed player to Play the game!
 WorldBorder: 200 # sets the world border from the location of the player who starts the game! DIAMETER !
+Ban-Player-On-Death: true # Bans the player on death
+Inventory-Keep: 20 # Inventory keep chance! Compared out of 100. Keep 0 for disabling it!
+Team-Damage: false # On or off team damage
+Teleport-To-Spawn: true # Teleports All Player To Spawn When The Game Ends!
+Disable-Other-Worlds: true # Disables END and NETHER, Set to false if you want to make HOH in other worlds too!
+Cancel-Weather-Change: true # Disables weather change during game
+
+# --> Kit <-- #
 
 # Normal kits
 # Do not add beacon into it!
@@ -21,8 +38,18 @@ Kits:
 # Potions that will be given to the player!
 # https://minecraftitemids.com/types/potion
 # Use the above link to get the item id with ease and specify the number of items you would like to get!
+# If you are using Essentials change use, "potion 1 {Potion:long_invisibility}"
 Kits-Potion:
   - minecraft:potion{Potion:long_invisibility} 1 # 1 represents the number of potions
+
+#Gives player item each time they respawn
+# Personally 32 iron is best because, A full set of iron 24iron, set of tools 7 iron and a shield costs 32 iron!
+Item-On-Respawn:
+  - IRON_INGOT, 32
+  - OAK_WOOD, 16
+  - BREAD, 64
+
+# --> Potion Effects <-- #
 
 # Adds Certain Potion Effect On The Start of the game!
 # SLOW_FALLING, 10, 1
@@ -43,15 +70,19 @@ Enable-Effect-After-Start: true
 Effect-After-Start:
   - INVISIBILITY, 900, 5, 900
 
-Ban-Player-On-Death: true # Bans the player on death
+# --> Chat <-- #
 
-Inventory-Keep: 20 # Inventory keep chance! Compared out of 100. Keep 0 for disabling it!
+# %message% = message
+# %playername% = player name
+# %playerteam% = player team name
+Main-Chat-Format: "&f[&c%playerteam%&f] &f%playername% &7>> &f%message%"
+Team-Chat-Format: "&f[&2TeamChat&f] &f%playername% &7>> &f%message%"
 
-#Gives player item each time they respawn
-# Personally 32 iron is best because, A full set of iron 24iron, set of tools 7 iron and a shield costs 32 iron!
-Item-On-Respawn:
-  - IRON_INGOT, 32
-  - OAK_WOOD, 16
+Rules-Messages: # /hoh rules (Sends all rules specified here)
+  - "&4Rules"
+  - "&2Your Rules"
+
+# --> Supply Drops <-- #
 
 # The plugin will pick any one combination of items between 1 and 2 from the above example. You can have unlimited amount of combinations!
 # You can even use AIR to make the chest look better but thats all up to you.
@@ -71,8 +102,9 @@ Supply-Drop-Items:
   2:
    - WHITE_WOOL, 1
 
-# Enables Auto Episodes
-Auto-Episodes: true
+# --> Episodes <-- #
+
+Auto-Episodes: true # Enables Auto Episodes
 Grace-Period: true # Enable / Disable Grace Period. Makes the 1st ep grace period
 Grace-Period-Peaceful: true # Makes grace period truly peaceful
 Episode-Time: 30 # Grace period duration. In minutes!
@@ -98,18 +130,7 @@ Episode-Reminders:
   
 Episode-End-Break-Time: 60 # Break time when a episode ends! In seconds. Set it to 0 to disable it
 
-Team-Damage: false # On or off team damage 
-
-Rules-Messages:
-  - "&4Rules"
-  - "&2Your Rules"
-  
-# %message% = message
-# %playername% = player name
-# %playerteam% = player team name
-Main-Chat-Format: "&f[&c%playerteam%&f] &f%playername% &7>> &f%message%"
-Team-Chat-Format: "&f[&2TeamChat&f] &f%playername% &7>> &f%message%"
-
+# --> Bungee Cord <-- #
 
 Bungee-Cord: false #Enables Bungee Cord Support
 Main-Lobby: "Main"
@@ -122,7 +143,7 @@ HOH-Servers:
 # Console Command: /hoh queue <teamsize> <total players> <player name>
 # Player Command: /hoh queue <teamsize> <total players>
 
-Teleport-To-Spawn: true # Teleports All Player To Spawn When The Game Ends!
+# --> Team System <-- #
 
 Replace-Custom-Team-Names: false # Replaces the team naming system to specified team names!
 # Make Sure To Add More Names Soo You Don't Run Out Of Them :)
@@ -144,11 +165,12 @@ Team-Names:
   - "Dark Red"
   - "Dark Yellow"
   - "Brown"
+  - "Cyan"
 
 # Auto Joins Team For Solo When Game Is Started
 # By Default Sets Replace-Custom-Team-Names to true
 # GOOD FOR SERVERS WHO WANT TO MAKE THIS AS A MINI GAME
-# Recommended to use if your using BUNGEECORD #
+# **Recommended to use if your using BUNGEECORD**
 Auto-Team-Join: false
 
 # If player doesn't select a team in the given time, plugin force puts him in a team
@@ -161,6 +183,10 @@ Force-Team-After: 0 # In Seconds
 # Set 0 to disable
 # DOES NOT WORK IF Auto-Team-Join is enabled
 Remove-Player-After: 0 # In Seconds
+
+# --> PARTY SYSTEM <-- #
+
+#Only works with bungee cord
 
 # Use party system provided by HideOrHunt For BungeeCord Servers
 # Party Needs To Be The Perfect Size i.e. matching the max teamsize of the game!
@@ -178,3 +204,21 @@ Disband-Party-After: 20
 # In seconds, Expiry time of a party invite
 # Keep 0 to disable (Not recommended)
 Party-Invite-Expire: 10
+
+# --> Anti Xray <-- #
+
+# Turns the beacon into AIR when there is no player near to it in a certain range
+# Only works with Beacon and not with the chest or any other block near it!
+
+# Its not perfect but it does its job
+# Recommended to test it before you want to use it!
+
+Anti-Xray: false
+Show-Beacon-Range: 5 # Shows the beacon if there is a player in it x block range
+Check-Delay: 2 # In seconds. Check if x seconds if player is in range
+
+# --> Legal Base <-- #
+
+Legal-Base-Detector: true # Enables or disables it
+
+# --> End <-- #

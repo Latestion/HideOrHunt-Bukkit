@@ -23,6 +23,9 @@ public class CraftItem implements Listener {
 		if (plugin.game.gameState == GameState.ON) {
 			if (event.getRecipe().getResult().getType() == Material.CRAFTING_TABLE ||
 					event.getRecipe().getResult().getType() == Material.BEACON) {
+				if (plugin.game.allowCrafting) {
+					return;
+				}
 				event.setCancelled(true);
 				Player player = (Player) event.getWhoClicked();
 				player.sendMessage(plugin.getMessageManager().getMessage("cannot-craft"));

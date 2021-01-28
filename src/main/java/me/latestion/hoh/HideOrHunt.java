@@ -1,5 +1,6 @@
 package me.latestion.hoh;
 
+import me.latestion.hoh.antixray.AntiXray;
 import me.latestion.hoh.bungee.BungeeSupport;
 import me.latestion.hoh.bungee.BungeeSupportHandler;
 import me.latestion.hoh.bungee.PlugMessage;
@@ -32,6 +33,7 @@ public class HideOrHunt extends JavaPlugin {
 
 	public BungeeSupport support;
 	public HOHParty party;
+	public AntiXray xray;
 
 	@Override
 	public void onEnable() {
@@ -46,6 +48,7 @@ public class HideOrHunt extends JavaPlugin {
 		this.game = new HOHGame(this);
 		loadSchems();
 		loadBungee();
+		antiXray();
 	}
 
 
@@ -106,6 +109,7 @@ public class HideOrHunt extends JavaPlugin {
 		pm.registerEvents(new PlayerWorld(this), this);
 		pm.registerEvents(new RespawnScreen(this),this);
 		pm.registerEvents(new TrulyGrace(this), this);
+		pm.registerEvents(new WeatherChange(), this);
 		new CommandInitializer(this).initialize();
 	}
 
@@ -148,8 +152,18 @@ public class HideOrHunt extends JavaPlugin {
 			return;
 		}
 
+		/*
+		TODO: Fix Tons Of Null Errors
+		 */
+
 		this.party = new HOHParty();
 		this.getServer().getPluginManager().registerEvents(new HOHPartyEvents(party), this);
 
+	}
+
+	private void antiXray() {
+		if (getConfig().getBoolean("Anti-Xray")) {
+			this.xray = new AntiXray(this);
+		}
 	}
 }
