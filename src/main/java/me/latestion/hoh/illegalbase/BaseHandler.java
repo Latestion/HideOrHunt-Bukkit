@@ -13,7 +13,8 @@ import java.util.Set;
 
 public class BaseHandler {
 
-    public List<Material> types = new ArrayList<>();
+    public List<Material> matTypes = new ArrayList<>();
+    public List<String> stringTypes = new ArrayList<>();
     public Base base;
 
     private int ran;
@@ -23,7 +24,7 @@ public class BaseHandler {
 
     public BaseHandler(Base base) {
         this.base = base;
-        if (types.isEmpty()) types();
+        if (matTypes.isEmpty()) types();
     }
 
     public final BlockFace[] faces = {
@@ -37,25 +38,27 @@ public class BaseHandler {
     };
 
     public void types() {
-        types.add(Material.AIR);
-        types.add(Material.CAVE_AIR);
-        types.add(Material.LADDER);
-        types.add(Material.WATER);
-        types.add(Material.TORCH);
-        types.add(Material.LAVA);
-        types.add(Material.BEACON);
+        matTypes.add(Material.AIR);
+        matTypes.add(Material.CAVE_AIR);
+        matTypes.add(Material.LADDER);
+        matTypes.add(Material.WATER);
+        matTypes.add(Material.TORCH);
+        matTypes.add(Material.LAVA);
+        matTypes.add(Material.BEACON);
+        stringTypes = HideOrHunt.getInstance().getConfig().getStringList("Whitelisted-Blocks");
     }
 
     // Reference Block
     // Runs Once For Check Joining Block
     // Ignoring Face
-    // runs the code once
-    public void isLegal(Block block, boolean bol, BlockFace ignore, boolean once) {
+    // boolean if its beacon
+    public void isLegal(Block block, boolean bol, BlockFace ignore, boolean beacon) {
 
         /*
         Illegal Checker
         Stops the code from sending StackOverflowError
          */
+
         ran++;
         if (ran == 100) {
             base.isLegal = false;
@@ -132,14 +135,16 @@ public class BaseHandler {
         if (face == BlockFace.UP) return BlockFace.DOWN;
         if (face == BlockFace.SOUTH) return BlockFace.NORTH;
         if (face == BlockFace.WEST) return BlockFace.EAST;
+        if (face == BlockFace.SELF) return BlockFace.SELF;
         return null;
     }
 
     public boolean isType(Material mat) {
         String matType = mat.toString().toLowerCase(); // String of material
-        if (types.contains(mat) || matType.contains("door") || matType.contains("slab") || matType.contains("slab")) {
+        if (matTypes.contains(mat)) {
             return true;
         }
+        for (String s : stringTypes) if (matTypes.contains(s)) return true;
         return false;
     }
 

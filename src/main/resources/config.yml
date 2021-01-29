@@ -250,4 +250,46 @@ Check-On-Beacon-Place: true # Checks if base is legal on beacon place
 # GRACE NEEDS TO BE ENABLED
 Check-When-Grace-End: true
 
+Whitelisted-Blocks:
+  - sapling
+  - leave
+  - cobweb
+  - flower
+  - torch
+  - bamboo
+  - scaffolding
+  - end_rod
+  - fence
+  - ladder
+  - iron bar
+  - chain
+  - vines
+  - carpet
+  - sign
+  - bed
+  - lever
+  - piston
+  - pressure plate
+  - trapdoor
+  - redstone torch
+  - fence
+  - tripwire
+  - string
+  - button
+  - chest
+  - restone_wire
+  - comparator
+  - repeater
+  - door
+  - rail
+  - beacon
+  - tall_grass
+  - mushroom
+  - sugar_cane
+  - kelp
+  - seagrass
+  - vines
+  - slab
+  - snow
+
 # --> End <-- #

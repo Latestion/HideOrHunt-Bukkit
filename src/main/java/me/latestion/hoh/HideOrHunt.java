@@ -152,10 +152,6 @@ public class HideOrHunt extends JavaPlugin {
 			return;
 		}
 
-		/*
-		TODO: Fix Tons Of Null Errors
-		 */
-
 		this.party = new HOHParty();
 		this.getServer().getPluginManager().registerEvents(new HOHPartyEvents(party), this);
 
