@@ -92,4 +92,10 @@ public class HOHPartyHandler {
             }
         }, expire * 20L);
     }
+
+    public List<String> getPartyPlayerNames() {
+        List<String> s = new ArrayList<>();
+        for (UUID id : party) s.add(Bukkit.getPlayer(id).getName());
+        return s;
+    }
 }

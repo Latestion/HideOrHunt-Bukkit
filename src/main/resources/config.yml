@@ -21,6 +21,7 @@ Team-Damage: false # On or off team damage
 Teleport-To-Spawn: true # Teleports All Player To Spawn When The Game Ends!
 Disable-Other-Worlds: true # Disables END and NETHER, Set to false if you want to make HOH in other worlds too!
 Cancel-Weather-Change: true # Disables weather change during game
+Always-Day: true # Disable day changing
 
 # --> Kit <-- #
 
@@ -105,8 +106,6 @@ Supply-Drop-Items:
 # --> Episodes <-- #
 
 Auto-Episodes: true # Enables Auto Episodes
-Grace-Period: true # Enable / Disable Grace Period. Makes the 1st ep grace period
-Grace-Period-Peaceful: true # Makes grace period truly peaceful
 Episode-Time: 30 # Grace period duration. In minutes!
 
 # Sends Chat Reminder for episode endings
@@ -129,6 +128,12 @@ Episode-Reminders:
   - 1800, "&60 seconds remaining for episode %ep% end!"
   
 Episode-End-Break-Time: 60 # Break time when a episode ends! In seconds. Set it to 0 to disable it
+
+# --> Grace <-- #
+
+Grace-Period: true # Enable / Disable Grace Period. Makes the 1st ep grace period
+Grace-Period-Peaceful: true # Makes grace period truly peaceful
+Grace-Duration: 30 # In Minutes
 
 # --> Bungee Cord <-- #
 
@@ -219,6 +224,14 @@ Check-Delay: 2 # In seconds. Check if x seconds if player is in range
 
 # --> Legal Base <-- #
 
+# Checks if player has valid base when they place the beacon!
 Legal-Base-Detector: true # Enables or disables it
+Time-To-Fix-Base: 120 # In Seconds. Allows player to fix his base within that time period
+Remove-Beacon-If-Not-Fixed: false # Removes the beacon if they dont fix their base
+Check-On-Beacon-Place: true # Checks if base is legal on beacon place
+
+# Checks if player has valid base when grace ends!
+# GRACE NEEDS TO BE ENABLED
+Check-When-Grace-End: true
 
 # --> End <-- #

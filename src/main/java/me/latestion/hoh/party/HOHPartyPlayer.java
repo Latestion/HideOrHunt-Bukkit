@@ -12,6 +12,10 @@ public class HOHPartyPlayer {
         this.party = hand;
     }
 
+    public HOHPartyPlayer(UUID id) {
+        this.id = id;
+    }
+
     public boolean inParty() {
         return party != null;
     }

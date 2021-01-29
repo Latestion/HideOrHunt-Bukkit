@@ -10,6 +10,7 @@ import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.game.HOHPlayer;
 import me.latestion.hoh.localization.MessageManager;
 import me.latestion.hoh.party.HOHPartyHandler;
+import me.latestion.hoh.party.HOHPartyPlayer;
 import me.latestion.hoh.utils.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -155,8 +156,9 @@ public class CommandInitializer {
                 sender.sendMessage("§cThere is already a game in progress");
                 return true;
             }
-            plugin.game = FlatHOHGame.deserialize(new File(plugin.getDataFolder(), "hohGame.yml"), plugin);
-            if (plugin.game != null) {
+            HOHGame test = FlatHOHGame.deserialize(new File(plugin.getDataFolder(), "hohGame.yml"), plugin);
+            if (test != null) {
+                plugin.game = test;
                 plugin.game.loadGame();
             } else {
                 sender.sendMessage(ChatColor.RED + "There is no game to continue!");
@@ -193,172 +195,178 @@ public class CommandInitializer {
             return true;
         }).setUsageMessage("/hoh spy").build());
 
-        if (plugin.support != null) {
-            builder.addSubCommand(new SubCommandBuilder("queue").setCommandHandler((sender, command, label, args) -> {
-                if (args.length == 2) {
-                    if (sender instanceof Player) {
-                        Player player = (Player) sender;
-                        if (args[0].equalsIgnoreCase("leave") || args[0].equalsIgnoreCase("l")) {
-                            plugin.support.removeQueuePlayer(player.getUniqueId());
-                            return true;
-                        }
-                        int teamSize = new Util(plugin).getInt(args[0]);
-                        if (teamSize <= 0) {
-                            return true;
-                        }
-                        int maxPlayers = new Util(plugin).getInt(args[1]);
-                        if (maxPlayers <= 0) {
-                            return true;
-                        }
-                        UUID id = player.getUniqueId();
-                        if (plugin.party.inParty(id)) {
-                            if (plugin.party.ownsParty(id)) {
-                                if (plugin.party.getPartySize(id) == 1) {
-                                    return true;
-                                }
-                                else {
-                                    plugin.support.queuePlayer(plugin.party.getParty(id).getParty(), teamSize, maxPlayers);
-                                    return true;
-                                }
-                            }
-                            else {
-                                return true;
-                            }
-                        }
-                        plugin.support.queuePlayer(id, teamSize, maxPlayers);
-                    } else {
-                        sender.sendMessage(ChatColor.RED + " This command can only be ran by players.");
-                        return false;
-                    }
-                    return true;
-                }
-                if (args.length == 3) {
-                    try {
-                        int teamSize = new Util(plugin).getInt(args[0]);
-                        if (teamSize <= 0) {
-                            return true;
-                        }
-                        int maxPlayers = new Util(plugin).getInt(args[1]);
-                        if (maxPlayers <= 0) {
-                            return true;
-                        }
-                        Player p = Bukkit.getPlayerExact(args[2]);
-                        if (p == null || !p.isValid()) {
-                            sender.sendMessage(messageManager.getMessage("invalid-player"));
-                            return true;
-                        }
-                        UUID id = p.getUniqueId();
-                        if (plugin.party.inParty(id)) {
-                            if (plugin.party.ownsParty(id)) {
-                                if (plugin.party.getPartySize(id) == 1) {
-                                    return true;
-                                }
-                                else {
-                                    plugin.support.queuePlayer(plugin.party.getParty(id).getParty(), teamSize, maxPlayers);
-                                    return true;
-                                }
-                            }
-                            else {
-                                return true;
-                            }
-                        }
-                        plugin.support.queuePlayer(p.getUniqueId(), teamSize, maxPlayers);
+        builder.addSubCommand(new SubCommandBuilder("queue").setCommandHandler((sender, command, label, args) -> {
+            if (plugin.support == null) {
+                return true;
+            }
+            if (args.length == 2) {
+                if (sender instanceof Player) {
+                    Player player = (Player) sender;
+                    if (args[0].equalsIgnoreCase("leave") || args[0].equalsIgnoreCase("l")) {
+                        plugin.support.removeQueuePlayer(player.getUniqueId());
                         return true;
-                    } catch (Exception e) {
+                    }
+                    int teamSize = new Util(plugin).getInt(args[0]);
+                    if (teamSize <= 0) {
+                        return true;
+                    }
+                    int maxPlayers = new Util(plugin).getInt(args[1]);
+                    if (maxPlayers <= 0) {
+                        return true;
+                    }
+                    UUID id = player.getUniqueId();
+                    if (plugin.party.inParty(id)) {
+                        if (plugin.party.ownsParty(id)) {
+                            if (plugin.party.getPartySize(id) == 1) {
+                                return true;
+                            }
+                            else {
+                                plugin.support.queuePlayer(plugin.party.getParty(id).getParty(), teamSize, maxPlayers);
+                                return true;
+                            }
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                    plugin.support.queuePlayer(id, teamSize, maxPlayers);
+                } else {
+                    sender.sendMessage(ChatColor.RED + " This command can only be ran by players.");
+                    return false;
+                }
+                return true;
+            }
+            if (args.length == 3) {
+                try {
+                    int teamSize = new Util(plugin).getInt(args[0]);
+                    if (teamSize <= 0) {
+                        return true;
+                    }
+                    int maxPlayers = new Util(plugin).getInt(args[1]);
+                    if (maxPlayers <= 0) {
+                        return true;
+                    }
+                    Player p = Bukkit.getPlayerExact(args[2]);
+                    if (p == null || !p.isValid()) {
                         sender.sendMessage(messageManager.getMessage("invalid-player"));
                         return true;
                     }
-                }
-                return false;
-            }).setTabHandler((sender, command, label, args) -> {
-                List<String> out = new ArrayList<>();
-                Bukkit.getOnlinePlayers().forEach(p -> out.add(p.getName()));
-                return out;
-            }).setUsageMessage("/hoh queue [<teamsize>] [<maxplayers>] [<player>]").build());
-        }
-
-        if (plugin.support != null) {
-            builder.addSubCommand(new SubCommandBuilder("rejoin").setCommandHandler((sender, command, label, args) -> {
-                if (!(sender instanceof Player)) {
-                    // Not Player
-                }
-                Player player = (Player) sender;
-                if (plugin.support.rejoin(player.getUniqueId())) {
-                    plugin.support.pm.connect(player, plugin.support.rejoinServer.get(player.getUniqueId()));
-                }
-                else {
-                    //todo: msg
-                    // No GAME
-                    return true;
-                }
-
-                return false;
-            }).setUsageMessage("/hoh rejoin").build());
-        }
-
-        if (plugin.party != null) {
-            builder.addSubCommand(new SubCommandBuilder("party").setCommandHandler((sender, command, label, args) -> {
-                if (!(sender instanceof Player)) {
-                    // Not Player
-                }
-                Player player = (Player) sender;
-
-                if (args.length == 2) {
-                    if (args[0].equalsIgnoreCase("invite") || args[0].equalsIgnoreCase("join")) {
-                        Player p = Bukkit.getPlayerExact(args[1]);
-                        if (!p.isValid() || p == null) {
-                            sender.sendMessage(messageManager.getMessage("invalid-player"));
+                    UUID id = p.getUniqueId();
+                    if (plugin.party.inParty(id)) {
+                        if (plugin.party.ownsParty(id)) {
+                            if (plugin.party.getPartySize(id) == 1) {
+                                return true;
+                            }
+                            else {
+                                plugin.support.queuePlayer(plugin.party.getParty(id).getParty(), teamSize, maxPlayers);
+                                return true;
+                            }
+                        }
+                        else {
                             return true;
                         }
-                        if (args[0].equalsIgnoreCase("invite")) plugin.party.createParty(player.getUniqueId(), p.getUniqueId());
-                        else plugin.party.joinParty(player.getUniqueId(), p.getUniqueId());
+                    }
+                    plugin.support.queuePlayer(p.getUniqueId(), teamSize, maxPlayers);
+                    return true;
+                } catch (Exception e) {
+                    sender.sendMessage(messageManager.getMessage("invalid-player"));
+                    return true;
+                }
+            }
+            return false;
+        }).setTabHandler((sender, command, label, args) -> {
+            List<String> out = new ArrayList<>();
+            Bukkit.getOnlinePlayers().forEach(p -> out.add(p.getName()));
+            return out;
+        }).setUsageMessage("/hoh queue [<teamsize>] [<maxplayers>] [<player>]").build());
+
+
+        builder.addSubCommand(new SubCommandBuilder("rejoin").setCommandHandler((sender, command, label, args) -> {
+            if (plugin.support == null) {
+                return true;
+            }
+            if (!(sender instanceof Player)) {
+                // Not Player
+            }
+            Player player = (Player) sender;
+            if (plugin.support.rejoin(player.getUniqueId())) {
+                plugin.support.pm.connect(player, plugin.support.rejoinServer.get(player.getUniqueId()));
+            }
+            else {
+                //todo: msg
+                // No GAME
+                return true;
+            }
+
+            return false;
+        }).setUsageMessage("/hoh rejoin").build());
+
+        builder.addSubCommand(new SubCommandBuilder("party").setCommandHandler((sender, command, label, args) -> {
+            if (plugin.party == null) {
+                return true;
+            }
+            if (!(sender instanceof Player)) {
+                // Not Player
+            }
+            Player player = (Player) sender;
+
+            if (args.length == 2) {
+                if (args[0].equalsIgnoreCase("invite") || args[0].equalsIgnoreCase("join")) {
+                    Player p = Bukkit.getPlayerExact(args[1]);
+                    if (!p.isValid() || p == null) {
+                        sender.sendMessage(messageManager.getMessage("invalid-player"));
                         return true;
+                    }
+                    if (args[0].equalsIgnoreCase("invite")) plugin.party.createParty(player.getUniqueId(), p.getUniqueId());
+                    else plugin.party.joinParty(player.getUniqueId(), p.getUniqueId());
+                    return true;
+                }
+                return true;
+            }
+
+            if (args.length == 1) {
+                if (args[0].equalsIgnoreCase("leave")) {
+                    if (plugin.party.inParty(player.getUniqueId())) {
+                        HOHPartyHandler hand = plugin.party.partyPlayer.get(player.getUniqueId()).party;
+                        hand.removePlayer(player.getUniqueId());
+                    }
+                    else {
+                        // Not In Party
                     }
                     return true;
                 }
-
-                if (args.length == 1) {
-                    if (args[0].equalsIgnoreCase("leave")) {
-                        if (plugin.party.inParty(player.getUniqueId())) {
-                            HOHPartyHandler hand = plugin.party.partyPlayer.get(player.getUniqueId()).party;
-                            hand.removePlayer(player.getUniqueId());
-                        }
-                        else {
-                            // Not In Party
-                        }
-                        return true;
+                if (args[0].equalsIgnoreCase("disband")) {
+                    if (plugin.party.inParty(player.getUniqueId())) {
+                        HOHPartyHandler hand = plugin.party.partyPlayer.get(player.getUniqueId()).party;
+                        hand.removePlayer(hand.getLeader());
                     }
-                    if (args[0].equalsIgnoreCase("disband")) {
-                        if (plugin.party.inParty(player.getUniqueId())) {
-                            HOHPartyHandler hand = plugin.party.partyPlayer.get(player.getUniqueId()).party;
-                            hand.removePlayer(hand.getLeader());
-                        }
-                        else {
-                            // Not In Party
-                        }
-                        return true;
+                    else {
+                        // Not In Party
+                    }
+                    return true;
+                }
+                if (args[0].equalsIgnoreCase("list")) {
+                    if (plugin.party.inParty(player.getUniqueId())) {
+                        HOHPartyHandler hand = plugin.party.partyPlayer.get(player.getUniqueId()).party;
+                        List<String> players = hand.getPartyPlayerNames();
+                        player.sendMessage((ChatColor.GREEN + "Party (%size%): " + ChatColor.AQUA + String.join(", ", players))
+                                .replace("%size%", Integer.toString(players.size())));
                     }
                 }
-                return false;
-            }).setTabHandler((sender, command, label, args) -> {
-                List<String> out = new ArrayList<>();
-                out.add("invite"); out.add("join"); out.add("leave"); out.add("disband");
-                return out;
-            }).setUsageMessage("/hoh party invite,join,leave,disband").build());
-        }
+            }
+            return false;
+        }).setTabHandler((sender, command, label, args) -> {
+            List<String> out = new ArrayList<>();
+            out.add("invite"); out.add("join"); out.add("leave"); out.add("disband");
+            return out;
+        }).setUsageMessage("/hoh party invite,join,leave,disband").build());
+
 
         builder.addSubCommand(new SubCommandBuilder("help").setUsageMessage("/hoh help").setCommandHandler((sender, command, label, args) -> {
             //todo: idk what color scheme you use so i just did Gold and gray
             StringBuilder helpMessage = new StringBuilder();
-            helpMessage.append("§6/hoh rules §7§l>§8 view the server's rules");
-            helpMessage.append("\n");
-            helpMessage.append("§6/hoh chat §7§l>§8  toggle team chat");
             helpMessage.append("\n");
             helpMessage.append("§6/hoh help §7§l>§8  view this help message");
-            if (plugin.support != null) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh queue §7§l>§8 join the game queue");
-            }
 
             if (sender.hasPermission("hoh.start")) {
                 helpMessage.append("\n");
@@ -370,7 +378,7 @@ public class CommandInitializer {
             }
             if (sender.hasPermission("hoh.freeze")) {
                 helpMessage.append("\n");
-                helpMessage.append("§6/hoh stop §7§l>§8 pause the active game");
+                helpMessage.append("§6/hoh freeze §7§l>§8 pause/freezes the active game");
             }
             if (sender.hasPermission("hoh.reload")) {
                 helpMessage.append("\n");
@@ -388,6 +396,32 @@ public class CommandInitializer {
                 helpMessage.append("\n");
                 helpMessage.append("§6/hoh spy §7§l>§8 \"spy\" on other teams' chat");
             }
+            if (sender.hasPermission("hoh.craft")) {
+                helpMessage.append("\n");
+                helpMessage.append("§6/hoh craft §7§l>§8 enables/disables crafting table crafting");
+            }
+            if (plugin.support != null) {
+                helpMessage.append("\n");
+                helpMessage.append("§6/hoh queue <teamsize> <max_players> §7§l>§8 join the game queue");
+                helpMessage.append("\n");
+                helpMessage.append("§6/hoh rejoin §7§l>§8 rejoin the previous game you were in");
+            }
+            helpMessage.append("\n");
+            helpMessage.append("§6/hoh rules §7§l>§8 view the server's rules");
+            helpMessage.append("\n");
+            helpMessage.append("§6/hoh chat §7§l>§8  toggle team chat");
+            if (plugin.party != null) {
+                helpMessage.append("\n");
+                helpMessage.append("§6/hoh party [invite] <player> §7§l>§8 invite someone to your party");
+                helpMessage.append("\n");
+                helpMessage.append("§6/hoh party [join] <player> §7§l>§8 join someone to your party");
+                helpMessage.append("\n");
+                helpMessage.append("§6/hoh party leave> §7§l>§8 leave your party");
+                helpMessage.append("\n");
+                helpMessage.append("§6/hoh party disband> §7§l>§8 disbands your party");
+                helpMessage.append("\n");
+                helpMessage.append("§6/hoh party list> §7§l>§8 list of players in your party");
+            }
             sender.sendMessage(helpMessage.toString());
             return true;
         }).build());
@@ -396,6 +430,7 @@ public class CommandInitializer {
             Bukkit.dispatchCommand(sender, "hoh help");
             return true;
         }).setUsageMessage("/hoh");
+
         builder.build().register(plugin);
     }
 }

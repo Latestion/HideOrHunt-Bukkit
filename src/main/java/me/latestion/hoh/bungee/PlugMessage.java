@@ -34,6 +34,14 @@ public class PlugMessage implements PluginMessageListener {
                 plugin.support.isHub = true;
             }
             support.thisServer = servername;
+            System.out.println(servername);
+            if (!support.isHub) {
+                ServerState ss = support.state.get(support.thisServer);
+                if (ss == null) return;
+                if (ss.maxPlayers == Bukkit.getOnlinePlayers().size()) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hoh start" + ss.teamsize);
+                }
+            }
         }
         if (subChannel.equals("HideOrHunt")) {
             String type = in.readUTF();

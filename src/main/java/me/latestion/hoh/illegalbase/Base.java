@@ -5,17 +5,15 @@ import org.bukkit.block.BlockFace;
 
 public class Base {
 
-    private HOHTeam team;
-    public boolean isLegal = true;
+    public HOHTeam team;
+    public boolean isLegal = false;
 
-    public BaseHandler baseHandler;
 
     public Base(HOHTeam team) {
         this.team = team;
-        this.baseHandler = new BaseHandler(this);
     }
 
     public void check() {
-        baseHandler.isLegal(team.getBeacon(), false, null);
+        new BaseHandler(this).isLegal(team.getBeacon(), false, null, false);
     }
 }

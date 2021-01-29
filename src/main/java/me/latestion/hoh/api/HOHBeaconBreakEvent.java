@@ -6,6 +6,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public final class HOHBeaconBreakEvent extends Event implements Cancellable {
@@ -35,6 +36,7 @@ public final class HOHBeaconBreakEvent extends Event implements Cancellable {
         return team;
     }
 
+    @Nullable
     public UUID getPlayerID() {
         return id;
     }

@@ -28,10 +28,6 @@ public class Episodes extends BukkitRunnable {
 	public void run() {
 		MessageManager messageManager = plugin.getMessageManager();
 		Bukkit.broadcastMessage(messageManager.getMessage("episode-end").replace("%episode%", Integer.toString(plugin.game.ep)));
-		if (plugin.game.ep == 1) {
-			if (plugin.game.grace)
-				plugin.game.graceOff();
-		}
 		if (plugin.getConfig().getInt("Episode-End-Break-Time") != 0) {
 			plugin.game.freeze = true;
 			Bukkit.broadcastMessage(messageManager.getMessage("game-freezed"));

@@ -20,7 +20,6 @@ import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.stats.Metrics;
 import me.latestion.hoh.utils.ScoreBoardUtil;
 import me.latestion.hoh.versioncheck.UpdateChecker;
-import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -59,7 +58,7 @@ public class HideOrHunt extends JavaPlugin {
 
 	private void hoh() {
 		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-		console.sendMessage("        " + ChatColor.RED + " _______ ");
+		console.sendMessage("         " + ChatColor.RED + "_______ ");
 		console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |");
 		console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |" + ChatColor.WHITE + "    Version: " + this.getDescription().getVersion());
 		console.sendMessage(ChatColor.AQUA + "|------|" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|------|" + ChatColor.WHITE + "    By: Latestion and barpec12");
@@ -102,6 +101,7 @@ public class HideOrHunt extends JavaPlugin {
 		pm.registerEvents(new InventoryClick(this), this);
 		pm.registerEvents(new InventoryClose(this), this);
 		pm.registerEvents(new InventoryOpen(this), this);
+		pm.registerEvents(new ItemDrop(), this);
 		pm.registerEvents(new PlayerJoin(this), this);
 		pm.registerEvents(new PlayerLogin(this), this);
 		pm.registerEvents(new PlayerMove(this), this);

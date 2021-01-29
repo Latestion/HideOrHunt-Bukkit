@@ -5,15 +5,13 @@ import me.latestion.hoh.api.HOHGameEvent;
 import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import me.latestion.hoh.myrunnables.Episodes;
+import me.latestion.hoh.myrunnables.Grace;
 import me.latestion.hoh.myrunnables.SupplyDrop;
 import me.latestion.hoh.stats.Metrics;
 import me.latestion.hoh.utils.Bar;
 import me.latestion.hoh.utils.ScoreBoardUtil;
 import me.latestion.hoh.utils.Util;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
@@ -26,12 +24,13 @@ public class HOHGame {
 
     private final HideOrHunt plugin;
     private final Util util;
-    public Location loc;
-    public int teamSize;
-    public Map<UUID, HOHPlayer> hohPlayers = new HashMap<>();
     public Bar bar;
-    public boolean freeze = false;
-    public boolean grace = false;
+
+    public Location loc; // Game Start Location
+    public int teamSize; // Team Size
+    public Map<UUID, HOHPlayer> hohPlayers = new HashMap<>(); // HOH PLAYER INSTANCE
+    public boolean freeze = false; // Freezed Game
+    public boolean grace = false; // Grace
     public GameState gameState = GameState.OFF;
     public int ep = 1;
     public Inventory inv;
@@ -190,6 +189,8 @@ public class HOHGame {
         if (plugin.getConfig().getBoolean("Auto-Episodes")) new Episodes(plugin);
         if (plugin.getConfig().getBoolean("Auto-Supply-Drops")) new SupplyDrop(plugin);
         if (plugin.xray != null) plugin.xray.start();
+        if (plugin.getConfig().getBoolean("Grace-Period")) new Grace(plugin);
+        if (plugin.getConfig().getBoolean("Always-Day")) setDayLight();
     }
 
     public void addTeam(HOHTeam team) {
@@ -239,7 +240,7 @@ public class HOHGame {
                 }
             }
         }
-        return aliveTeams.size() == 1;
+        return aliveTeams.size() == 1 || aliveTeams.size() == 0;
     }
 
     public void endGame(String winnerTeam) {
@@ -290,9 +291,6 @@ public class HOHGame {
 
     public void serverStop() {
         FlatHOHGame.save(this, plugin, new File(plugin.getDataFolder(), "hohGame.yml"));
-        Bukkit.getScheduler().cancelTasks(plugin);
-        plugin.game = null;
-        new Metrics(plugin, 79307);
     }
 
     private void sendStartTitle() {
@@ -381,5 +379,24 @@ public class HOHGame {
     public void setSpying(Player player, boolean spying) {
         if (spying) chatSpies.add(player.getUniqueId());
         else chatSpies.removeIf(uuid -> uuid.equals(player.getUniqueId()));
+    }
+
+    public void deleteFiles() {
+        try {
+            File gameFile = new File(plugin.getDataFolder(), "hohGame.yml");
+            gameFile.delete();
+            File teamFile = new File(plugin.getDataFolder(), "teams.yml");
+            teamFile.delete();
+            File playersFile = new File(plugin.getDataFolder(), "players.yml");
+            playersFile.delete();
+        }
+        catch (Exception e) {
+            return;
+        }
+    }
+
+    private void setDayLight() {
+        getWorld().setTime(6000);
+        getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
     }
 }

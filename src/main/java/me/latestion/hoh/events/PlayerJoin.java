@@ -22,11 +22,6 @@ public class PlayerJoin implements Listener {
 	public void pje(final PlayerJoinEvent event) {
 		Player p = event.getPlayer();
 		HOHGame game = plugin.getGame();
-		if (plugin.support != null) {
-			if (!plugin.support.isHub) {
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.support.pm.isHub(), 20);
-			}
-		}
 		if (game.gameState == GameState.ON) {
 			plugin.sbUtil.addPlayer(p);
 			if (!plugin.game.bar.getBar().getPlayers().contains(p))

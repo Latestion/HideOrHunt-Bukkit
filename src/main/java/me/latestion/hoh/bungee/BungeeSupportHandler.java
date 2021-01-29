@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import scala.concurrent.impl.FutureConvertersImpl;
 
 import java.util.List;
 
@@ -29,13 +30,15 @@ public class BungeeSupportHandler implements Listener {
 
     @EventHandler
     public void pJoin(PlayerJoinEvent event) {
+        support.pm.isHub();
         if (support.isHub) return;
-        ServerState ss = support.state.get(support.thisServer);
-        if (ss.maxPlayers == Bukkit.getOnlinePlayers().size()) {
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(HideOrHunt.getInstance(), () -> {
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(HideOrHunt.getInstance(), () -> {
+            ServerState ss = support.state.get(support.thisServer);
+            if (ss == null) return;
+            if (ss.maxPlayers == Bukkit.getOnlinePlayers().size()) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hoh start" + ss.teamsize);
-            }, 2 * 20L);
-        }
+            }
+        }, 1 * 20L);
     }
 
     @EventHandler

@@ -58,19 +58,23 @@ public class BungeeSupport {
 
         List<ServerState> serverStates = getAvailableServers(tSize, pMax);
 
-        for (ServerState ss : serverStates) {
-            if ((ss.queue.size() + partyIDs.size()) <= ss.maxPlayers) {
-                ss.queue.addAll(partyIDs);
-                if (ss.maxPlayers == ss.queue.size()) {
-                    String server = ss.name;
-                    for (UUID p : ss.queue) {
-                        // TODO: Send party information to the plugin
-                        pm.connect(Bukkit.getPlayer(p), server);
-                        rejoinServer.put(p, server);
+        if (tSize == partyIDs.size()) {
+            for (ServerState ss : serverStates) {
+                if ((ss.queue.size() + partyIDs.size()) <= ss.maxPlayers) {
+                    ss.queue.addAll(partyIDs);
+                    if (ss.maxPlayers == ss.queue.size()) {
+                        String server = ss.name;
+                        for (UUID p : ss.queue) {
+                            // TODO: Send party information to the plugin
+                            pm.sendTeam(partyIDs);
+                            pm.connect(Bukkit.getPlayer(p), server);
+                            rejoinServer.put(p, server);
+                        }
+                        return;
                     }
-                    return;
                 }
             }
+            return;
         }
     }
 

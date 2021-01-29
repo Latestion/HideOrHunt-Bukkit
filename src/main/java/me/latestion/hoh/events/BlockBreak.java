@@ -48,7 +48,7 @@ public class BlockBreak implements Listener {
             event.setDropItems(false);
             team.setBeacon(null);
             plugin.sbUtil.beaconBreakTeam(team.getName());
-            doAsthetic(team, event.getPlayer());
+            team.doAsthetic(event.getPlayer());
             return;
         }
         if (event.getBlock().getType() == Material.OAK_SIGN) {
@@ -60,17 +60,4 @@ public class BlockBreak implements Listener {
         }
         return;
     }
-
-    private void doAsthetic(HOHTeam team, Player player) {
-        MessageManager messageManager = plugin.getMessageManager();
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.0f, 1.0f);
-        String eliminatedMsg = messageManager.getMessage("eliminated-broadcast").replace("%eliminated-team%", team.getName());
-        eliminatedMsg = eliminatedMsg.replace("%eliminating-team%", plugin.game.hohPlayers.get(player.getUniqueId()).getTeam().getName());
-        Bukkit.broadcastMessage(eliminatedMsg);
-        for (HOHPlayer p : team.players) {
-            p.getPlayer().sendTitle(messageManager.getMessage("beacon-destroyed-title"), "", 10, 40, 10);
-            p.getPlayer().playSound(p.getPlayer().getLocation(), Sound.BLOCK_ANVIL_USE, 1.0f, 1.0f);
-        }
-    }
-
 }

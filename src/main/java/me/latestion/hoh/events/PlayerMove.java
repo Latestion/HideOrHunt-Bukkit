@@ -17,10 +17,11 @@ public class PlayerMove implements Listener {
 
 	@EventHandler
 	public void pme(PlayerMoveEvent event) {
+		if (plugin.game == null) return;
 		if(plugin.game.getGameState() == GameState.OFF) return;
 		if (plugin.game.gameState == GameState.ON) {
 			if (!plugin.game.freeze) return;
-			if (event.getPlayer().isOp() && !this.plugin.getConfig().getBoolean("Allow-Op")) {
+			if (event.getPlayer().isOp() && !plugin.getConfig().getBoolean("Allow-Op")) {
 				event.setCancelled(false);
 			} else {
 				Location to = event.getFrom();

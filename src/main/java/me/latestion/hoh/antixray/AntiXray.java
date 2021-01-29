@@ -39,7 +39,8 @@ public class AntiXray extends BukkitRunnable {
     @Override
     public void run() {
         for (HOHTeam team : game.getTeams().values()) {
-            if (!team.hasBeacon() || team.eliminated) continue;
+            if (game.gameState != GameState.ON) cancel();
+            if (!team.hasBeacon()) continue;
             Block beacon = team.getBeacon();
             Location beaconLoc = beacon.getLocation();
             World world = beaconLoc.getWorld();
@@ -79,6 +80,6 @@ public class AntiXray extends BukkitRunnable {
 
     public void block() {
         air = Bukkit.getWorlds().get(0).getBlockAt(100000, 11, 100000);
-        air.setType(Material.AIR);
+        air.setType(Material.STONE);
     }
 }
