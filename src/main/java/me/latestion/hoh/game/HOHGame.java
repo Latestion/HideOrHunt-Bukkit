@@ -31,7 +31,7 @@ public class HOHGame {
     public Map<UUID, HOHPlayer> hohPlayers = new HashMap<>(); // HOH PLAYER INSTANCE
     public boolean freeze = false; // Freezed Game
     public boolean grace = false; // Grace
-    public GameState gameState = GameState.OFF;
+    private GameState gameState = GameState.OFF;
     public int ep = 1;
     public Inventory inv;
     private Map<Integer, HOHTeam> teams = new HashMap<>();
@@ -275,7 +275,6 @@ public class HOHGame {
         teams.clear();
         bar.stop();
         plugin.sbUtil = new ScoreBoardUtil(plugin);
-        if (plugin.xray != null) plugin.xray.stop();
         Bukkit.getScheduler().cancelTasks(plugin);
         ep = 1;
 

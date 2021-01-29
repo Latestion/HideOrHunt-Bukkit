@@ -50,7 +50,7 @@ public class HOHPlayer {
     }
 
     public void prepareTeam(Inventory inv) {
-        if (game.gameState == GameState.PREPARE) {
+        if (game.getGameState() == GameState.PREPARE) {
             getPlayer().openInventory(inv);
         }
     }

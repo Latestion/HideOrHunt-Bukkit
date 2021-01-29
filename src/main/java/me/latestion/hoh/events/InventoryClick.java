@@ -42,7 +42,7 @@ public class InventoryClick implements Listener {
 		}
 		MessageManager messageManager = plugin.getMessageManager();
 		if (event.getView().getTitle().equals(messageManager.getMessage("team-inventory-title"))) {
-			if (plugin.game.gameState != GameState.PREPARE) {
+			if (plugin.game.getGameState() != GameState.PREPARE) {
 				return;
 			}
 			event.setCancelled(true);

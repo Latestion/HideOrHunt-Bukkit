@@ -129,55 +129,8 @@ public class HOHTeam {
     }
 
     public Base getBase() {
+        if (base == null) base = new Base(this);
         return base;
-    }
-
-    public void checkLegalBase() {
-        if (!HideOrHunt.getInstance().getConfig().getBoolean("Legal-Base-Detector")) return;
-        this.base = new Base(this);
-        base.check();
-
-        // TODO: USE A SCHEDULER
-
-        if (base.isLegal) {
-            // Legal base
-            // Check back later
-        }
-        else {
-            // Not legal base
-            System.out.println("Check");
-            int timeToFixBase = HideOrHunt.getInstance().getConfig().getInt("Time-To-Fix-Base");
-            for (HOHPlayer player : players) {
-                if (player.getPlayer().isOnline()) {
-                    player.getPlayer().sendMessage(ChatColor.RED + "Invalid Base! You have " + ((int) timeToFixBase / 60) + "mins to fix your base!");
-                }
-            }
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(HideOrHunt.getInstance(), () -> {
-                if (hasBeacon()) {
-                    try {
-                        base.check();
-                    }
-                    catch (RuntimeException exception) {
-
-                    }
-                    if (!base.isLegal) {
-                        boolean removeBeacon = HideOrHunt.getInstance().getConfig().getBoolean("Remove-Beacon-If-Not-Fixed");
-                        if (removeBeacon) {
-                            HOHBeaconBreakEvent e = new HOHBeaconBreakEvent(getBeacon(), this, null);
-                            Bukkit.getPluginManager().callEvent(e);
-                            if (e.isCancelled()) {
-                                return;
-                            }
-                            beacon.breakNaturally();
-                            HideOrHunt.getInstance().sbUtil.beaconBreakTeam(getName());
-                            doAsthetic(null);
-                            setBeacon(null);
-                            return;
-                        }
-                    }
-                }
-            }, timeToFixBase * 20L);
-        }
     }
 
     public void doAsthetic(Player player) {
@@ -192,5 +145,4 @@ public class HOHTeam {
             p.getPlayer().playSound(p.getPlayer().getLocation(), Sound.BLOCK_ANVIL_USE, 1.0f, 1.0f);
         }
     }
-
 }

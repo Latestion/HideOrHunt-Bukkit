@@ -19,7 +19,7 @@ public class EntityExplode implements Listener {
     @EventHandler
     public void explode(EntityExplodeEvent event) {
         if (plugin.game == null) return;
-        if (plugin.game.gameState == GameState.ON) {
+        if (plugin.game.getGameState() == GameState.ON) {
             for (Block block : event.blockList()) {
                 event.blockList().removeIf(b -> b.getType() == Material.BEACON);
             }

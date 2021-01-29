@@ -54,7 +54,7 @@ public class FlatHOHGame {
         game.freeze = freeze;
         game.grace = grace;
         game.ep = episode;
-        game.gameState = gameState;
+        game.setGameState(gameState);
         game.setSpawnLocation(loc);
         return game;
     }
@@ -70,7 +70,7 @@ public class FlatHOHGame {
         yc.set("freeze", game.freeze);
         yc.set("grace", game.grace);
         yc.set("episode", game.ep);
-        yc.set("gameState", game.gameState.toString());
+        yc.set("gameState", game.getGameState().toString());
         try {
             yc.save(file);
         } catch (IOException e) {

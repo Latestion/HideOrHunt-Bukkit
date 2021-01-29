@@ -26,7 +26,7 @@ public class BlockBreak implements Listener {
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
         MessageManager messageManager = plugin.getMessageManager();
-        if (plugin.game.gameState != GameState.ON) return;
+        if (plugin.game.getGameState() != GameState.ON) return;
         if (event.getBlock().getType() == Material.BEACON) {
             Player player = event.getPlayer();
             HOHPlayer hohPlayer = plugin.game.getHohPlayer(player.getUniqueId());
@@ -49,6 +49,19 @@ public class BlockBreak implements Listener {
             team.setBeacon(null);
             plugin.sbUtil.beaconBreakTeam(team.getName());
             team.doAsthetic(event.getPlayer());
+            if (plugin.getConfig().getBoolean("End-Game-If-Only-One-Beacon")) {
+                int total = 0;
+                HOHTeam winner = null;
+                for (HOHTeam t : plugin.game.getTeams().values()) {
+                    if (t.hasBeacon()) {
+                        total++;
+                        winner = t;
+                    }
+                }
+                if (total == 1) {
+                    plugin.game.endGame(winner.getName());
+                }
+            }
             return;
         }
         if (event.getBlock().getType() == Material.OAK_SIGN) {

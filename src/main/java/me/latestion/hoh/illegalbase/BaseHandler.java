@@ -59,9 +59,7 @@ public class BaseHandler {
         ran++;
         if (ran == 100) {
             base.isLegal = false;
-            System.out.println(ran);
             ran = 0;
-            System.out.println("NotLegal");
             throw new RuntimeException("Help!  Somebody debug me!  I'm crashing!");
         }
 
@@ -94,17 +92,13 @@ public class BaseHandler {
                     if (y + 1 == highestBlock.getY() || y == highestBlock.getY() - 1) {
                         // IT REACHED THE TOP
                         base.isLegal = true;
-                        System.out.println(ran);
                         ran = 0;
-                        System.out.println("Legal");
                         throw new RuntimeException("Help!  Somebody debug me!  I'm crashing!");
                     }
                 }
                 if (b.getY() >= highestBlock.getY() || b.getY() >= highestBlock.getY() - 1) {
                     base.isLegal = true;
-                    System.out.println(ran);
                     ran = 0;
-                    System.out.println("Legal");
                     throw new RuntimeException("Help!  Somebody debug me!  I'm crashing!");
                 }
                 else {
@@ -123,9 +117,7 @@ public class BaseHandler {
                     double highestY = relative.getWorld().getHighestBlockYAt(relativeLocation);
                     if (y >= highestY || y >= highestY - 1) {
                         base.isLegal = true;
-                        System.out.println(ran);
                         ran = 0;
-                        System.out.println("Legal");
                         throw new RuntimeException("Help!  Somebody debug me!  I'm crashing!");
                     }
                 }

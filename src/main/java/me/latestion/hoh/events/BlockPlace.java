@@ -28,7 +28,7 @@ public class BlockPlace implements Listener {
     @EventHandler
     public void onPlace(BlockPlaceEvent event) {
 
-        if (plugin.game.gameState != GameState.ON) return;
+        if (plugin.game.getGameState() != GameState.ON) return;
 
         if (event.getBlockPlaced().getType() == Material.BEACON) {
 
@@ -64,7 +64,7 @@ public class BlockPlace implements Listener {
                 }
                 if (plugin.getConfig().getBoolean("Check-On-Beacon-Place")) {
                     try {
-                        team.checkLegalBase();
+                        team.getBase().checkLegalBase();
                     }
                     catch (RuntimeException runtimeException) {
 

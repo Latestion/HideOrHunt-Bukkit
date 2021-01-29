@@ -53,7 +53,7 @@ public class HideOrHunt extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		if (game.gameState == GameState.ON) game.serverStop();
+		if (game.getGameState() == GameState.ON) game.serverStop();
 	}
 
 	private void hoh() {

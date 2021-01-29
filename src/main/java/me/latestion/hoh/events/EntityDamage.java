@@ -26,7 +26,7 @@ public class EntityDamage implements Listener {
 
     @EventHandler
     public void damage(EntityDamageByEntityEvent event) {
-        if (plugin.game.gameState != GameState.ON) return;
+        if (plugin.game.getGameState() != GameState.ON) return;
         if (!(event.getEntity() instanceof Player)) return;
 
         MessageManager messageManager = plugin.getMessageManager();
@@ -72,7 +72,7 @@ public class EntityDamage implements Listener {
     @EventHandler
     public void onAntiLogQuit(PlayerQuitEvent event) {
         Player p = event.getPlayer();
-        if (plugin.game.gameState == GameState.ON) {
+        if (plugin.game.getGameState() == GameState.ON) {
             if (this.antilog.contains(p.getUniqueId())) {
                 String msg = plugin.getMessageManager().getMessage("combat-logout").replace("%player%", p.getDisplayName());
                 Bukkit.getServer().broadcastMessage(msg);

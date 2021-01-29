@@ -29,7 +29,7 @@ public class Grace extends BukkitRunnable {
 
     private void checkLegalBase() {
         if (plugin.getConfig().getBoolean("Check-When-Grace-End") && plugin.getConfig().getBoolean("Legal-Base-Detector")) {
-            for (HOHTeam teams : plugin.game.getTeams().values()) teams.checkLegalBase();
+            for (HOHTeam teams : plugin.game.getTeams().values()) teams.getBase().checkLegalBase();
         }
     }
 }

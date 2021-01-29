@@ -19,7 +19,7 @@ public class GameModeChange implements Listener {
 
 	@EventHandler
 	public void c(PlayerGameModeChangeEvent event) {
-		if (plugin.game.gameState != GameState.ON) return;
+		if (plugin.game.getGameState() != GameState.ON) return;
 		if (!plugin.game.hohPlayers.containsKey(event.getPlayer().getUniqueId())) return;
 		if (!this.plugin.getConfig().getBoolean("Allow-Op")) return;
 		if (!event.getNewGameMode().equals(GameMode.SPECTATOR)) {

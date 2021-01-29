@@ -12,7 +12,7 @@ public class ItemDrop implements Listener {
     @EventHandler
     public void drop(PlayerDropItemEvent event) {
         HideOrHunt plugin = HideOrHunt.getInstance();
-        if (plugin.game.gameState != GameState.ON) return;
+        if (plugin.game.getGameState() != GameState.ON) return;
         if (event.getItemDrop().getItemStack().getType() == Material.BEACON) {
             event.setCancelled(true);
         }

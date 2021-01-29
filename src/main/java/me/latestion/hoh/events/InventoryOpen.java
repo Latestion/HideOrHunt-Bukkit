@@ -19,7 +19,7 @@ public class InventoryOpen implements Listener {
     @EventHandler
     public void ioe(InventoryOpenEvent event) {
         Player player = (Player) event.getPlayer();
-        if (plugin.game.gameState != GameState.ON) return;
+        if (plugin.game.getGameState() != GameState.ON) return;
         if (event.getInventory().getType().equals(InventoryType.BEACON)) {
             event.setCancelled(true);
             player.openWorkbench(null, true);

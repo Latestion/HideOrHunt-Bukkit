@@ -1,6 +1,7 @@
 package me.latestion.hoh.utils;
 
 import me.latestion.hoh.HideOrHunt;
+import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHTeam;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.*;
@@ -107,4 +108,33 @@ public class Util {
         return plugin.game.getTeams().values().stream().filter(t -> t.hasBeacon()
                 && t.getBeacon().equals(block)).findAny().orElse(null);
     }
+
+    public HOHTeam getClosestBeaconToSpawn() {
+        if (plugin.game.getGameState() != GameState.ON) return null;
+        HOHTeam send = null;
+        Location spawn = plugin.game.loc;
+        for (HOHTeam teams : plugin.game.getTeams().values()) {
+            if (!teams.hasBeacon()) continue;
+            if (send == null) send = teams;
+            if (teams.getBeacon().getLocation().distance(spawn) <= send.getBeacon().getLocation().distance(spawn))
+                send = teams;
+            continue;
+        }
+        return send;
+    }
+
+    public HOHTeam getFarthestBeaconToSpawn() {
+        if (plugin.game.getGameState() != GameState.ON) return null;
+        HOHTeam send = null;
+        Location spawn = plugin.game.loc;
+        for (HOHTeam teams : plugin.game.getTeams().values()) {
+            if (!teams.hasBeacon()) continue;
+            if (send == null) send = teams;
+            if (teams.getBeacon().getLocation().distance(spawn) >= send.getBeacon().getLocation().distance(spawn))
+                send = teams;
+            continue;
+        }
+        return send;
+    }
+
 }

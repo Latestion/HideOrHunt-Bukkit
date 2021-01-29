@@ -10,7 +10,6 @@ import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.game.HOHPlayer;
 import me.latestion.hoh.localization.MessageManager;
 import me.latestion.hoh.party.HOHPartyHandler;
-import me.latestion.hoh.party.HOHPartyPlayer;
 import me.latestion.hoh.utils.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -45,7 +44,7 @@ public class CommandInitializer {
                 return true;
             }
             HOHGame game = plugin.game;
-            if (game.gameState != GameState.OFF) {
+            if (game.getGameState() != GameState.OFF) {
                 sender.sendMessage("§cThere is already a game in progress");
                 //todo: add to message manager
                 return true;
@@ -66,7 +65,7 @@ public class CommandInitializer {
         }).build());
 
         builder.addSubCommand(new SubCommandBuilder("freeze").setPermission(pm.getPermission("hoh.freeze")).setCommandHandler((sender, command, label, args) -> {
-            if (plugin.game.gameState != GameState.ON) {
+            if (plugin.game.getGameState() != GameState.ON) {
                 sender.sendMessage(messageManager.getMessage("game-not-started"));
                 return true;
             }
@@ -94,7 +93,7 @@ public class CommandInitializer {
             return true;
         }).setUsageMessage("/hoh rules").build());
         builder.addSubCommand(new SubCommandBuilder("stop").setPermission(pm.getPermission("hoh.reload")).setCommandHandler((sender, command, label, args) -> {
-            if (plugin.game.gameState == GameState.ON)
+            if (plugin.game.getGameState() == GameState.ON)
                 plugin.game.endGame("none");
             else
                 sender.sendMessage(messageManager.getMessage("game-not-started"));
@@ -106,7 +105,7 @@ public class CommandInitializer {
                 sender.sendMessage(ChatColor.RED + " This command can only be ran by players.");
                 return true;
             }
-            if (plugin.game.gameState != GameState.ON) {
+            if (plugin.game.getGameState() != GameState.ON) {
                 sender.sendMessage(messageManager.getMessage("game-not-started"));
                 return true;
             }
@@ -134,7 +133,7 @@ public class CommandInitializer {
             }
 
             Player player = (Player) sender;
-            if (plugin.game.gameState == GameState.OFF) {
+            if (plugin.game.getGameState() == GameState.OFF) {
                 sender.sendMessage(messageManager.getMessage("game-not-started"));
                 return true;
             }
@@ -152,7 +151,7 @@ public class CommandInitializer {
         }).setUsageMessage("/hoh chat").build());
 
         builder.addSubCommand(new SubCommandBuilder("continue").setPermission(pm.getPermission("hoh.continue")).setCommandHandler((sender, command, label, args) -> {
-            if (plugin.game.gameState != GameState.OFF) {
+            if (plugin.game.getGameState() != GameState.OFF) {
                 sender.sendMessage("§cThere is already a game in progress");
                 return true;
             }
@@ -221,7 +220,7 @@ public class CommandInitializer {
                                 return true;
                             }
                             else {
-                                plugin.support.queuePlayer(plugin.party.getParty(id).getParty(), teamSize, maxPlayers);
+                                plugin.support.queueTeam(plugin.party.getParty(id).getParty(), teamSize, maxPlayers);
                                 return true;
                             }
                         }
@@ -229,7 +228,7 @@ public class CommandInitializer {
                             return true;
                         }
                     }
-                    plugin.support.queuePlayer(id, teamSize, maxPlayers);
+                    plugin.support.queueTeam(id, teamSize, maxPlayers);
                 } else {
                     sender.sendMessage(ChatColor.RED + " This command can only be ran by players.");
                     return false;
@@ -258,7 +257,7 @@ public class CommandInitializer {
                                 return true;
                             }
                             else {
-                                plugin.support.queuePlayer(plugin.party.getParty(id).getParty(), teamSize, maxPlayers);
+                                plugin.support.queueTeam(plugin.party.getParty(id).getParty(), teamSize, maxPlayers);
                                 return true;
                             }
                         }
@@ -266,7 +265,7 @@ public class CommandInitializer {
                             return true;
                         }
                     }
-                    plugin.support.queuePlayer(p.getUniqueId(), teamSize, maxPlayers);
+                    plugin.support.queueTeam(p.getUniqueId(), teamSize, maxPlayers);
                     return true;
                 } catch (Exception e) {
                     sender.sendMessage(messageManager.getMessage("invalid-player"));

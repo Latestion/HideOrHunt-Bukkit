@@ -35,7 +35,7 @@ public class AsyncChat implements Listener {
                 player.sendMessage(messageManager.getMessage("too-many-characters"));
                 return;
             }
-            if (plugin.game.gameState != GameState.PREPARE) {
+            if (plugin.game.getGameState() != GameState.PREPARE) {
                 return;
             }
             Util util = new Util(plugin);
@@ -63,7 +63,7 @@ public class AsyncChat implements Listener {
             }
             return;
         }
-        if (plugin.game.gameState != GameState.ON) return;
+        if (plugin.game.getGameState() != GameState.ON) return;
 
         if (!plugin.game.hohPlayers.containsKey(event.getPlayer().getUniqueId())) return;
 

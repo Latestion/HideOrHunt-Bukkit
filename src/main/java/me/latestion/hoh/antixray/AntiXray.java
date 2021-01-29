@@ -38,8 +38,8 @@ public class AntiXray extends BukkitRunnable {
 
     @Override
     public void run() {
+        if (game.getGameState() != GameState.ON) cancel();
         for (HOHTeam team : game.getTeams().values()) {
-            if (game.gameState != GameState.ON) cancel();
             if (!team.hasBeacon()) continue;
             Block beacon = team.getBeacon();
             Location beaconLoc = beacon.getLocation();
@@ -56,18 +56,17 @@ public class AntiXray extends BukkitRunnable {
                 if (!players.contains(player)) {
                     player.sendBlockChange(beaconLoc, air.getBlockData());
                     player.sendBlockChange(beaconLoc.add(0, 1, 0), air.getBlockData());
+                    continue;
                 }
-                else {
-                    player.sendBlockChange(beaconLoc, beacon.getBlockData());
-                    player.sendBlockChange(beaconLoc.add(0, 1, 0), team.getSign().getBlockData());
-                    team.getSign().getState().update();
-                }
+                player.sendBlockChange(beaconLoc, beacon.getBlockData());
+                player.sendBlockChange(beaconLoc.add(0, 1, 0), team.getSign().getBlockData());
+                team.getSign().getState().update();
             }
         }
     }
 
     public void start() {
-        if (game.gameState == GameState.ON) {
+        if (game.getGameState() == GameState.ON) {
             this.range = plugin.getConfig().getInt("Show-Beacon-Range");
             this.tick = plugin.getConfig().getInt("Check-Delay");
             runTaskTimer(plugin, 0, tick * 20);

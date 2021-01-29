@@ -11,7 +11,7 @@ public class WeatherChange implements Listener {
     @EventHandler
     public void change(WeatherChangeEvent event) {
         HideOrHunt plugin = HideOrHunt.getInstance();
-        if (plugin.getConfig().getBoolean("Cancel-Weather-Change")) if (plugin.game.gameState == GameState.ON) if (plugin.game.getWorld().equals(event.getWorld()))
+        if (plugin.getConfig().getBoolean("Cancel-Weather-Change")) if (plugin.game.getGameState() == GameState.ON) if (plugin.game.getWorld().equals(event.getWorld()))
             event.setCancelled(true);
     }
 

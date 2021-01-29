@@ -22,7 +22,7 @@ public class PlayerJoin implements Listener {
 	public void pje(final PlayerJoinEvent event) {
 		Player p = event.getPlayer();
 		HOHGame game = plugin.getGame();
-		if (game.gameState == GameState.ON) {
+		if (game.getGameState() == GameState.ON) {
 			plugin.sbUtil.addPlayer(p);
 			if (!plugin.game.bar.getBar().getPlayers().contains(p))
 				plugin.game.bar.addPlayer(p);

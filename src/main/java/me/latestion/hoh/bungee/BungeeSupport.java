@@ -30,7 +30,7 @@ public class BungeeSupport {
         this.hub = plugin.getConfig().getString("Main-Lobby");
     }
 
-    public void queuePlayer(UUID player, int tSize, int pMax) {
+    public void queueTeam(UUID player, int tSize, int pMax) {
        if (!isHub) return;
        if (isPlayerInQueue(player)) return;;
 
@@ -52,7 +52,7 @@ public class BungeeSupport {
        }
     }
 
-    public void queuePlayer(List<UUID> partyIDs, int tSize, int pMax) {
+    public void queueTeam(List<UUID> partyIDs, int tSize, int pMax) {
         if (!isHub) return;
         if (isPlayerInQueue(partyIDs.get(0))) return;;
 
