@@ -1,4 +1,4 @@
-package me.latestion.hoh.commandmanager;
+package me.latestion.hoh.commandmanager.helper;
 
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;

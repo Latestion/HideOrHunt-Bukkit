@@ -1,6 +1,8 @@
-package me.latestion.hoh.commandmanager;
+package me.latestion.hoh.commandmanager.helper;
 
 import me.latestion.hoh.commandmanager.builders.CommandBuilder;
+import me.latestion.hoh.commandmanager.helper.AbstractCommand;
+import me.latestion.hoh.commandmanager.helper.CommandCaller;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
@@ -40,7 +42,7 @@ public class HeadCommand extends AbstractCommand {
         if (cmd == null)
             throw new RuntimeException("A command with the name of \"{c}\" has not been registered in the plugin.yml".replace("{c}", getCommandName()));
         cmd.setExecutor(new CommandCaller(this));
-        cmd.setTabCompleter(new me.latestion.hoh.commandmanager.TabCompleter(this));
+        cmd.setTabCompleter(new me.latestion.hoh.commandmanager.helper.TabCompleter(this));
         isRegistered = true;
     }
 

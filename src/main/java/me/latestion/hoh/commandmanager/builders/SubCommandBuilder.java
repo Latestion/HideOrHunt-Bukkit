@@ -1,8 +1,8 @@
 package me.latestion.hoh.commandmanager.builders;
 
 
-import me.latestion.hoh.commandmanager.AbstractCommand;
-import me.latestion.hoh.commandmanager.SubCommand;
+import me.latestion.hoh.commandmanager.helper.AbstractCommand;
+import me.latestion.hoh.commandmanager.helper.SubCommand;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.permissions.Permission;

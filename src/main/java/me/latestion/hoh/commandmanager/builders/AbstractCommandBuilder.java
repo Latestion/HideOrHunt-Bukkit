@@ -1,10 +1,9 @@
 package me.latestion.hoh.commandmanager.builders;
 
 
-import javafx.util.Builder;
-import me.latestion.hoh.commandmanager.AbstractCommand;
-import me.latestion.hoh.commandmanager.HeadCommand;
-import me.latestion.hoh.commandmanager.SubCommand;
+import me.latestion.hoh.commandmanager.helper.AbstractCommand;
+import me.latestion.hoh.commandmanager.helper.HeadCommand;
+import me.latestion.hoh.commandmanager.helper.SubCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
