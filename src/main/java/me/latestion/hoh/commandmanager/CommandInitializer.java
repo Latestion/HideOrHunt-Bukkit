@@ -4,6 +4,7 @@ package me.latestion.hoh.commandmanager;
 import me.latestion.hoh.HideOrHunt;
 import me.latestion.hoh.commandmanager.builders.CommandBuilder;
 import me.latestion.hoh.commandmanager.builders.SubCommandBuilder;
+import me.latestion.hoh.commandmanager.helper.HelpCommand;
 import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHGame;
@@ -361,67 +362,47 @@ public class CommandInitializer {
         }).setUsageMessage("/hoh party invite,join,leave,disband").build());
 
 
+        builder.addSubCommand(new SubCommandBuilder("wb").setPermission(pm.getPermission("hoh.wb")).setCommandHandler((sender, command, label, args) -> {
+            if (!(sender instanceof Player)) {
+                // Not Player
+            }
+            Player player = (Player) sender;
+
+            if (args.length == 0) {
+                player.sendMessage(""); // TODO: COMMANDS HERE
+                return true;
+            }
+
+            return false;
+        }).setUsageMessage("/hoh wb").build());
+
+
         builder.addSubCommand(new SubCommandBuilder("help").setUsageMessage("/hoh help").setCommandHandler((sender, command, label, args) -> {
             //todo: idk what color scheme you use so i just did Gold and gray
-            StringBuilder helpMessage = new StringBuilder();
-            helpMessage.append("\n");
-            helpMessage.append("§6/hoh help §7§l>§8  view this help message");
-
-            if (sender.hasPermission("hoh.start")) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh start <team size> §7§l>§8 start the game with a specific amount of players");
-            }
-            if (sender.hasPermission("hoh.stop")) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh stop §7§l>§8 stop the active game");
-            }
-            if (sender.hasPermission("hoh.freeze")) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh freeze §7§l>§8 pause/freezes the active game");
-            }
-            if (sender.hasPermission("hoh.reload")) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh reload §7§l>§8 reload the config");
-            }
-            if (sender.hasPermission("hoh.beacon")) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh beacon <player> §7§l>§8 teleport to a player's beacon");
-            }
-            if (sender.hasPermission("hoh.continue")) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh continue §7§l>§8 continues previous game!");
-            }
-            if (sender.hasPermission("hoh.spy")) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh spy §7§l>§8 \"spy\" on other teams' chat");
-            }
-            if (sender.hasPermission("hoh.craft")) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh craft §7§l>§8 enables/disables crafting table crafting");
-            }
+            HelpCommand helpMessage = new HelpCommand(sender);
+            helpMessage.addCommand("§6/hoh help §7§l>§8  view this help message", null);
+            helpMessage.addCommand("§6/hoh start <team size> §7§l>§8 start the game with a specific amount of players", "hoh.start");
+            helpMessage.addCommand("§6/hoh stop §7§l>§8 stop the active game", "hoh.stop");
+            helpMessage.addCommand("§6/hoh freeze §7§l>§8 pause/freezes the active game", "hoh.freeze");
+            helpMessage.addCommand("§6/hoh reload §7§l>§8 reload the config", "hoh.reload");
+            helpMessage.addCommand("§6/hoh beacon <player> §7§l>§8 teleport to a player's beacon", "hoh.beacon");
+            helpMessage.addCommand("§6/hoh continue §7§l>§8 continues previous game", "hoh.continue");
+            helpMessage.addCommand("§6/hoh spy §7§l>§8 \"spy\" on other teams' chat", "hoh.spy");
+            helpMessage.addCommand("§6/hoh craft §7§l>§8 enables/disables crafting table crafting", "hoh.craft");
+            helpMessage.addCommand("§6/hoh rules §7§l>§8 view the server's rules", null);
+            helpMessage.addCommand("§6/hoh chat §7§l>§8  toggle team chat", null);
             if (plugin.support != null) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh queue <teamsize> <max_players> §7§l>§8 join the game queue");
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh rejoin §7§l>§8 rejoin the previous game you were in");
+                helpMessage.addCommand("§6/hoh queue <teamsize> <max_players> §7§l>§8 join the game queue", null);
+                helpMessage.addCommand("§6/hoh rejoin §7§l>§8 rejoin the previous game you were in", null);
             }
-            helpMessage.append("\n");
-            helpMessage.append("§6/hoh rules §7§l>§8 view the server's rules");
-            helpMessage.append("\n");
-            helpMessage.append("§6/hoh chat §7§l>§8  toggle team chat");
             if (plugin.party != null) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh party [invite] <player> §7§l>§8 invite someone to your party");
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh party [join] <player> §7§l>§8 join someone to your party");
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh party leave> §7§l>§8 leave your party");
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh party disband> §7§l>§8 disbands your party");
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh party list> §7§l>§8 list of players in your party");
+                helpMessage.addCommand("§6/hoh party [invite] <player> §7§l>§8 invite someone to your party", null);
+                helpMessage.addCommand("§6/hoh party [join] <player> §7§l>§8 join someone to your party", null);
+                helpMessage.addCommand("§6/hoh party leave> §7§l>§8 leave your party", null);
+                helpMessage.addCommand("§6/hoh party disband> §7§l>§8 disbands your party", null);
+                helpMessage.addCommand("§6/hoh party list> §7§l>§8 list of players in your party", null);
             }
-            sender.sendMessage(helpMessage.toString());
+            sender.sendMessage(helpMessage.getFinalMessage());
             return true;
         }).build());
 

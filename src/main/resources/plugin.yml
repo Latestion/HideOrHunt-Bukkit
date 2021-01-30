@@ -2,7 +2,7 @@ name: HideOrHunt
 main: me.latestion.hoh.HideOrHunt
 version: ${project.version}
 api-version: 1.13
-authors: [ Latestion, barpec12,BingoRufus ]
+authors: [Latestion, barpec12, BingoRufus]
 website: https://latestion.github.io/
 description: ${project.description}
 commands:
@@ -32,5 +32,7 @@ permissions:
         description: continues previous game
       hoh.queue:
         description: queue players for bungee
+      hoh.wb:
+        description: worldborder commands
 softdepend:
   - WorldEdit
