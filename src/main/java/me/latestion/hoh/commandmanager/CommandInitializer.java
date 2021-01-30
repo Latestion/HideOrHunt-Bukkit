@@ -373,6 +373,30 @@ public class CommandInitializer {
                 return true;
             }
 
+            if (plugin.game.getGameState() != GameState.ON) {
+                return true;
+            }
+
+            if (args[0].equalsIgnoreCase("set")) {
+
+                if (args.length == 1) {
+                    player.sendMessage(""); // TODO: COMMANDS HERE
+                    return true;
+                }
+
+                int i = new Util(plugin).getInt(args[1]);
+
+                if (i <= 0) {
+                    player.sendMessage(""); // TODO: COMMANDS HERE
+                    return true;
+                }
+
+                plugin.game.setBorder(i);
+                // TODO: SEND MESSAGE
+
+                return true;
+            }
+
             return false;
         }).setUsageMessage("/hoh wb").build());
 

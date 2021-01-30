@@ -9,6 +9,8 @@ import me.latestion.hoh.events.*;
 import me.latestion.hoh.localization.MessageManager;
 import me.latestion.hoh.party.HOHParty;
 import me.latestion.hoh.party.HOHPartyEvents;
+import me.latestion.hoh.universalbeacon.UniversalBeacon;
+import me.latestion.hoh.universalbeacon.UniversalBeaconHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -33,6 +35,7 @@ public class HideOrHunt extends JavaPlugin {
 	public BungeeSupport support;
 	public HOHParty party;
 	public AntiXray xray;
+	public UniversalBeacon ub;
 
 	@Override
 	public void onEnable() {
@@ -48,6 +51,7 @@ public class HideOrHunt extends JavaPlugin {
 		loadSchems();
 		loadBungee();
 		antiXray();
+		universalBeacon();
 	}
 
 
@@ -60,7 +64,7 @@ public class HideOrHunt extends JavaPlugin {
 		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 		console.sendMessage("         " + ChatColor.RED + "_______ ");
 		console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |");
-		console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |" + ChatColor.WHITE + "    Version: " + this.getDescription().getVersion());
+		console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |" + ChatColor.WHITE + "    Version: " + getDescription().getVersion());
 		console.sendMessage(ChatColor.AQUA + "|------|" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|------|" + ChatColor.WHITE + "    By: Latestion and barpec12");
 		console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |");
 		console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|_______|" + ChatColor.AQUA + "|      |");
@@ -92,6 +96,7 @@ public class HideOrHunt extends JavaPlugin {
 	private void registerAll() {
 		PluginManager pm = this.getServer().getPluginManager();
 		pm.registerEvents(new AsyncChat(this), this);
+		pm.registerEvents(new BeaconOpen(this), this);
 		pm.registerEvents(new BlockBreak(this), this);
 		pm.registerEvents(new BlockPlace(this), this);
 		pm.registerEvents(new CraftItem(this), this);
@@ -100,7 +105,6 @@ public class HideOrHunt extends JavaPlugin {
 		pm.registerEvents(new GameModeChange(this), this);
 		pm.registerEvents(new InventoryClick(this), this);
 		pm.registerEvents(new InventoryClose(this), this);
-		pm.registerEvents(new InventoryOpen(this), this);
 		pm.registerEvents(new ItemDrop(), this);
 		pm.registerEvents(new PlayerJoin(this), this);
 		pm.registerEvents(new PlayerLogin(this), this);
@@ -160,6 +164,13 @@ public class HideOrHunt extends JavaPlugin {
 	private void antiXray() {
 		if (getConfig().getBoolean("Anti-Xray")) {
 			this.xray = new AntiXray(this);
+		}
+	}
+
+	private void universalBeacon() {
+		if (getConfig().getBoolean("Universal-Beacon")) {
+			ub = new UniversalBeacon();
+			this.getServer().getPluginManager().registerEvents(new UniversalBeaconHandler(ub), this);
 		}
 	}
 }

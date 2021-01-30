@@ -58,7 +58,6 @@ public class BaseHandler {
         Illegal Checker
         Stops the code from sending StackOverflowError
          */
-
         ran++;
         if (ran == 100) {
             base.isLegal = false;

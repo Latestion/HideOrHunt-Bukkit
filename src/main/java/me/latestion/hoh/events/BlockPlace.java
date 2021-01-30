@@ -37,7 +37,8 @@ public class BlockPlace implements Listener {
             Location loc = event.getBlockPlaced().getLocation();
             boolean success = true;
 
-            if (plugin.game.ep != 1) {
+            if ((plugin.game.ep != 1 && plugin.getConfig().getBoolean("Disable-Beacon-Player-After-Episode-End") )||
+                    (plugin.getConfig().getBoolean("Grace-Period") && plugin.getConfig().getBoolean("Disable-Beacon-Player-After-Grace") && plugin.game.grace)) {
 				/*
 				Failed To Place Beacon
 				 */

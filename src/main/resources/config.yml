@@ -38,6 +38,7 @@ Disable-Other-Worlds: true # Disables END and NETHER, Set to false if you want t
 Cancel-Weather-Change: true # Disables weather change during game
 Always-Day: true # Disable day changing
 End-Game-If-Only-One-Beacon: false # Ends the game if only 1 beacon is left!
+Allow-Other-Team-Beacon-Opening: true # Allows player to open beacons of other team
 
 # --> Kit <-- #
 
@@ -144,12 +145,14 @@ Episode-Reminders:
   - 1800, "&60 seconds remaining for episode %ep% end!"
   
 Episode-End-Break-Time: 60 # Break time when a episode ends! In seconds. Set it to 0 to disable it
+Disable-Beacon-Player-After-Episode-End: true
 
 # --> Grace <-- #
 
 Grace-Period: true # Enable / Disable Grace Period. Makes the 1st ep grace period
 Grace-Period-Peaceful: true # Makes grace period truly peaceful
 Grace-Duration: 30 # In Minutes
+Disable-Beacon-Player-After-Grace: true
 
 # --> Bungee Cord <-- #
 
@@ -291,5 +294,13 @@ Whitelisted-Blocks:
   - vines
   - slab
   - snow
+  - water
+  - lava
+
+# --> Universal Beacon <-- #
+
+# Universal Beacon turns your beacon to Furnace, Crafting Table, Enchanting Table, anvil and Storage Chest
+# each of them get unlocked when you craft them in your beacon/craftingtable menu?
+Universal-Beacon: true # Turn the beacon into a universal block
 
 # --> End <-- #

@@ -167,7 +167,7 @@ public class HOHGame {
         }
         if (gameState != GameState.PREPARE) return;
         Bukkit.getServer().broadcastMessage(plugin.getMessageManager().getMessage("starting-game"));
-        setBorder();
+        setBorder(util.getWorldBorder());
         for (HOHTeam team : teams.values()) {
             String name = team.getName();
             plugin.sbUtil.addTeam(name);
@@ -219,8 +219,7 @@ public class HOHGame {
         return send;
     }
 
-    private void setBorder() {
-        int wb = util.getWorldBorder();
+    public void setBorder(int wb) {
         loc.getWorld().getWorldBorder().setCenter(loc);
         loc.getWorld().getWorldBorder().setSize(wb);
         loc.getWorld().setSpawnLocation(loc);
