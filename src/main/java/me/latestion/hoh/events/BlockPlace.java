@@ -37,8 +37,8 @@ public class BlockPlace implements Listener {
             Location loc = event.getBlockPlaced().getLocation();
             boolean success = true;
 
-            if ((plugin.game.ep != 1 && plugin.getConfig().getBoolean("Disable-Beacon-Player-After-Episode-End") )||
-                    (plugin.getConfig().getBoolean("Grace-Period") && plugin.getConfig().getBoolean("Disable-Beacon-Player-After-Grace") && plugin.game.grace)) {
+            if ((plugin.game.ep != 1 && plugin.getConfig().getBoolean("Disable-Beacon-Player-After-Episode-End"))||
+                    (plugin.getConfig().getBoolean("Grace-Period") && plugin.getConfig().getBoolean("Disable-Beacon-Player-After-Grace") && !plugin.game.grace)) {
 				/*
 				Failed To Place Beacon
 				 */
@@ -64,12 +64,7 @@ public class BlockPlace implements Listener {
                     event.getPlayer().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "You have found an easter egg! Contact Latestion#0529 on discord with a screenshot!");
                 }
                 if (plugin.getConfig().getBoolean("Check-On-Beacon-Place")) {
-                    try {
-                        team.getBase().checkLegalBase();
-                    }
-                    catch (RuntimeException runtimeException) {
-
-                    }
+                    team.getBase().checkLegalBase();
                 }
             }
         }

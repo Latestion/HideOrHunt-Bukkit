@@ -36,7 +36,7 @@ public class BeaconOpen implements Listener {
         if (team != playerTeam) {
             return;
         }
-        event.getPlayer().openWorkbench(null, true);
+        if(plugin.ub == null) event.getPlayer().openWorkbench(null, true);
+        else plugin.ub.openInv(event.getPlayer());
     }
-
 }

@@ -253,6 +253,8 @@ Check-On-Beacon-Place: true # Checks if base is legal on beacon place
 # GRACE NEEDS TO BE ENABLED
 Check-When-Grace-End: true
 
+# Whitelists certain blocks inside the player base
+# MAKE SURE NOT TO ADD ANY SOLID BLOCKS LIKE STONE, GRASS, DIRT ETC ETC
 Whitelisted-Blocks:
   - sapling
   - leave
@@ -275,7 +277,6 @@ Whitelisted-Blocks:
   - pressure plate
   - trapdoor
   - redstone torch
-  - fence
   - tripwire
   - string
   - button
@@ -287,7 +288,6 @@ Whitelisted-Blocks:
   - rail
   - beacon
   - tall_grass
-  - mushroom
   - sugar_cane
   - kelp
   - seagrass

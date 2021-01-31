@@ -392,7 +392,7 @@ public class CommandInitializer {
                 }
 
                 plugin.game.setBorder(i);
-                // TODO: SEND MESSAGE
+                sender.sendMessage(ChatColor.AQUA+ "Worldborder set to: " + ChatColor.WHITE + i);
 
                 return true;
             }
@@ -404,27 +404,28 @@ public class CommandInitializer {
         builder.addSubCommand(new SubCommandBuilder("help").setUsageMessage("/hoh help").setCommandHandler((sender, command, label, args) -> {
             //todo: idk what color scheme you use so i just did Gold and gray
             HelpCommand helpMessage = new HelpCommand(sender);
-            helpMessage.addCommand("§6/hoh help §7§l>§8  view this help message", null);
-            helpMessage.addCommand("§6/hoh start <team size> §7§l>§8 start the game with a specific amount of players", "hoh.start");
-            helpMessage.addCommand("§6/hoh stop §7§l>§8 stop the active game", "hoh.stop");
-            helpMessage.addCommand("§6/hoh freeze §7§l>§8 pause/freezes the active game", "hoh.freeze");
-            helpMessage.addCommand("§6/hoh reload §7§l>§8 reload the config", "hoh.reload");
-            helpMessage.addCommand("§6/hoh beacon <player> §7§l>§8 teleport to a player's beacon", "hoh.beacon");
-            helpMessage.addCommand("§6/hoh continue §7§l>§8 continues previous game", "hoh.continue");
-            helpMessage.addCommand("§6/hoh spy §7§l>§8 \"spy\" on other teams' chat", "hoh.spy");
-            helpMessage.addCommand("§6/hoh craft §7§l>§8 enables/disables crafting table crafting", "hoh.craft");
-            helpMessage.addCommand("§6/hoh rules §7§l>§8 view the server's rules", null);
-            helpMessage.addCommand("§6/hoh chat §7§l>§8  toggle team chat", null);
+            helpMessage.addCommand("=-=-=-=-=-=-=HideOrHunt=-=-=-=-=-=-=-=", null);
+            helpMessage.addCommand("§c/hoh help §7§l>§f  view this help message", null);
+            helpMessage.addCommand("§c/hoh start <team size> §7§l>§f start the game with a specific amount of players", "hoh.start");
+            helpMessage.addCommand("§c/hoh stop §7§l>§f stop the active game", "hoh.stop");
+            helpMessage.addCommand("§c/hoh freeze §7§l>§f pause/freezes the active game", "hoh.freeze");
+            helpMessage.addCommand("§c/hoh reload §7§l>§f reload the config", "hoh.reload");
+            helpMessage.addCommand("§c/hoh beacon <player> §7§l>§f teleport to a player's beacon", "hoh.beacon");
+            helpMessage.addCommand("§c/hoh continue §7§l>§f continues previous game", "hoh.continue");
+            helpMessage.addCommand("§c/hoh spy §7§l>§f \"spy\" on other teams' chat", "hoh.spy");
+            helpMessage.addCommand("§c/hoh craft §7§l>§f enables/disables crafting table crafting", "hoh.craft");
+            helpMessage.addCommand("§c/hoh rules §7§l>§f view the server's rules", null);
+            helpMessage.addCommand("§c/hoh chat §7§l>§f  toggle team chat", null);
             if (plugin.support != null) {
-                helpMessage.addCommand("§6/hoh queue <teamsize> <max_players> §7§l>§8 join the game queue", null);
-                helpMessage.addCommand("§6/hoh rejoin §7§l>§8 rejoin the previous game you were in", null);
+                helpMessage.addCommand("§c/hoh queue <teamsize> <max_players> §7§l>§f join the game queue", null);
+                helpMessage.addCommand("§c/hoh rejoin §7§l>§f rejoin the previous game you were in", null);
             }
             if (plugin.party != null) {
-                helpMessage.addCommand("§6/hoh party [invite] <player> §7§l>§8 invite someone to your party", null);
-                helpMessage.addCommand("§6/hoh party [join] <player> §7§l>§8 join someone to your party", null);
-                helpMessage.addCommand("§6/hoh party leave> §7§l>§8 leave your party", null);
-                helpMessage.addCommand("§6/hoh party disband> §7§l>§8 disbands your party", null);
-                helpMessage.addCommand("§6/hoh party list> §7§l>§8 list of players in your party", null);
+                helpMessage.addCommand("§c/hoh party [invite] <player> §7§l>§f invite someone to your party", null);
+                helpMessage.addCommand("§c/hoh party [join] <player> §7§l>§f join someone to your party", null);
+                helpMessage.addCommand("§c/hoh party leave> §7§l>§f leave your party", null);
+                helpMessage.addCommand("§c/hoh party disband> §7§l>§f disbands your party", null);
+                helpMessage.addCommand("§c/hoh party list> §7§l>§f list of players in your party", null);
             }
             sender.sendMessage(helpMessage.getFinalMessage());
             return true;

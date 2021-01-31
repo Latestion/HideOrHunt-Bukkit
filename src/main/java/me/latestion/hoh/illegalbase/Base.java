@@ -7,6 +7,7 @@ import me.latestion.hoh.game.HOHTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.BlockFace;
+import org.bukkit.scheduler.BukkitScheduler;
 
 public class Base {
 
@@ -18,52 +19,40 @@ public class Base {
     }
 
     private void check() {
-        new BaseHandler(this).isLegal(team.getBeacon(), false, null, false);
+        try {
+            new BaseHandler(this).isLegal(team.getBeacon(), false, null, true);
+        }
+        catch (RuntimeException exception) {
+            return;
+        }
     }
 
     public void checkLegalBase() {
         if (!HideOrHunt.getInstance().getConfig().getBoolean("Legal-Base-Detector")) return;
         check();
-
-        // TODO: USE A SCHEDULER
-
-        if (isLegal) {
-            // Legal base
-            // Check back later
-        }
-        else {
-            // Not legal base
+        BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+        scheduler.scheduleSyncDelayedTask(HideOrHunt.getInstance(), () -> {
+            if (isLegal) return;
             int timeToFixBase = HideOrHunt.getInstance().getConfig().getInt("Time-To-Fix-Base");
-            for (HOHPlayer player : team.players) {
-                if (player.getPlayer().isOnline()) {
-                    player.getPlayer().sendMessage(ChatColor.RED + "Invalid Base! You have " + ((int) timeToFixBase / 60) + "mins to fix your base!");
-                }
-            }
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(HideOrHunt.getInstance(), () -> {
-                if (team.hasBeacon()) {
-                    try {
-                        check();
-                    }
-                    catch (RuntimeException exception) {
-
-                    }
-                    if (!isLegal) {
-                        boolean removeBeacon = HideOrHunt.getInstance().getConfig().getBoolean("Remove-Beacon-If-Not-Fixed");
-                        if (removeBeacon) {
-                            HOHBeaconBreakEvent e = new HOHBeaconBreakEvent(team.getBeacon(), team, null);
-                            Bukkit.getPluginManager().callEvent(e);
-                            if (e.isCancelled()) {
-                                return;
-                            }
-                            team.getBeacon().breakNaturally();
-                            HideOrHunt.getInstance().sbUtil.beaconBreakTeam(team.getName());
-                            team.doAsthetic(null);
-                            team.setBeacon(null);
-                            return;
-                        }
-                    }
-                }
+            team.players.forEach(player -> { if (player.getPlayer().isOnline())
+                player.getPlayer().sendMessage(ChatColor.RED + "Invalid Base! You have " + ((int) timeToFixBase / 60) + "mins to fix your base!");});
+            scheduler.scheduleSyncDelayedTask(HideOrHunt.getInstance(), () -> {
+                if (!team.hasBeacon()) return;
+                check();
+                scheduler.scheduleSyncDelayedTask(HideOrHunt.getInstance(), () -> {
+                    if (isLegal) return;
+                    boolean removeBeacon = HideOrHunt.getInstance().getConfig().getBoolean("Remove-Beacon-If-Not-Fixed");
+                    if (!removeBeacon) return;
+                    HOHBeaconBreakEvent e = new HOHBeaconBreakEvent(team.getBeacon(), team, null);
+                    Bukkit.getPluginManager().callEvent(e);
+                    if (e.isCancelled()) return;
+                    team.getBeacon().breakNaturally();
+                    HideOrHunt.getInstance().sbUtil.beaconBreakTeam(team.getName());
+                    team.doAsthetic(null);
+                    team.setBeacon(null);
+                    return;
+                }, 20L);
             }, timeToFixBase * 20L);
-        }
+        }, 20L);
     }
 }

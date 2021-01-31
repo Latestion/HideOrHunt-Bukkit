@@ -24,7 +24,7 @@ public class BaseHandler {
 
     public BaseHandler(Base base) {
         this.base = base;
-        if (matTypes.isEmpty()) types();
+        types();
     }
 
     public final BlockFace[] faces = {
@@ -59,7 +59,7 @@ public class BaseHandler {
         Stops the code from sending StackOverflowError
          */
         ran++;
-        if (ran == 100) {
+        if (ran == 50) {
             base.isLegal = false;
             ran = 0;
             throw new RuntimeException("Help!  Somebody debug me!  I'm crashing!");
@@ -101,6 +101,7 @@ public class BaseHandler {
                 if (b.getY() >= highestBlock.getY() || b.getY() >= highestBlock.getY() - 1) {
                     base.isLegal = true;
                     ran = 0;
+                    System.out.println("Legal2");
                     throw new RuntimeException("Help!  Somebody debug me!  I'm crashing!");
                 }
                 else {
@@ -120,10 +121,15 @@ public class BaseHandler {
                     if (y >= highestY || y >= highestY - 1) {
                         base.isLegal = true;
                         ran = 0;
-                        throw new RuntimeException("Help!  Somebody debug me!  I'm crashing!");
+                        throw new RuntimeException("Help! Somebody debug me! I'm crashing!");
                     }
                 }
             }
+        }
+        if (beacon) {
+            base.isLegal = false;
+            ran = 0;
+            throw new RuntimeException("Help!  Somebody debug me!  I'm crashing!");
         }
     }
 
