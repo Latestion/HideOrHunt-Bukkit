@@ -71,7 +71,7 @@ public class FlatHOHGame {
 		yc.set("freeze", game.frozen);
 		yc.set("grace", game.grace);
 		yc.set("episode", game.ep);
-		yc.set("gameState", game.gameState.toString());
+		yc.set("gameState", game.getGameState().toString());
 		try {
 			yc.save(file);
 		} catch (IOException e) {

@@ -32,12 +32,17 @@ public class Util {
     }
 
     public static Location deserializeLocation(String locString) {
-        String[] split = locString.split(",");
-        World w = Bukkit.getWorld(split[0]);
-        double x = Double.parseDouble(split[1]);
-        double y = Double.parseDouble(split[2]);
-        double z = Double.parseDouble(split[3]);
-        return new Location(w, x, y, z);
+        try{
+            String[] split = locString.split(",");
+            World w = Bukkit.getWorld(split[0]);
+            double x = Double.parseDouble(split[1]);
+            double y = Double.parseDouble(split[2]);
+            double z = Double.parseDouble(split[3]);
+            return new Location(w, x, y, z);
+        }catch(Exception ex){
+            Bukkit.getLogger().warning(ex.getLocalizedMessage());
+            return null;
+        }
     }
 
     public int getInt(String s) {
@@ -52,7 +57,7 @@ public class Util {
         return plugin.getConfig().getBoolean("Allow-Op");
     }
 
-    public int getWorldBorder() {
+    public int getWorldBorderSize() {
         return plugin.getConfig().getInt("WorldBorder");
     }
 

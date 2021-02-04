@@ -29,7 +29,7 @@ public class PlayerQuit implements Listener {
             if (plugin.game.checkEndConditions()) {
                 HOHTeam winnerTeam = plugin.game.getWinnerTeam();
                 if (winnerTeam == null) return;
-                plugin.game.endGame(winnerTeam.getName());
+                plugin.game.endGame(winnerTeam);
             }
             return;
         }

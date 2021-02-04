@@ -4,6 +4,7 @@ import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.game.HOHTeam;
 import me.latestion.hoh.utils.Util;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -36,7 +37,9 @@ public class FlatHOHTeam {
             List<String> players = sc.getStringList("players");
             List<String> allivePlayers = sc.getStringList("allive-players");
             boolean eliminated = sc.getBoolean("eliminated");
-            Location beaconLoc = Util.deserializeLocation(sc.getString("beacon-loc"));
+            String beacon = sc.getString("beacon-loc");
+            Block beaconBloc = beacon.equalsIgnoreCase("null")
+                    ? null : Util.deserializeLocation(beacon).getBlock();
 
             HOHTeam team = new HOHTeam(id);
             team.setName(name);
@@ -48,7 +51,7 @@ public class FlatHOHTeam {
                     .filter(p -> allivePlayers.contains(p.getUUID().toString())).collect(Collectors.toList()));
 
             team.setEliminated(eliminated);
-            team.setBeacon(beaconLoc.getBlock());
+            team.setBeacon(beaconBloc);
             teams.add(team);
         }
         return teams;
@@ -65,7 +68,8 @@ public class FlatHOHTeam {
             sc.set("allive-players", team.alivePlayers.stream().map(p -> p.getUUID().toString())
                     .collect(Collectors.toList()));
             sc.set("eliminated", team.eliminated);
-            sc.set("beacon-loc", Util.serializeLocation(team.getBeacon().getLocation()));
+            sc.set("beacon-loc", team.getBeacon() != null
+                    ? Util.serializeLocation(team.getBeacon().getLocation()) : "null");
         }
         try {
             yc.save(file);

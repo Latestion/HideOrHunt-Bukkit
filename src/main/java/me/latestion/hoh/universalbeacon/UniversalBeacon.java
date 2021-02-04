@@ -1,11 +1,9 @@
 package me.latestion.hoh.universalbeacon;
 
-import com.sun.istack.internal.NotNull;
 import me.latestion.hoh.game.HOHTeam;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 

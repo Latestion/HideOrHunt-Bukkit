@@ -95,7 +95,7 @@ public class CommandInitializer {
         }).setUsageMessage("/hoh rules").build());
         builder.addSubCommand(new SubCommandBuilder("stop").setPermission(pm.getPermission("hoh.reload")).setCommandHandler((sender, command, label, args) -> {
             if (plugin.game.getGameState() == GameState.ON)
-                plugin.game.endGame("none");
+                plugin.game.endGame(null);
             else
                 sender.sendMessage(messageManager.getMessage("game-not-started"));
             return true;

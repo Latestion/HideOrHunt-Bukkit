@@ -3,13 +3,11 @@ package me.latestion.hoh.game;
 import me.latestion.hoh.HideOrHunt;
 import me.latestion.hoh.api.HOHGameEvent;
 import me.latestion.hoh.customitems.TrackingItem;
-import me.latestion.hoh.customitems.TrackingItem;
 import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import me.latestion.hoh.myrunnables.Episodes;
 import me.latestion.hoh.myrunnables.Grace;
 import me.latestion.hoh.myrunnables.SupplyDrop;
-import me.latestion.hoh.stats.Metrics;
 import me.latestion.hoh.utils.Bar;
 import me.latestion.hoh.utils.ScoreBoardUtil;
 import me.latestion.hoh.utils.Util;
@@ -141,7 +139,7 @@ public class HOHGame {
         MessageManager msgMan = plugin.getMessageManager();
         if (gameState != GameState.PREPARE) return;
         Bukkit.getServer().broadcastMessage(msgMan.getMessage("starting-game"));
-        setBorder();
+        setBorder(util.getWorldBorderSize());
         for (HOHTeam team : teams.values()) {
             String name = team.getName();
             plugin.sbUtil.addTeam(name);
@@ -205,12 +203,11 @@ public class HOHGame {
         return send;
     }
 
-    private void setBorder() {
-        int wb = util.getWorldBorder();
-        loc.getWorld().getWorldBorder().setCenter(loc);
-        loc.getWorld().getWorldBorder().setSize(wb);
-        loc.getWorld().setSpawnLocation(loc);
-    }
+    public void setBorder(int size){
+		loc.getWorld().getWorldBorder().setCenter(loc);
+		loc.getWorld().getWorldBorder().setSize(size);
+		loc.getWorld().setSpawnLocation(loc);
+	}
 
 	public int getEpisodeNumber(){
 		return this.ep;
@@ -254,14 +251,15 @@ public class HOHGame {
 		return aliveTeams.size() <= 1;
 	}
 
-    public void endGame(String winnerTeam) {
+    public void endGame(HOHTeam winnerTeam) {
+		String teamName = winnerTeam != null ? winnerTeam.getName() : "none";
         HOHGameEvent event = new HOHGameEvent(GameState.ON, loc, teamSize);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return;
         }
         MessageManager messageManager = plugin.getMessageManager();
-        Bukkit.broadcastMessage(messageManager.getMessage("win-message").replace("%winner-team%", winnerTeam));
+        Bukkit.broadcastMessage(messageManager.getMessage("win-message").replace("%winner-team%", teamName));
         loc.getWorld().getWorldBorder().reset();
         for (HOHTeam team : teams.values()) {
             if (team.getBeacon() != null) team.getBeacon().setType(Material.AIR);
@@ -446,7 +444,7 @@ public class HOHGame {
 //					}
 //				}
 //			}, 0L);
-			plugin.game.endGame();
+			plugin.game.endGame(winnerTeam);
 		}
 	}
 
