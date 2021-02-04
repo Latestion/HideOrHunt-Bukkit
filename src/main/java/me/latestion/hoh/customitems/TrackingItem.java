@@ -2,6 +2,7 @@ package me.latestion.hoh.customitems;
 
 import me.latestion.hoh.HideOrHunt;
 import me.latestion.hoh.game.HOHPlayer;
+import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -57,7 +58,8 @@ public class TrackingItem{
 		item = new ItemStack(hiddenMaterial);
 		trackingItems.put(owner, this);
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(ChatColor.RED + "Lokalizowanie innych graczy"); //TODO get messages from MessageManager
+		MessageManager msgMan = plugin.getMessageManager();
+		meta.setDisplayName(msgMan.getMessage("tracking-item-name"));
 		item.setItemMeta(meta);
 		updateLore();
 	}
@@ -67,16 +69,22 @@ public class TrackingItem{
 	}
 
 	private void updateLore(){
+		MessageManager msgMan = plugin.getMessageManager();
 		List<String> lore = new ArrayList<>();
-		lore.add(ChatColor.YELLOW + "Kliknij prawym, żeby");
-		lore.add(ChatColor.YELLOW + "Wskazać najbliższego gracza");
-		lore.add(ChatColor.YELLOW + "Pozostałe użycia: "+remainingUses);
+		int i = 1;
+		String msg;
+		while((msg = msgMan.getNullableMessage("tracking-item-lore-" + i)) != null){
+			lore.add(msg.replace("%remaining-uses%", Integer.toString(remainingUses)));
+			i++;
+		}
 		ItemMeta meta = item.getItemMeta();
 		meta.setLore(lore);
 		item.setItemMeta(meta);
 	}
 
 	public void processRightClick(){
+		MessageManager msgMan = plugin.getMessageManager();
+
 		if(remainingUses>0){
 			if(visible)
 				return;
@@ -90,14 +98,16 @@ public class TrackingItem{
 				}
 			}, visibleTime * 20L);
 		}else{
-			owner.sendMessage(ChatColor.RED + "Nie masz obecnie kolejnych użyć!");
+			owner.sendMessage(msgMan.getMessage("tracking-item-out-of-uses"));
 		}
 	}
 
 	public void showTracking(){
+		MessageManager msgMan = plugin.getMessageManager();
 		visible = true;
 		owner.setCompassTarget(getNearestHohPlayer(400D).getPlayer().getLocation());
-		owner.sendMessage(ChatColor.GREEN+ "Wskazywanie lokalizacji gracza przez "+visibleTime +" sekund.");
+		owner.sendMessage(msgMan.getMessage("tracking-item-pointing-into-player")
+				.replace("%pointing-time%", Integer.toString(visibleTime)));
 		updateItem();
 	}
 

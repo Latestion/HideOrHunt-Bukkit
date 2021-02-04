@@ -38,11 +38,15 @@ public class MessageManager {
     }
 
     public String getMessage(String key) {
-        if (messages.containsKey(key)) {
-            return ChatColor.translateAlternateColorCodes('&', messages.get(key));
-        } else {
+        String msg = getNullableMessage(key);
+        if (msg == null) {
             Bukkit.getLogger().severe("Message " + key + " not found!");
             return "";
         }
+        return msg;
+    }
+    public String getNullableMessage(String key){
+        return messages.containsKey(key)
+                ? ChatColor.translateAlternateColorCodes('&', messages.get(key)) : null;
     }
 }
