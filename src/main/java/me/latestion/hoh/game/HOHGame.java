@@ -81,54 +81,99 @@ public class HOHGame {
         if (plugin.getConfig().getBoolean("Auto-Supply-Drops")) new SupplyDrop(plugin);
     }
 
-    public void prepareGame() {
-        HOHGame game = plugin.getGame();
-        HOHGameEvent event = new HOHGameEvent(GameState.PREPARE, loc, teamSize);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            return;
-        }
-        this.gameState = GameState.PREPARE;
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player.isOp() && !util.getAllowOp()) {
-                continue;
-            }
-            HOHPlayer p = new HOHPlayer(this, player.getUniqueId(), player.getName());
-            hohPlayers.put(player.getUniqueId(), p);
-        }
-        double neededTeams = Math.ceil(hohPlayers.size() / (double) teamSize);
-        int totalTeams = (int) neededTeams;
-        this.inv = util.createInv(totalTeams);
-        for (HOHPlayer player : hohPlayers.values()) {
-            player.prepareTeam(inv);
-        }
-        Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-            @Override
-            public void run() {
-                for(HOHPlayer p : game.getHohPlayers().values()){
-                    p.setNamingTeam(false);
-                    if(!p.hasTeam()){
-                        HOHTeam team = null;
-                        for(HOHTeam teams : game.getTeams().values()){
-                            if(teams.getPlayers().size()<=game.teamSize){
-                                team = teams;
-                                break;
-                            }
-                        }
-//						HOHTeam team = game.getTeams().values().stream()
-//								.filter(t -> t.getPlayers().size() <= game.teamSize).findAny().orElse(null);
-                        if(team != null) {
-                            p.setTeam(team);
-                            team.addPlayer(p);
-                        }else{
-                            Bukkit.getLogger().severe("Couldn't find a team!");
-                        }
-                    }
-                }
-                game.startGame();
-            }
-        }, timeToStart * 20L);
-    }
+	public void prepareGame() {
+		HOHGameEvent event = new HOHGameEvent(GameState.PREPARE, loc, teamSize);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled()) {
+			return;
+		}
+		this.gameState = GameState.PREPARE;
+		for (Player player : getWorld().getPlayers()) {
+			if (player.isOp() && !util.getAllowOp()) {
+				continue;
+			}
+			HOHPlayer p = new HOHPlayer(this, player.getUniqueId(), player.getName());
+			hohPlayers.put(player.getUniqueId(), p);
+		}
+
+		double neededTeams = Math.ceil(hohPlayers.size() / (double) teamSize);
+		int totalTeams = (int) neededTeams;
+
+		if (plugin.getConfig().getBoolean("Auto-Team-Join")) {
+			List<String> teamNames = plugin.getConfig().getStringList("Team-Names");
+			parentLoop:
+			for (int i = 0; i < totalTeams; i++) {
+				HOHTeam team = new HOHTeam(i);
+				addTeam(team);
+				team.setName(teamNames.get(i));
+				if (plugin.support != null && plugin.party != null) {
+					for (int ii = 0; ii < plugin.support.getCurrentServerState().teams.size(); ii++) {
+						List<UUID> add = plugin.support.getCurrentServerState().teams.get(0);
+						for (UUID pId : add) {
+							HOHPlayer player = hohPlayers.get(pId);
+							player.getPlayer().closeInventory();
+							if (!player.hasTeam()) {
+								player.setTeam(team);
+							}
+						}
+						plugin.support.getCurrentServerState().teams.remove(0);
+					}
+				}
+				for (HOHPlayer player : hohPlayers.values()) {
+					if (!player.hasTeam()) {
+						if (!team.addPlayer(player)) continue parentLoop;
+						player.setTeam(team);
+					}
+					player.getPlayer().closeInventory();
+				}
+			}
+			if (allPlayersSelectedTeam() && areAllTeamsNamed()) {
+				startGame();
+			}
+			return;
+		}
+
+		this.inv = util.createInv(totalTeams);
+		for (HOHPlayer player : hohPlayers.values()) {
+			player.prepareTeam(inv);
+		}
+
+		if (plugin.getConfig().getInt("Force-Team-After") > 0) {
+			int secs = plugin.getConfig().getInt("Force-Team-After");
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+				if (getGameState() == GameState.PREPARE) {
+					int totalNeededTeam = (int) Math.ceil(hohPlayers.size() / (double) teamSize);
+					int totalTeam = teams.size();
+					if (totalNeededTeam >= totalTeam) {
+						if (allPlayersSelectedTeam() && areAllTeamsNamed()) {
+							startGame();
+							return;
+						}
+					}
+					int neededTeam = totalNeededTeam - totalTeam;
+					List<String> teamNames = plugin.getConfig().getStringList("Team-Names");
+					parentLoop:
+					for (int i = 0; i < neededTeam; i++) {
+						HOHTeam team = new HOHTeam(i);
+						addTeam(team);
+						team.setName(teamNames.get(i));
+						for (HOHPlayer player : hohPlayers.values()) {
+							if (!player.hasTeam()) {
+								if (!team.addPlayer(player)) {
+									continue parentLoop;
+								}
+								player.setTeam(team);
+							}
+						}
+					}
+					if (allPlayersSelectedTeam() && areAllTeamsNamed()) {
+						startGame();
+					}
+				}
+				return;
+			}, secs * 20L);
+		}
+	}
 
     public void startGame() {
         HOHGameEvent event = new HOHGameEvent(GameState.ON, loc, teamSize);
