@@ -16,7 +16,7 @@ public class PlayerWorld implements Listener {
 
     @EventHandler
     public void changeWorld(PlayerPortalEvent event) {
-        if (plugin.game.gameState != GameState.ON) return;
+        if (plugin.game.getGameState() != GameState.ON) return;
         if (this.plugin.getConfig().getBoolean("Disable-Other-Worlds")) {
             event.setCancelled(true);
         }

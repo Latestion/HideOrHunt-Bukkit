@@ -2,31 +2,53 @@ package me.latestion.hoh.events;
 
 import me.latestion.hoh.HideOrHunt;
 import me.latestion.hoh.game.GameState;
-import me.latestion.hoh.game.HOHGame;
+import me.latestion.hoh.game.HOHPlayer;
+import me.latestion.hoh.game.HOHTeam;
+import me.latestion.hoh.localization.MessageManager;
+import me.latestion.hoh.utils.Util;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-/**
- * @author barpec12 on 06.01.2021
- */
+import java.util.UUID;
+
 public class PlayerQuit implements Listener {
-	private HideOrHunt plugin;
 
-	public PlayerQuit(HideOrHunt plugin){
-		this.plugin = plugin;
-	}
+    private HideOrHunt plugin;
 
-	@EventHandler
-	public void onPlayerQuit(PlayerQuitEvent e){
-		HOHGame game = plugin.getGame();
-		Player p = e.getPlayer();
-		if(game.getGameState().equals(GameState.ON) && !game.frozen){
-			if(game.getHohPlayer(p.getUniqueId()) != null){
-				p.damage(p.getHealth() * 4); //*4 just in case
-			}
-		}
-	}
+    public PlayerQuit(HideOrHunt plugin) {
+        this.plugin = plugin;
+    }
 
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        if (plugin.game.getGameState() == GameState.ON) {
+            if (plugin.game.checkEndConditions()) {
+                HOHTeam winnerTeam = plugin.game.getWinnerTeam();
+                if (winnerTeam == null) return;
+                plugin.game.endGame(winnerTeam.getName());
+            }
+            return;
+        }
+        if (plugin.game.getGameState() == GameState.PREPARE) {
+            Player player = event.getPlayer();
+            int secs = plugin.getConfig().getInt("Remove-Player-After");
+            if (secs <= 0) return;
+            if (plugin.getConfig().getBoolean("Auto-Team-Join")) return;
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                if (player.isOnline()) {
+                    return;
+                }
+                HOHPlayer p = plugin.game.getHohPlayer(player.getUniqueId());
+                if (p.getTeam() != null) {
+                    p.getTeam().removePlayer(p);
+                }
+                plugin.game.hohPlayers.remove(player.getUniqueId());
+
+            }, secs * 20L);
+        }
+    }
 }

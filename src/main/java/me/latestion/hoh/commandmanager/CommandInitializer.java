@@ -1,14 +1,17 @@
 package me.latestion.hoh.commandmanager;
 
+
 import me.latestion.hoh.HideOrHunt;
+import me.latestion.hoh.commandmanager.builders.CommandBuilder;
+import me.latestion.hoh.commandmanager.builders.SubCommandBuilder;
+import me.latestion.hoh.commandmanager.helper.HelpCommand;
 import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.game.HOHPlayer;
 import me.latestion.hoh.localization.MessageManager;
+import me.latestion.hoh.party.HOHPartyHandler;
 import me.latestion.hoh.utils.Util;
-import me.latestion.hoh.utils.commandbuilder.CommandBuilder;
-import me.latestion.hoh.utils.commandbuilder.SubCommandBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -17,6 +20,7 @@ import org.bukkit.plugin.PluginManager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CommandInitializer {
     private final HideOrHunt plugin;
@@ -27,38 +31,42 @@ public class CommandInitializer {
 
     public void initialize() {
         MessageManager messageManager = plugin.getMessageManager();
-        CommandBuilder builder = new CommandBuilder(plugin, "hoh");
+        CommandBuilder builder = new CommandBuilder("hoh");
         PluginManager pm = Bukkit.getPluginManager();
-        builder.addSubCommand(new SubCommandBuilder("start").setPermission(pm.getPermission("hoh.start")).setUsage("/hoh start <team size>").setCommandHandler((sender, command, label, args) -> {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage(ChatColor.RED + " This command can only be ran by players.");
-                return false;
-            }
-            Player player = (Player) sender;
-            if (args.length != 2) {
+        builder.addSubCommand(new SubCommandBuilder("start").setPermission(pm.getPermission("hoh.start")).setUsageMessage("/hoh start <team size>").setCommandHandler((sender, command, label, args) -> {
+            if (args.length != 1) {
                 return false;
             }
             Util util = new Util(plugin);
-            int size = util.getInt(args[1]);
+            int size = util.getInt(args[0]);
             if (size <= 0) {
                 sender.sendMessage("§cSize must me greater than 0");
                 //todo: add to message manager
                 return true;
             }
             HOHGame game = plugin.game;
-            if (game.gameState != GameState.OFF) {
+            if (game.getGameState() != GameState.OFF) {
                 sender.sendMessage("§cThere is already a game in progress");
                 //todo: add to message manager
                 return true;
             }
-            game.setSpawnLocation(player.getLocation());
+            if (sender instanceof Player) {
+                game.setSpawnLocation(((Player) sender).getLocation());
+            }
+            else {
+                game.setSpawnLocation(Bukkit.getWorlds().get(0).getSpawnLocation());
+            }
+            if (game.getWorld().getPlayers().size() == 0) {
+                // NO Players Online
+                return false;
+            }
             game.teamSize = size;
             game.prepareGame();
             return true;
         }).build());
 
         builder.addSubCommand(new SubCommandBuilder("freeze").setPermission(pm.getPermission("hoh.freeze")).setCommandHandler((sender, command, label, args) -> {
-            if (plugin.game.gameState != GameState.ON) {
+            if (plugin.game.getGameState() != GameState.ON) {
                 sender.sendMessage(messageManager.getMessage("game-not-started"));
                 return true;
             }
@@ -70,40 +78,40 @@ public class CommandInitializer {
                 plugin.game.frozen = true;
             }
             return true;
-        }).setUsage("/hoh freeze").build());
+        }).setUsageMessage("/hoh freeze").build());
 
         builder.addSubCommand(new SubCommandBuilder("reload").setPermission(pm.getPermission("hoh.reload")).addAlias("reloadconfig", false).setCommandHandler((sender, command, label, args) -> {
             this.plugin.saveDefaultConfig();
             this.plugin.reloadConfig();
             sender.sendMessage(messageManager.getMessage("reloaded-config"));
             return true;
-        }).setUsage("/hoh reload").build());
+        }).setUsageMessage("/hoh reload").build());
         builder.addSubCommand(new SubCommandBuilder("rules").setCommandHandler((sender, command, label, args) -> {
             List<String> rules = plugin.getConfig().getStringList("Rules-Messages");
             for (String rule : rules) {
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', rule));
             }
             return true;
-        }).setUsage("/hoh rules").build());
+        }).setUsageMessage("/hoh rules").build());
         builder.addSubCommand(new SubCommandBuilder("stop").setPermission(pm.getPermission("hoh.reload")).setCommandHandler((sender, command, label, args) -> {
-            if (plugin.game.gameState == GameState.ON)
-                plugin.game.endGame();
+            if (plugin.game.getGameState() == GameState.ON)
+                plugin.game.endGame("none");
             else
                 sender.sendMessage(messageManager.getMessage("game-not-started"));
             return true;
-        }).setUsage("/hoh stop").build());
+        }).setUsageMessage("/hoh stop").build());
 
         builder.addSubCommand(new SubCommandBuilder("beacon").setPermission(pm.getPermission("hoh.beacon")).setCommandHandler((sender, command, label, args) -> {
             if (!(sender instanceof Player)) {
                 sender.sendMessage(ChatColor.RED + " This command can only be ran by players.");
                 return true;
             }
-            if (plugin.game.gameState != GameState.ON) {
+            if (plugin.game.getGameState() != GameState.ON) {
                 sender.sendMessage(messageManager.getMessage("game-not-started"));
                 return true;
             }
-            if (args.length != 2) return false;
-            Player target = Bukkit.getPlayer(args[1]);
+            if (args.length != 1) return false;
+            Player target = Bukkit.getPlayer(args[0]);
             if (target == null) {
                 sender.sendMessage(messageManager.getMessage("invalid-player"));
                 return false;
@@ -117,7 +125,7 @@ public class CommandInitializer {
             List<String> out = new ArrayList<>();
             Bukkit.getOnlinePlayers().forEach(p -> out.add(p.getName()));
             return out;
-        }).setUsage("/hoh beacon <player>").build());
+        }).setUsageMessage("/hoh beacon <player>").build());
 
         builder.addSubCommand(new SubCommandBuilder("chat").setCommandHandler((sender, command, label, args) -> {
             if (!(sender instanceof Player)) {
@@ -126,7 +134,7 @@ public class CommandInitializer {
             }
 
             Player player = (Player) sender;
-            if (plugin.game.gameState == GameState.OFF) {
+            if (plugin.game.getGameState() == GameState.OFF) {
                 sender.sendMessage(messageManager.getMessage("game-not-started"));
                 return true;
             }
@@ -141,21 +149,34 @@ public class CommandInitializer {
                 }
             }
             return true;
-        }).setUsage("/hoh chat").build());
+        }).setUsageMessage("/hoh chat").build());
+
         builder.addSubCommand(new SubCommandBuilder("continue").setPermission(pm.getPermission("hoh.continue")).setCommandHandler((sender, command, label, args) -> {
-            if (plugin.game.gameState != GameState.OFF) {
+            if (plugin.game.getGameState() != GameState.OFF) {
                 sender.sendMessage("§cThere is already a game in progress");
                 return true;
             }
-            plugin.game = FlatHOHGame.deserialize(new File(plugin.getDataFolder(), "hohGame.yml"), plugin);
-            if (plugin.game != null) {
+            HOHGame test = FlatHOHGame.deserialize(new File(plugin.getDataFolder(), "hohGame.yml"), plugin);
+            if (test != null) {
+                plugin.game = test;
                 plugin.game.loadGame();
             } else {
                 sender.sendMessage(ChatColor.RED + "There is no game to continue!");
             }
 
             return true;
-        }).setUsage("/hoh continue").build());
+        }).setUsageMessage("/hoh continue").build());
+
+        builder.addSubCommand(new SubCommandBuilder("craft").setPermission(pm.getPermission("hoh.craft")).setCommandHandler((sender, command, label, args) -> {
+            if (plugin.game.allowCrafting) {
+                plugin.game.allowCrafting = false;
+                sender.sendMessage(ChatColor.RED + "Crafting is disabled!");
+                return true;
+            }
+            plugin.game.allowCrafting = true;
+            sender.sendMessage(ChatColor.AQUA + "Crafting is enabled!");
+            return true;
+        }).setUsageMessage("/hoh craft").build());
 
         builder.addSubCommand(new SubCommandBuilder("spy").setPermission(pm.getPermission("hoh.spy")).setCommandHandler((sender, command, label, args) -> {
             if (!(sender instanceof Player)) {
@@ -172,91 +193,249 @@ public class CommandInitializer {
             }
             sender.sendMessage("§cYou can no longer view team chats");
             return true;
-        }).setUsage("/hoh spy").build());
+        }).setUsageMessage("/hoh spy").build());
 
-        if (plugin.support != null) {
-            builder.addSubCommand(new SubCommandBuilder("queue").setCommandHandler((sender, command, label, args) -> {
-                if (args.length == 1) {
-                    if (sender instanceof Player) {
-                        plugin.support.queuePlayer((Player) sender);
-                    } else {
-                        sender.sendMessage(ChatColor.RED + " This command can only be ran by players.");
-                        return false;
+        builder.addSubCommand(new SubCommandBuilder("queue").setCommandHandler((sender, command, label, args) -> {
+            if (plugin.support == null) {
+                return true;
+            }
+            if (args.length == 2) {
+                if (sender instanceof Player) {
+                    Player player = (Player) sender;
+                    if (args[0].equalsIgnoreCase("leave") || args[0].equalsIgnoreCase("l")) {
+                        plugin.support.removeQueuePlayer(player.getUniqueId());
+                        return true;
                     }
-                    return true;
-                }
-                if (args.length == 2) {
-                    try {
-                        Player p = Bukkit.getPlayerExact(args[1]);
-                        if (p == null || !p.isValid()) {
-                            sender.sendMessage(messageManager.getMessage("invalid-player"));
+                    int teamSize = new Util(plugin).getInt(args[0]);
+                    if (teamSize <= 0) {
+                        return true;
+                    }
+                    int maxPlayers = new Util(plugin).getInt(args[1]);
+                    if (maxPlayers <= 0) {
+                        return true;
+                    }
+                    UUID id = player.getUniqueId();
+                    if (plugin.party.inParty(id)) {
+                        if (plugin.party.ownsParty(id)) {
+                            if (plugin.party.getPartySize(id) == 1) {
+                                return true;
+                            }
+                            else {
+                                plugin.support.queueTeam(plugin.party.getParty(id).getParty(), teamSize, maxPlayers);
+                                return true;
+                            }
+                        }
+                        else {
                             return true;
                         }
-                        plugin.support.queuePlayer(p);
+                    }
+                    plugin.support.queueTeam(id, teamSize, maxPlayers);
+                } else {
+                    sender.sendMessage(ChatColor.RED + " This command can only be ran by players.");
+                    return false;
+                }
+                return true;
+            }
+            if (args.length == 3) {
+                try {
+                    int teamSize = new Util(plugin).getInt(args[0]);
+                    if (teamSize <= 0) {
                         return true;
-                    } catch (Exception e) {
+                    }
+                    int maxPlayers = new Util(plugin).getInt(args[1]);
+                    if (maxPlayers <= 0) {
+                        return true;
+                    }
+                    Player p = Bukkit.getPlayerExact(args[2]);
+                    if (p == null || !p.isValid()) {
                         sender.sendMessage(messageManager.getMessage("invalid-player"));
                         return true;
                     }
+                    UUID id = p.getUniqueId();
+                    if (plugin.party.inParty(id)) {
+                        if (plugin.party.ownsParty(id)) {
+                            if (plugin.party.getPartySize(id) == 1) {
+                                return true;
+                            }
+                            else {
+                                plugin.support.queueTeam(plugin.party.getParty(id).getParty(), teamSize, maxPlayers);
+                                return true;
+                            }
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                    plugin.support.queueTeam(p.getUniqueId(), teamSize, maxPlayers);
+                    return true;
+                } catch (Exception e) {
+                    sender.sendMessage(messageManager.getMessage("invalid-player"));
+                    return true;
                 }
-                return false;
-            }).setTabHandler((sender, command, label, args) -> {
-                List<String> out = new ArrayList<>();
-                Bukkit.getOnlinePlayers().forEach(p -> out.add(p.getName()));
-                return out;
-            }).setUsage("/hoh queue [<player>]").build());
-        }
+            }
+            return false;
+        }).setTabHandler((sender, command, label, args) -> {
+            List<String> out = new ArrayList<>();
+            Bukkit.getOnlinePlayers().forEach(p -> out.add(p.getName()));
+            return out;
+        }).setUsageMessage("/hoh queue [<teamsize>] [<maxplayers>] [<player>]").build());
 
 
-        builder.addSubCommand(new SubCommandBuilder("help").setUsage("/hoh help").setCommandHandler((sender, command, label, args) -> {
+        builder.addSubCommand(new SubCommandBuilder("rejoin").setCommandHandler((sender, command, label, args) -> {
+            if (plugin.support == null) {
+                return true;
+            }
+            if (!(sender instanceof Player)) {
+                // Not Player
+            }
+            Player player = (Player) sender;
+            if (plugin.support.rejoin(player.getUniqueId())) {
+                plugin.support.pm.connect(player, plugin.support.rejoinServer.get(player.getUniqueId()));
+            }
+            else {
+                //todo: msg
+                // No GAME
+                return true;
+            }
+
+            return false;
+        }).setUsageMessage("/hoh rejoin").build());
+
+        builder.addSubCommand(new SubCommandBuilder("party").setCommandHandler((sender, command, label, args) -> {
+            if (plugin.party == null) {
+                return true;
+            }
+            if (!(sender instanceof Player)) {
+                // Not Player
+            }
+            Player player = (Player) sender;
+
+            if (args.length == 2) {
+                if (args[0].equalsIgnoreCase("invite") || args[0].equalsIgnoreCase("join")) {
+                    Player p = Bukkit.getPlayerExact(args[1]);
+                    if (!p.isValid() || p == null) {
+                        sender.sendMessage(messageManager.getMessage("invalid-player"));
+                        return true;
+                    }
+                    if (args[0].equalsIgnoreCase("invite")) plugin.party.createParty(player.getUniqueId(), p.getUniqueId());
+                    else plugin.party.joinParty(player.getUniqueId(), p.getUniqueId());
+                    return true;
+                }
+                return true;
+            }
+
+            if (args.length == 1) {
+                if (args[0].equalsIgnoreCase("leave")) {
+                    if (plugin.party.inParty(player.getUniqueId())) {
+                        HOHPartyHandler hand = plugin.party.partyPlayer.get(player.getUniqueId()).party;
+                        hand.removePlayer(player.getUniqueId());
+                    }
+                    else {
+                        // Not In Party
+                    }
+                    return true;
+                }
+                if (args[0].equalsIgnoreCase("disband")) {
+                    if (plugin.party.inParty(player.getUniqueId())) {
+                        HOHPartyHandler hand = plugin.party.partyPlayer.get(player.getUniqueId()).party;
+                        hand.removePlayer(hand.getLeader());
+                    }
+                    else {
+                        // Not In Party
+                    }
+                    return true;
+                }
+                if (args[0].equalsIgnoreCase("list")) {
+                    if (plugin.party.inParty(player.getUniqueId())) {
+                        HOHPartyHandler hand = plugin.party.partyPlayer.get(player.getUniqueId()).party;
+                        List<String> players = hand.getPartyPlayerNames();
+                        player.sendMessage((ChatColor.GREEN + "Party (%size%): " + ChatColor.AQUA + String.join(", ", players))
+                                .replace("%size%", Integer.toString(players.size())));
+                    }
+                }
+            }
+            return false;
+        }).setTabHandler((sender, command, label, args) -> {
+            List<String> out = new ArrayList<>();
+            out.add("invite"); out.add("join"); out.add("leave"); out.add("disband");
+            return out;
+        }).setUsageMessage("/hoh party invite,join,leave,disband").build());
+
+
+        builder.addSubCommand(new SubCommandBuilder("wb").setPermission(pm.getPermission("hoh.wb")).setCommandHandler((sender, command, label, args) -> {
+            if (!(sender instanceof Player)) {
+                // Not Player
+            }
+            Player player = (Player) sender;
+
+            if (args.length == 0) {
+                player.sendMessage(""); // TODO: COMMANDS HERE
+                return true;
+            }
+
+            if (plugin.game.getGameState() != GameState.ON) {
+                return true;
+            }
+
+            if (args[0].equalsIgnoreCase("set")) {
+
+                if (args.length == 1) {
+                    player.sendMessage(""); // TODO: COMMANDS HERE
+                    return true;
+                }
+
+                int i = new Util(plugin).getInt(args[1]);
+
+                if (i <= 0) {
+                    player.sendMessage(""); // TODO: COMMANDS HERE
+                    return true;
+                }
+
+                plugin.game.setBorder(i);
+                sender.sendMessage(ChatColor.AQUA+ "Worldborder set to: " + ChatColor.WHITE + i);
+
+                return true;
+            }
+
+            return false;
+        }).setUsageMessage("/hoh wb").build());
+
+
+        builder.addSubCommand(new SubCommandBuilder("help").setUsageMessage("/hoh help").setCommandHandler((sender, command, label, args) -> {
             //todo: idk what color scheme you use so i just did Gold and gray
-            StringBuilder helpMessage = new StringBuilder();
-            helpMessage.append("§6/hoh rules §7§l>§8 view the server's rules");
-            helpMessage.append("\n");
-            helpMessage.append("§6/hoh chat §7§l>§8  toggle team chat");
-            helpMessage.append("\n");
-            helpMessage.append("§6/hoh help §7§l>§8  view this help message");
+            HelpCommand helpMessage = new HelpCommand(sender);
+            helpMessage.addCommand("=-=-=-=-=-=-=HideOrHunt=-=-=-=-=-=-=-=", null);
+            helpMessage.addCommand("§c/hoh help §7§l>§f  view this help message", null);
+            helpMessage.addCommand("§c/hoh start <team size> §7§l>§f start the game with a specific amount of players", "hoh.start");
+            helpMessage.addCommand("§c/hoh stop §7§l>§f stop the active game", "hoh.stop");
+            helpMessage.addCommand("§c/hoh freeze §7§l>§f pause/freezes the active game", "hoh.freeze");
+            helpMessage.addCommand("§c/hoh reload §7§l>§f reload the config", "hoh.reload");
+            helpMessage.addCommand("§c/hoh beacon <player> §7§l>§f teleport to a player's beacon", "hoh.beacon");
+            helpMessage.addCommand("§c/hoh continue §7§l>§f continues previous game", "hoh.continue");
+            helpMessage.addCommand("§c/hoh spy §7§l>§f \"spy\" on other teams' chat", "hoh.spy");
+            helpMessage.addCommand("§c/hoh craft §7§l>§f enables/disables crafting table crafting", "hoh.craft");
+            helpMessage.addCommand("§c/hoh rules §7§l>§f view the server's rules", null);
+            helpMessage.addCommand("§c/hoh chat §7§l>§f  toggle team chat", null);
             if (plugin.support != null) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh queue §7§l>§8 join the game queue");
+                helpMessage.addCommand("§c/hoh queue <teamsize> <max_players> §7§l>§f join the game queue", null);
+                helpMessage.addCommand("§c/hoh rejoin §7§l>§f rejoin the previous game you were in", null);
             }
-
-            if (sender.hasPermission("hoh.start")) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh start <team size> §7§l>§8 start the game with a specific amount of players");
+            if (plugin.party != null) {
+                helpMessage.addCommand("§c/hoh party [invite] <player> §7§l>§f invite someone to your party", null);
+                helpMessage.addCommand("§c/hoh party [join] <player> §7§l>§f join someone to your party", null);
+                helpMessage.addCommand("§c/hoh party leave> §7§l>§f leave your party", null);
+                helpMessage.addCommand("§c/hoh party disband> §7§l>§f disbands your party", null);
+                helpMessage.addCommand("§c/hoh party list> §7§l>§f list of players in your party", null);
             }
-            if (sender.hasPermission("hoh.stop")) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh stop §7§l>§8 stop the active game");
-            }
-            if (sender.hasPermission("hoh.freeze")) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh stop §7§l>§8 pause the active game");
-            }
-            if (sender.hasPermission("hoh.reload")) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh reload §7§l>§8 reload the config");
-            }
-            if (sender.hasPermission("hoh.beacon")) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh beacon <player> §7§l>§8 teleport to a player's beacon");
-            }
-            if (sender.hasPermission("hoh.continue")) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh continue §7§l>§8 continues previous game!");
-            }
-            if (sender.hasPermission("hoh.spy")) {
-                helpMessage.append("\n");
-                helpMessage.append("§6/hoh spy §7§l>§8 \"spy\" on other teams' chat");
-            }
-            sender.sendMessage(helpMessage.toString());
+            sender.sendMessage(helpMessage.getFinalMessage());
             return true;
         }).build());
 
         builder.setCommandHandler((sender, command, label, args) -> {
             Bukkit.dispatchCommand(sender, "hoh help");
             return true;
-        }).setUsage("/hoh");
-        builder.register();
+        }).setUsageMessage("/hoh");
+
+        builder.build().register(plugin);
     }
 }

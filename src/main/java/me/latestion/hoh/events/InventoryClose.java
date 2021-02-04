@@ -18,7 +18,7 @@ public class InventoryClose implements Listener {
 
     @EventHandler
     public void close(InventoryCloseEvent event) {
-        if (plugin.game.gameState == GameState.OFF)
+        if (plugin.game.getGameState() == GameState.OFF)
             return;
         HOHPlayer hohPlayer = plugin.game.getHohPlayer(event.getPlayer().getUniqueId());
         if (!hohPlayer.hasTeam()) {

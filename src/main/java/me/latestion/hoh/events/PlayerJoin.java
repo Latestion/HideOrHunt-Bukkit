@@ -22,22 +22,19 @@ public class PlayerJoin implements Listener {
 	public void pje(final PlayerJoinEvent event) {
 		Player p = event.getPlayer();
 		HOHGame game = plugin.getGame();
-		if (plugin.support != null) {
-			if (!plugin.support.isHub) {
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> plugin.support.pm.isHub(), 20);
-			}
-		}
-		if (game.gameState == GameState.ON) {
+		if (game.getGameState() == GameState.ON) {
 			plugin.sbUtil.addPlayer(p);
 			if (!plugin.game.bar.getBar().getPlayers().contains(p))
 				plugin.game.bar.addPlayer(p);
 			if(plugin.game.getHohPlayer(p.getUniqueId()) == null){
 				p.setGameMode(GameMode.SPECTATOR);
 			}
-		}else if(game.getGameState().equals(GameState.PREPARE)){
+		}
+		else if(game.getGameState() == GameState.PREPARE){
 			p.setGameMode(GameMode.SPECTATOR);
-		}else{
-			p.teleport(p.getWorld().getSpawnLocation());
+		}
+		else{
+			if (plugin.getConfig().getBoolean("Teleport-To-Spawn")) p.teleport(p.getWorld().getSpawnLocation());
 		}
 	}
 }

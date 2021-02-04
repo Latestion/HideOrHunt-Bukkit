@@ -1,10 +1,17 @@
 package me.latestion.hoh;
 
+import me.latestion.hoh.antixray.AntiXray;
 import me.latestion.hoh.bungee.BungeeSupport;
+import me.latestion.hoh.bungee.BungeeSupportHandler;
+import me.latestion.hoh.bungee.PlugMessage;
 import me.latestion.hoh.commandmanager.CommandInitializer;
 import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.events.*;
 import me.latestion.hoh.localization.MessageManager;
+import me.latestion.hoh.party.HOHParty;
+import me.latestion.hoh.party.HOHPartyEvents;
+import me.latestion.hoh.universalbeacon.UniversalBeacon;
+import me.latestion.hoh.universalbeacon.UniversalBeaconHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -28,6 +35,9 @@ public class HideOrHunt extends JavaPlugin {
 	private MessageManager msgManager;
 
 	public BungeeSupport support;
+	public HOHParty party;
+	public AntiXray xray;
+	public UniversalBeacon ub;
 
 	@Override
 	public void onEnable() {
@@ -46,19 +56,22 @@ public class HideOrHunt extends JavaPlugin {
 			this.game = new HOHGame(this);
 		}
 		loadSchems();
-		if (getConfig().getBoolean("Bungee-Cord")) { support = new BungeeSupport(this); }
+		loadBungee();
+		antiXray();
+		universalBeacon();
 	}
+
 
 	@Override
 	public void onDisable() {
-		if (game.gameState == GameState.ON) game.serverStop();
+		if (game.getGameState() == GameState.ON) game.serverStop();
 	}
 
 	private void hoh() {
 		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-		console.sendMessage("        " + ChatColor.RED + " _______ ");
+		console.sendMessage("         " + ChatColor.RED + "_______ ");
 		console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |");
-		console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |" + ChatColor.WHITE + "    Version: " + this.getDescription().getVersion());
+		console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |" + ChatColor.WHITE + "    Version: " + getDescription().getVersion());
 		console.sendMessage(ChatColor.AQUA + "|------|" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|------|" + ChatColor.WHITE + "    By: Latestion and barpec12");
 		console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|       |" + ChatColor.AQUA + "|      |");
 		console.sendMessage(ChatColor.AQUA + "|      |" + ChatColor.RED + "|_______|" + ChatColor.AQUA + "|      |");
@@ -90,21 +103,24 @@ public class HideOrHunt extends JavaPlugin {
 	private void registerAll() {
 		PluginManager pm = this.getServer().getPluginManager();
 		pm.registerEvents(new AsyncChat(this), this);
+		pm.registerEvents(new BeaconOpen(this), this);
 		pm.registerEvents(new BlockBreak(this), this);
 		pm.registerEvents(new BlockPlace(this), this);
 		pm.registerEvents(new CraftItem(this), this);
 		pm.registerEvents(new EntityDamage(this), this);
+		pm.registerEvents(new EntityExplode(this), this);
 		pm.registerEvents(new GameModeChange(this), this);
 		pm.registerEvents(new InventoryClick(this), this);
 		pm.registerEvents(new InventoryClose(this), this);
-		pm.registerEvents(new InventoryOpen(this), this);
+		pm.registerEvents(new ItemDrop(), this);
 		pm.registerEvents(new PlayerJoin(this), this);
-		pm.registerEvents(new PlayerMove(this), this);
-		pm.registerEvents(new RespawnScreen(this), this);
-		pm.registerEvents(new PlayerWorld(this), this);
-		pm.registerEvents(new TrulyGrace(this), this);
 		pm.registerEvents(new PlayerLogin(this), this);
+		pm.registerEvents(new PlayerMove(this), this);
 		pm.registerEvents(new PlayerQuit(this), this);
+		pm.registerEvents(new PlayerWorld(this), this);
+		pm.registerEvents(new RespawnScreen(this),this);
+		pm.registerEvents(new TrulyGrace(this), this);
+		pm.registerEvents(new WeatherChange(), this);
 		pm.registerEvents(new PlayerInteract(), this);
 		pm.registerEvents(new EntityPickupItem(), this);
 
@@ -135,5 +151,36 @@ public class HideOrHunt extends JavaPlugin {
 
 	public static HideOrHunt getInstance() {
 		return JavaPlugin.getPlugin(HideOrHunt.class);
+	}
+
+	private void loadBungee() {
+		if (!getConfig().getBoolean("Bungee-Cord")) {
+			return;
+		}
+		support = new BungeeSupport(this);
+		this.getServer().getPluginManager().registerEvents(new BungeeSupportHandler(support), this);
+		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+		this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new PlugMessage(this));
+
+		if (!getConfig().getBoolean("Party-System")) {
+			return;
+		}
+
+		this.party = new HOHParty();
+		this.getServer().getPluginManager().registerEvents(new HOHPartyEvents(party), this);
+
+	}
+
+	private void antiXray() {
+		if (getConfig().getBoolean("Anti-Xray")) {
+			this.xray = new AntiXray(this);
+		}
+	}
+
+	private void universalBeacon() {
+		if (getConfig().getBoolean("Universal-Beacon")) {
+			ub = new UniversalBeacon();
+			this.getServer().getPluginManager().registerEvents(new UniversalBeaconHandler(ub), this);
+		}
 	}
 }

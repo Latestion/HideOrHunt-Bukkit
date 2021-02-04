@@ -21,7 +21,7 @@ public class Bar extends BukkitRunnable {
     }
 
     public void addAllPlayer() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
+        for (Player player : plugin.game.getWorld().getPlayers()) {
             bar.addPlayer(player);
         }
     }

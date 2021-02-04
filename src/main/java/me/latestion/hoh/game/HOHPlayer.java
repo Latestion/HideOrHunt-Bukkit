@@ -11,10 +11,10 @@ public class HOHPlayer {
     private final HOHGame game;
     private final UUID uuid;
     private final String name;
-    public boolean banned = false;
-    public boolean dead = false;
-    public boolean teamChat = false;
-    private HOHTeam team = null;
+    public boolean banned = false; // Banned Player
+    public boolean dead = false;   // Dead Player (Eliminated Player)
+    public boolean teamChat = false; // Is Using Team Chat
+    private HOHTeam team = null; // Player Team
     private boolean namingTeam = false;
 
     public HOHPlayer(HOHGame game, UUID uuid, String name) {
@@ -56,9 +56,13 @@ public class HOHPlayer {
     }
 
     public void prepareTeam(Inventory inv) {
-        if (game.gameState == GameState.PREPARE) {
+        if (game.getGameState() == GameState.PREPARE) {
             getPlayer().openInventory(inv);
         }
+    }
+
+    public HOHGame getGame() {
+        return game;
     }
 
 }

@@ -9,16 +9,15 @@ import me.latestion.hoh.localization.MessageManager;
 import me.latestion.hoh.utils.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Random;
-import java.util.UUID;
 
 public class RespawnScreen implements Listener {
 
@@ -37,11 +36,14 @@ public class RespawnScreen implements Listener {
         if (plugin.game.getGameState() != GameState.ON)
             return;
         Player p = (Player) event.getEntity();
-        if (!(p.getHealth() < 1))
+        double health = p.getHealth();
+        if (!(event.getFinalDamage() >= health))
             return;
-        HOHPlayer player = plugin.game.hohPlayers.get(event.getEntity().getUniqueId());
+        HOHPlayer player = plugin.game.hohPlayers.get(p.getUniqueId());
         MessageManager messageManager = plugin.getMessageManager();
+
         event.setCancelled(true);
+        p.setHealth(20);
 
         if (!player.getTeam().hasBeacon()) {
             if(p.getKiller() != null)
@@ -51,21 +53,24 @@ public class RespawnScreen implements Listener {
         else {
             if(p.getKiller() != null)
                 TrackingItem.addTrackingUses(plugin, p.getKiller(), 1);
-			p.teleport(plugin.game.hohPlayers.get(p.getUniqueId()).getTeam().getBeacon().getLocation().clone().add(0, 1, 0));
-
-            if (this.plugin.getConfig().getInt("Inventory-Keep") == 0) {
-                return;
+            if (this.plugin.getConfig().getInt("Inventory-Keep") != 0) {
+                Random rand = new Random();
+                int i = rand.nextInt(100);
+                if (i + 1 <= this.plugin.getConfig().getInt("Inventory-Keep")) {
+                    player.getPlayer().sendMessage(messageManager.getMessage("kept-inventory"));
+                } else {
+                    Location loc = p.getLocation();
+                    for (ItemStack item : p.getInventory()) {
+                        if (item == null) continue;
+                        loc.getWorld().dropItemNaturally(loc, item);
+                    }
+                    p.getInventory().clear();
+                    p.updateInventory();
+                    player.getPlayer().sendMessage(messageManager.getMessage("lost-inventory"));
+                }
             }
 
-            Random rand = new Random();
-            int i = rand.nextInt(100);
-            if (i + 1 <= this.plugin.getConfig().getInt("Inventory-Keep")) {
-                player.getPlayer().sendMessage(messageManager.getMessage("kept-inventory"));
-            } else {
-                p.getInventory().clear();
-                p.updateInventory();
-                player.getPlayer().sendMessage(messageManager.getMessage("lost-inventory"));
-            }
+            p.teleport(plugin.game.hohPlayers.get(p.getUniqueId()).getTeam().getBeacon().getLocation().clone().add(0, 1, 0));
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                 public void run() {
@@ -76,6 +81,7 @@ public class RespawnScreen implements Listener {
                     }
                 }
             }, 1);
+
             p.updateInventory();
         }
 
