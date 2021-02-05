@@ -11,9 +11,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -30,7 +33,18 @@ public class RespawnScreen implements Listener {
     }
 
     @EventHandler
-    public void damageEntity(EntityDamageEvent event) {
+    public void damageEntityByEntity(EntityDamageByEntityEvent event) {
+        if(event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK))
+            damageHandler(event, event.getDamager());
+    }
+
+    @EventHandler
+    public void damageEntity(EntityDamageEvent event){
+        if(!event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_ATTACK))
+            damageHandler(event, null);
+    }
+
+    public void damageHandler(EntityDamageEvent event, Entity damager) {
         if (!(event.getEntity() instanceof Player))
             return;
         if (plugin.game.getGameState() != GameState.ON)
@@ -46,13 +60,13 @@ public class RespawnScreen implements Listener {
         p.setHealth(20);
 
         if (!player.getTeam().hasBeacon()) {
-            if(p.getKiller() != null)
-                TrackingItem.addTrackingUses(plugin, p.getKiller(), 3);
+            if(damager != null && damager.getType().equals(EntityType.PLAYER))
+                TrackingItem.addTrackingUses(plugin, (Player) damager, 3);
             plugin.getGame().eliminatePlayer(player);
         }
         else {
-            if(p.getKiller() != null)
-                TrackingItem.addTrackingUses(plugin, p.getKiller(), 1);
+            if(damager != null && damager.getType().equals(EntityType.PLAYER))
+                TrackingItem.addTrackingUses(plugin, (Player) damager, 1);
             if (this.plugin.getConfig().getInt("Inventory-Keep") != 0) {
                 Random rand = new Random();
                 int i = rand.nextInt(100);

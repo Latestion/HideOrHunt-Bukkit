@@ -420,7 +420,7 @@ public class HOHGame {
 
 	public void freeze(){
 		Bukkit.broadcastMessage(plugin.getMessageManager().getMessage("game-freezed"));
-		for(Player p : Bukkit.getOnlinePlayers()){
+		for(Player p : getWorld().getPlayers()){
 			p.setAllowFlight(true); //prevent kicking for fly when game is frozen
 		}
 		this.frozen = true;
@@ -430,7 +430,7 @@ public class HOHGame {
 		this.frozen = false;
 		this.duringBreak = false;
 		Bukkit.broadcastMessage(plugin.getMessageManager().getMessage("game-unfreezed"));
-		for(Player p : Bukkit.getOnlinePlayers()){ //TODO fix: offline players can have flying allowed when joining later
+		for(Player p : getWorld().getPlayers()){ //TODO fix: offline players can have flying allowed when joining later
 			p.setAllowFlight(false);
 		}
 		for(HOHPlayer p : getHohPlayers().values()){

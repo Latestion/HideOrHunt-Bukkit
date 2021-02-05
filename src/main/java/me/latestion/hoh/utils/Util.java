@@ -97,8 +97,9 @@ public class Util {
     public void givePlayerKit(HOHPlayer player) {
         HOHTeam team = player.getTeam();
         Player p = player.getPlayer();
+        String teamName = team.getName();
         if (team.getLeader().getPlayer().equals(p)) {
-            p.getInventory().addItem(beacon(player.getName()));
+            p.getInventory().addItem(beacon(teamName));
         }
         for (String items : this.plugin.getConfig().getStringList("Kits")) {
             String[] item = items.split(", ");
