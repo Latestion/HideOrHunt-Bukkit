@@ -10,15 +10,17 @@ public class HOHPlayer {
 
     private final HOHGame game;
     private final UUID uuid;
+    private final String name;
     public boolean banned = false; // Banned Player
     public boolean dead = false;   // Dead Player (Eliminated Player)
     public boolean teamChat = false; // Is Using Team Chat
     private HOHTeam team = null; // Player Team
     private boolean namingTeam = false;
 
-    public HOHPlayer(HOHGame game, UUID uuid) {
+    public HOHPlayer(HOHGame game, UUID uuid, String name) {
         this.game = game;
         this.uuid = uuid;
+        this.name = name;
     }
 
     public Player getPlayer() {
@@ -35,6 +37,10 @@ public class HOHPlayer {
 
     public UUID getUUID() {
         return uuid;
+    }
+
+    public String getName(){
+        return this.name;
     }
 
     public boolean hasTeam() {

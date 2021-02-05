@@ -36,8 +36,9 @@ public class FlatHOHPlayer {
             boolean dead = se.getBoolean("dead");
             boolean teamChat = se.getBoolean("teamChat");
             boolean namingTeam = se.getBoolean("namingTeam");
+            String name = se.getString("name");
 
-            HOHPlayer player = new HOHPlayer(game, uuid);
+            HOHPlayer player = new HOHPlayer(game, uuid, name);
             player.banned = banned;
             player.dead = dead;
             player.teamChat = teamChat;
@@ -57,6 +58,7 @@ public class FlatHOHPlayer {
             section.set("dead", player.dead);
             section.set("teamChat", player.teamChat);
             section.set("namingTeam", player.isNamingTeam());
+            section.set("name", player.getName());
         }
         try {
             yc.save(file);

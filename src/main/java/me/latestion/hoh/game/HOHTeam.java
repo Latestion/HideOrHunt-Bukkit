@@ -38,6 +38,10 @@ public class HOHTeam {
         this.name = name;
     }
 
+    public List<HOHPlayer> getPlayers(){
+        return this.players;
+    }
+
     public void setPlayers(List<HOHPlayer> players) {
         this.players = players;
     }

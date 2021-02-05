@@ -2,6 +2,7 @@ package me.latestion.hoh.utils;
 
 import me.latestion.hoh.HideOrHunt;
 import me.latestion.hoh.game.GameState;
+import me.latestion.hoh.game.HOHPlayer;
 import me.latestion.hoh.game.HOHTeam;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.*;
@@ -31,12 +32,17 @@ public class Util {
     }
 
     public static Location deserializeLocation(String locString) {
-        String[] split = locString.split(",");
-        World w = Bukkit.getWorld(split[0]);
-        double x = Double.parseDouble(split[1]);
-        double y = Double.parseDouble(split[2]);
-        double z = Double.parseDouble(split[3]);
-        return new Location(w, x, y, z);
+        try{
+            String[] split = locString.split(",");
+            World w = Bukkit.getWorld(split[0]);
+            double x = Double.parseDouble(split[1]);
+            double y = Double.parseDouble(split[2]);
+            double z = Double.parseDouble(split[3]);
+            return new Location(w, x, y, z);
+        }catch(Exception ex){
+            Bukkit.getLogger().warning(ex.getLocalizedMessage());
+            return null;
+        }
     }
 
     public int getInt(String s) {
@@ -51,7 +57,7 @@ public class Util {
         return plugin.getConfig().getBoolean("Allow-Op");
     }
 
-    public int getWorldBorder() {
+    public int getWorldBorderSize() {
         return plugin.getConfig().getInt("WorldBorder");
     }
 
@@ -88,9 +94,12 @@ public class Util {
         return item;
     }
 
-    public void givePlayerKit(Player p, HOHTeam team, String name) {
+    public void givePlayerKit(HOHPlayer player) {
+        HOHTeam team = player.getTeam();
+        Player p = player.getPlayer();
+        String teamName = team.getName();
         if (team.getLeader().getPlayer().equals(p)) {
-            p.getInventory().addItem(beacon(name));
+            p.getInventory().addItem(beacon(teamName));
         }
         for (String items : this.plugin.getConfig().getStringList("Kits")) {
             String[] item = items.split(", ");

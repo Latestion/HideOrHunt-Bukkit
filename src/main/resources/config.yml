@@ -131,18 +131,18 @@ Episode-Time: 30 # Grace period duration. In minutes!
 # Duration is also in seconds
 # If you have any doubts regarding this please join my discord server for more questions
 Episode-Reminders:
-  - 600, "&620 minutes remaining for episode %ep% end!"
-  - 1200, "&610 minutes remaining for episode %ep% end!"
-  - 1500, "&65 minutes remaining for episode %ep% end!"
-  - 1740, "&61 minutes remaining for episode %ep% end!"
-  - 1770, "&630 seconds remaining for episode %ep% end!"
-  - 1790, "&610 seconds remaining for episode %ep% end!"
-  - 1795, "&65 seconds remaining for episode %ep% end!"
-  - 1796, "&64 seconds remaining for episode %ep% end!"
-  - 1797, "&63 seconds remaining for episode %ep% end!"
-  - 1798, "&62 seconds remaining for episode %ep% end!"
-  - 1799, "&61 seconds remaining for episode %ep% end!"
-  - 1800, "&60 seconds remaining for episode %ep% end!"
+  1200: "&620 minutes remaining for episode %ep% end!"
+  600: "&610 minutes remaining for episode %ep% end!"
+  300: "&65 minutes remaining for episode %ep% end!"
+  60: "&61 minutes remaining for episode %ep% end!"
+  30: "&630 seconds remaining for episode %ep% end!"
+  10: "&610 seconds remaining for episode %ep% end!"
+  5: "&65 seconds remaining for episode %ep% end!"
+  4: "&64 seconds remaining for episode %ep% end!"
+  3: "&63 seconds remaining for episode %ep% end!"
+  2: "&62 seconds remaining for episode %ep% end!"
+  1: "&61 seconds remaining for episode %ep% end!"
+  0: "&60 seconds remaining for episode %ep% end!"
   
 Episode-End-Break-Time: 60 # Break time when a episode ends! In seconds. Set it to 0 to disable it
 Disable-Beacon-Player-After-Episode-End: true

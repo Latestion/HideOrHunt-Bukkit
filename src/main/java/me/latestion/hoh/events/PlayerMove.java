@@ -20,8 +20,8 @@ public class PlayerMove implements Listener {
 		if (plugin.game == null) return;
 		if(plugin.game.getGameState() == GameState.OFF) return;
 		if (plugin.game.getGameState() == GameState.ON) {
-			if (!plugin.game.freeze) return;
-			if (event.getPlayer().isOp() && !plugin.getConfig().getBoolean("Allow-Op")) {
+			if (!plugin.game.frozen) return;
+			if (event.getPlayer().isOp() && !this.plugin.getConfig().getBoolean("Allow-Op")) {
 				event.setCancelled(false);
 			} else {
 				Location to = event.getFrom();

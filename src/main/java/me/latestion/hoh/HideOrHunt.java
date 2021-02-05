@@ -5,6 +5,7 @@ import me.latestion.hoh.bungee.BungeeSupport;
 import me.latestion.hoh.bungee.BungeeSupportHandler;
 import me.latestion.hoh.bungee.PlugMessage;
 import me.latestion.hoh.commandmanager.CommandInitializer;
+import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.events.*;
 import me.latestion.hoh.localization.MessageManager;
 import me.latestion.hoh.party.HOHParty;
@@ -23,6 +24,7 @@ import me.latestion.hoh.stats.Metrics;
 import me.latestion.hoh.utils.ScoreBoardUtil;
 import me.latestion.hoh.versioncheck.UpdateChecker;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -47,7 +49,12 @@ public class HideOrHunt extends JavaPlugin {
 		new Metrics(this, 8350);
 		hoh();
 		registerAll();
-		this.game = new HOHGame(this);
+		game = FlatHOHGame.deserialize(new File(this.getDataFolder(), "hohGame.yml"), this);
+		if(game != null){
+			game.loadGame();
+		}else{
+			this.game = new HOHGame(this);
+		}
 		loadSchems();
 		loadBungee();
 		antiXray();
@@ -114,6 +121,9 @@ public class HideOrHunt extends JavaPlugin {
 		pm.registerEvents(new RespawnScreen(this),this);
 		pm.registerEvents(new TrulyGrace(this), this);
 		pm.registerEvents(new WeatherChange(), this);
+		pm.registerEvents(new PlayerInteract(), this);
+		pm.registerEvents(new EntityPickupItem(), this);
+
 		new CommandInitializer(this).initialize();
 	}
 

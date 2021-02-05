@@ -1,6 +1,7 @@
 package me.latestion.hoh.events;
 
 import me.latestion.hoh.HideOrHunt;
+import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.game.HOHPlayer;
 import org.bukkit.entity.Player;
@@ -12,11 +13,11 @@ import org.bukkit.event.player.PlayerLoginEvent;
  * @author barpec12 on 30.12.2020
  */
 public class PlayerLogin implements Listener {
-    private HideOrHunt plugin;
+	private HideOrHunt plugin;
 
-    public PlayerLogin(HideOrHunt plugin) {
-        this.plugin = plugin;
-    }
+	public PlayerLogin(HideOrHunt plugin){
+		this.plugin = plugin;
+	}
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent e) {

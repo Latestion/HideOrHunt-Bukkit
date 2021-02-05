@@ -46,9 +46,9 @@ public class BlockBreak implements Listener {
                 return;
             }
             event.setDropItems(false);
-            team.setBeacon(null);
             plugin.sbUtil.beaconBreakTeam(team.getName());
             team.doAsthetic(event.getPlayer());
+            team.setBeacon(null);
             if (plugin.getConfig().getBoolean("End-Game-If-Only-One-Beacon")) {
                 int total = 0;
                 HOHTeam winner = null;
@@ -59,7 +59,7 @@ public class BlockBreak implements Listener {
                     }
                 }
                 if (total == 1) {
-                    plugin.game.endGame(winner.getName());
+                    plugin.game.endGame(winner);
                 }
             }
             return;
