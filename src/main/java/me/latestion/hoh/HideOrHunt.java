@@ -1,17 +1,14 @@
 package me.latestion.hoh;
 
 import me.latestion.hoh.antixray.AntiXray;
-import me.latestion.hoh.bungee.BungeeSupport;
-import me.latestion.hoh.bungee.BungeeSupportHandler;
+import me.latestion.hoh.bungee.*;
 import me.latestion.hoh.bungee.PlugMessage;
 import me.latestion.hoh.commandmanager.CommandInitializer;
 import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.events.*;
 import me.latestion.hoh.localization.MessageManager;
-import me.latestion.hoh.party.HOHParty;
-import me.latestion.hoh.party.HOHPartyEvents;
-import me.latestion.hoh.universalbeacon.UniversalBeacon;
-import me.latestion.hoh.universalbeacon.UniversalBeaconHandler;
+import me.latestion.hoh.party.*;
+import me.latestion.hoh.universalbeacon.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -58,7 +55,7 @@ public class HideOrHunt extends JavaPlugin {
 		loadSchems();
 		loadBungee();
 		antiXray();
-		universalBeacon();
+		// universalBeacon();
 	}
 
 

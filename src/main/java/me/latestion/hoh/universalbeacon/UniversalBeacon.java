@@ -12,6 +12,7 @@ public class UniversalBeacon {
     private UniversalBeaconInventory inv;
 
     public Map<HOHTeam, List<Inventory>> unlocked = new HashMap<>();
+    public Map<HOHTeam, Integer> bruh;
 
     public UniversalBeacon() {
         inv = new UniversalBeaconInventory();

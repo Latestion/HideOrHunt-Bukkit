@@ -5,10 +5,12 @@ import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.EnchantingTable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -47,7 +49,6 @@ public class UniversalBeaconHandler implements Listener {
             if (invs.size() == 0) return;
             p.openInventory(invs.get(0));
             EnchantingInventory inv = (EnchantingInventory) invs.get(0);
-
             return;
         }
         if (type == Material.ANVIL) {
@@ -69,7 +70,7 @@ public class UniversalBeaconHandler implements Listener {
             return;
         }
     }
-    
+
     @EventHandler
     public void craftBlock(CraftItemEvent event) {
         if (HideOrHunt.getInstance().game.getGameState() != GameState.ON) return;
