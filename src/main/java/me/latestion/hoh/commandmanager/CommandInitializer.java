@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class CommandInitializer {
+
     private final HideOrHunt plugin;
 
     public CommandInitializer(HideOrHunt main) {

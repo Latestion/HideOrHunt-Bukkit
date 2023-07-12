@@ -1,11 +1,11 @@
 package me.latestion.hoh.events;
 
-import java.util.List;
-
+import me.latestion.hoh.HideOrHunt;
+import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHPlayer;
+import me.latestion.hoh.game.HOHTeam;
 import me.latestion.hoh.localization.MessageManager;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import me.latestion.hoh.utils.Util;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,10 +14,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.latestion.hoh.HideOrHunt;
-import me.latestion.hoh.game.GameState;
-import me.latestion.hoh.game.HOHTeam;
-import me.latestion.hoh.utils.Util;
+import java.util.List;
 
 public class InventoryClick implements Listener {
 	private HideOrHunt plugin;

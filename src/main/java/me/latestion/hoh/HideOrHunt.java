@@ -1,25 +1,27 @@
 package me.latestion.hoh;
 
 import me.latestion.hoh.antixray.AntiXray;
-import me.latestion.hoh.bungee.*;
+import me.latestion.hoh.bungee.BungeeSupport;
+import me.latestion.hoh.bungee.BungeeSupportHandler;
 import me.latestion.hoh.bungee.PlugMessage;
 import me.latestion.hoh.commandmanager.CommandInitializer;
 import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.events.*;
+import me.latestion.hoh.game.GameState;
+import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.localization.MessageManager;
-import me.latestion.hoh.party.*;
-import me.latestion.hoh.universalbeacon.*;
+import me.latestion.hoh.party.HOHParty;
+import me.latestion.hoh.party.HOHPartyEvents;
+import me.latestion.hoh.stats.Metrics;
+import me.latestion.hoh.universalbeacon.UniversalBeacon;
+import me.latestion.hoh.universalbeacon.UniversalBeaconHandler;
+import me.latestion.hoh.utils.ScoreBoardUtil;
+import me.latestion.hoh.versioncheck.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import me.latestion.hoh.game.GameState;
-import me.latestion.hoh.game.HOHGame;
-import me.latestion.hoh.stats.Metrics;
-import me.latestion.hoh.utils.ScoreBoardUtil;
-import me.latestion.hoh.versioncheck.UpdateChecker;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -30,7 +32,6 @@ public class HideOrHunt extends JavaPlugin {
 	public HOHGame game;
 	public ScoreBoardUtil sbUtil;
 	private MessageManager msgManager;
-
 	public BungeeSupport support;
 	public HOHParty party;
 	public AntiXray xray;
@@ -118,8 +119,6 @@ public class HideOrHunt extends JavaPlugin {
 		pm.registerEvents(new RespawnScreen(this),this);
 		pm.registerEvents(new TrulyGrace(this), this);
 		pm.registerEvents(new WeatherChange(), this);
-		pm.registerEvents(new PlayerInteract(), this);
-		pm.registerEvents(new EntityPickupItem(), this);
 
 		new CommandInitializer(this).initialize();
 	}

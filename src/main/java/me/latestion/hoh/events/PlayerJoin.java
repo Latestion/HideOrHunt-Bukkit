@@ -3,7 +3,6 @@ package me.latestion.hoh.events;
 import me.latestion.hoh.HideOrHunt;
 import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHGame;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

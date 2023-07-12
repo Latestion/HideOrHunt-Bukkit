@@ -1,14 +1,12 @@
 package me.latestion.hoh.events;
 
 import me.latestion.hoh.HideOrHunt;
-import org.bukkit.ChatColor;
+import me.latestion.hoh.game.GameState;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
-
-import me.latestion.hoh.game.GameState;
 
 public class CraftItem implements Listener {
 
@@ -23,9 +21,6 @@ public class CraftItem implements Listener {
 		if (plugin.game.getGameState() == GameState.ON) {
 			if (event.getRecipe().getResult().getType() == Material.CRAFTING_TABLE ||
 					event.getRecipe().getResult().getType() == Material.BEACON) {
-				if (plugin.game.allowCrafting) {
-					return;
-				}
 				event.setCancelled(true);
 				Player player = (Player) event.getWhoClicked();
 				player.sendMessage(plugin.getMessageManager().getMessage("cannot-craft"));

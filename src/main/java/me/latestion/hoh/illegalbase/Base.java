@@ -2,11 +2,9 @@ package me.latestion.hoh.illegalbase;
 
 import me.latestion.hoh.HideOrHunt;
 import me.latestion.hoh.api.HOHBeaconBreakEvent;
-import me.latestion.hoh.game.HOHPlayer;
 import me.latestion.hoh.game.HOHTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.block.BlockFace;
 import org.bukkit.scheduler.BukkitScheduler;
 
 public class Base {

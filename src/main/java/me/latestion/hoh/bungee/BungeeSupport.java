@@ -1,13 +1,7 @@
 package me.latestion.hoh.bungee;
 
 import me.latestion.hoh.HideOrHunt;
-import me.latestion.hoh.events.EntityExplode;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Server;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-import scala.concurrent.impl.FutureConvertersImpl;
 
 import java.io.File;
 import java.util.*;

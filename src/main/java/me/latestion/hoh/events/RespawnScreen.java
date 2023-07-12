@@ -1,14 +1,11 @@
 package me.latestion.hoh.events;
 
 import me.latestion.hoh.HideOrHunt;
-import me.latestion.hoh.customitems.TrackingItem;
 import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHPlayer;
-import me.latestion.hoh.game.HOHTeam;
 import me.latestion.hoh.localization.MessageManager;
 import me.latestion.hoh.utils.Util;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -60,13 +57,9 @@ public class RespawnScreen implements Listener {
         p.setHealth(20);
 
         if (!player.getTeam().hasBeacon()) {
-            if(damager != null && damager.getType().equals(EntityType.PLAYER))
-                TrackingItem.addTrackingUses(plugin, (Player) damager, 3);
             plugin.getGame().eliminatePlayer(player);
         }
         else {
-            if(damager != null && damager.getType().equals(EntityType.PLAYER))
-                TrackingItem.addTrackingUses(plugin, (Player) damager, 1);
             if (this.plugin.getConfig().getInt("Inventory-Keep") != 0) {
                 Random rand = new Random();
                 int i = rand.nextInt(100);

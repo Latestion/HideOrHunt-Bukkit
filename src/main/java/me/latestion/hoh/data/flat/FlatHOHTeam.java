@@ -3,7 +3,6 @@ package me.latestion.hoh.data.flat;
 import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.game.HOHTeam;
 import me.latestion.hoh.utils.Util;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;

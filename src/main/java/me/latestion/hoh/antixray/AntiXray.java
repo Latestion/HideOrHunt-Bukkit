@@ -9,18 +9,18 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
-import java.util.function.Predicate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class AntiXray extends BukkitRunnable {
 
-    private HideOrHunt plugin;
-    private HOHGame game;
+    private final HideOrHunt plugin;
+    private final HOHGame game;
 
     private int range;
     private int tick;
@@ -69,7 +69,7 @@ public class AntiXray extends BukkitRunnable {
         if (game.getGameState() == GameState.ON) {
             this.range = plugin.getConfig().getInt("Show-Beacon-Range");
             this.tick = plugin.getConfig().getInt("Check-Delay");
-            runTaskTimer(plugin, 0, tick * 20);
+            runTaskTimer(plugin, 0, tick * 20L);
         }
     }
 

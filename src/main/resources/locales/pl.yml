@@ -47,10 +47,3 @@ messages:
   no-spectate-permissions: "&cNie możesz obserwować tej gry!"
   team-list-header: "&eTwoja drużyna składa się z:"
   team-locked: "&cTen zespół jest zablokowany!"
-  tracking-item-name: "&cLokalizowanie innych graczy"
-  tracking-item-lore-1: "&eKliknij prawym, żeby"
-  tracking-item-lore-2: "&eWskazać najbliższego gracza"
-  tracking-item-lore-3: "&ePozostałe użycia: %remaining-uses%"
-  tracking-item-out-of-uses: "&cNie masz obecnie kolejnych użyć!"
-  tracking-item-pointing-into-player: "&aWskazywanie lokalizacji gracza przez %pointing-time% sekund."
-

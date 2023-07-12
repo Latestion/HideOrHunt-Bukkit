@@ -6,7 +6,7 @@
 
     <groupId>me.latestion</groupId>
     <artifactId>HideOrHunt-Bukkit</artifactId>
-    <version>5.0</version>
+    <version>6.0</version>
 
     <description>This plugin is a Re-Creation of CreepersEdge HOH series!</description>
     <url>https://github.com/Latestion/HideOrHunt-Bukkit</url>
@@ -17,7 +17,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <bstats.version>1.6</bstats.version>
-        <spigot.version>1.16.5-R0.1-SNAPSHOT</spigot.version>
+        <spigot.version>1.19.4-R0.1-SNAPSHOT</spigot.version>
     </properties>
     <repositories>
         <repository>

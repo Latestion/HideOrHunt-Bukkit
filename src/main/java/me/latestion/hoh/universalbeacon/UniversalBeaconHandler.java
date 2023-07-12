@@ -5,12 +5,9 @@ import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.EnchantingTable;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -21,7 +18,6 @@ import org.bukkit.inventory.PlayerInventory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class UniversalBeaconHandler implements Listener {
 

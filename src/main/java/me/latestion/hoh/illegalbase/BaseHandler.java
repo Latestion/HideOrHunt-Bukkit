@@ -1,7 +1,6 @@
 package me.latestion.hoh.illegalbase;
 
 import me.latestion.hoh.HideOrHunt;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -9,7 +8,6 @@ import org.bukkit.block.BlockFace;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class BaseHandler {
 

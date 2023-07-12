@@ -2,8 +2,6 @@ package me.latestion.hoh.party;
 
 import me.latestion.hoh.HideOrHunt;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.ArrayList;

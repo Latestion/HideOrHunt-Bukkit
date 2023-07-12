@@ -2,7 +2,6 @@ package me.latestion.hoh.game;
 
 import me.latestion.hoh.HideOrHunt;
 import me.latestion.hoh.api.HOHGameEvent;
-import me.latestion.hoh.customitems.TrackingItem;
 import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.localization.MessageManager;
 import me.latestion.hoh.myrunnables.Episodes;
@@ -213,7 +212,6 @@ public class HOHGame {
             p.closeInventory();
             if(p != null){
                 p.sendMessage(msgMan.getMessage("team-list-header"));
-                TrackingItem.addTrackingUses(plugin, p, 2);
                 HOHTeam t = hohPlayer.getTeam();
                 for(HOHPlayer tm : t.getPlayers()){
                     p.sendMessage(tm.getName());
@@ -461,19 +459,23 @@ public class HOHGame {
 		}
 
 		if (this.plugin.getConfig().getBoolean("Ban-Player-On-Death")) {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				@Override
-				public void run() {
-					player.banned = true;
-					if(player.getPlayer() != null){
-						player.getPlayer().kickPlayer("");
-					}
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                player.banned = true;
+                if(player.getPlayer() != null){
+                    player.getPlayer().kickPlayer("");
+                }
 //					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban " + player.getName() + " Eliminated");
-				}
-			}, 0L);
+            }, 0L);
 		} else {
-			if(player.getPlayer() != null)
-				player.getPlayer().setGameMode(GameMode.SPECTATOR);
+			if(player.getPlayer() != null) {
+			    if (this.plugin.getConfig().getBoolean("Make-Player-Spectator"))
+                    player.getPlayer().setGameMode(GameMode.SPECTATOR);
+			    else {
+			        for (String s : this.plugin.getConfig().getStringList("Task-On-Player-Death")) {
+			            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("%player%", player.getName()));
+                    }
+                }
+            }
 		}
 
 		if (plugin.game.checkEndConditions()) {

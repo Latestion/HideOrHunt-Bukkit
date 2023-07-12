@@ -3,7 +3,6 @@ package me.latestion.hoh.myrunnables;
 import me.latestion.hoh.HideOrHunt;
 import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHTeam;
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Grace extends BukkitRunnable {

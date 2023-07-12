@@ -9,7 +9,6 @@ import me.latestion.hoh.localization.MessageManager;
 import me.latestion.hoh.utils.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -71,6 +70,5 @@ public class BlockBreak implements Listener {
             }
             return;
         }
-        return;
     }
 }

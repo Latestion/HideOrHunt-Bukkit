@@ -1,7 +1,6 @@
 package me.latestion.hoh.events;
 
 import me.latestion.hoh.HideOrHunt;
-import me.latestion.hoh.game.GameState;
 import me.latestion.hoh.game.HOHGame;
 import me.latestion.hoh.game.HOHPlayer;
 import org.bukkit.entity.Player;
@@ -33,13 +32,13 @@ public class PlayerLogin implements Listener {
                     }
                     return;
                 }
-                if (!e.getPlayer().hasPermission("hoh.spectate")) {
+                if (!e.getPlayer().hasPermission("hoh.spectate") || plugin.getConfig().getBoolean("Allow-Spectators")) {
                     e.disallow(PlayerLoginEvent.Result.KICK_OTHER, plugin.getMessageManager().getMessage("no-spectate-permissions"));
                     return;
                 }
                 break;
             case PREPARE:
-                if (!e.getPlayer().hasPermission("hoh.spectate")) {
+                if (!e.getPlayer().hasPermission("hoh.spectate") || plugin.getConfig().getBoolean("Allow-Spectators")) {
                     e.disallow(PlayerLoginEvent.Result.KICK_OTHER, plugin.getMessageManager().getMessage("no-spectate-permissions"));
                     return;
                 }

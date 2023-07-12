@@ -1,11 +1,9 @@
 package me.latestion.hoh.game;
 
 import me.latestion.hoh.HideOrHunt;
-import me.latestion.hoh.api.HOHBeaconBreakEvent;
 import me.latestion.hoh.illegalbase.Base;
 import me.latestion.hoh.localization.MessageManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
