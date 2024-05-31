@@ -1,0 +1,81 @@
+plugins {
+    id 'java'
+}
+
+group = 'me.latestion'
+version = '2.0'
+
+repositories {
+    mavenCentral()
+    maven {
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/groups/public/"
+    }
+    maven {
+        url = "https://jitpack.io"
+    }
+    maven {
+        url = "https://maven.enginehub.org/repo/"
+    }
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    compileOnly "org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT"
+
+    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.9'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok:1.18.26'
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+
+    // Local
+    compileOnly fileTree(include: ['*.jar'], dir: 'libs')
+}
+
+def targetJavaVersion = 17
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release = targetJavaVersion
+    }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
+
+buildDir = file('build')
+def jarOutputDir = file('C:/Users/User/Desktop/Outpost Test/plugins')
+
+// Create a custom task to copy the JAR file to the desired output directory
+task copyJarToOutputDir(type: Copy) {
+    from jar.outputs.files
+    into jarOutputDir
+}
+
+jar {
+    // Configure the JAR output directory
+    destinationDirectory.set(file(buildDir))
+}
+
+tasks.build.dependsOn(copyJarToOutputDir)
+

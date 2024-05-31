@@ -3,7 +3,6 @@ package me.latestion.hoh.universalbeacon;
 import me.latestion.hoh.game.HOHTeam;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +19,6 @@ public class UniversalBeacon {
         inv = new UniversalBeaconInventory();
     }
 
-    @NotNull
     public Inventory getInv() {
         return inv.getInv();
     }
