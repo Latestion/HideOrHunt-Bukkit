@@ -1,6 +1,7 @@
 package me.latestion.hoh.game;
 
 import me.latestion.hoh.HideOrHunt;
+import me.latestion.hoh.antixray.AntiXray;
 import me.latestion.hoh.api.HOHGameEvent;
 import me.latestion.hoh.data.flat.FlatHOHGame;
 import me.latestion.hoh.localization.MessageManager;
@@ -329,6 +330,11 @@ public class HOHGame {
         plugin.sbUtil = new ScoreBoardUtil(plugin);
         Bukkit.getScheduler().cancelTasks(plugin);
         ep = 1;
+
+        if (plugin.xray != null) {
+            plugin.xray.stop();
+            plugin.xray = new AntiXray(plugin);
+        }
 
         File gameFile = new File(plugin.getDataFolder(), "hohGame.yml");
         gameFile.delete();
